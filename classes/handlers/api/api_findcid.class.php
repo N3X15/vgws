@@ -1,5 +1,5 @@
 <?php
-class findcid_handler extends BaseHandler {
+class findcid_handler extends Page {
 	public $parent = '';
 	public $description = "Find IP and CID of a given CKey";
 
@@ -9,7 +9,7 @@ class findcid_handler extends BaseHandler {
 		
 		$ckey=$_REQUEST['ckey'];
 		
-		$res = $db->Execute("
+		$res = DB::Execute("
 		SELECT
 			ip,
 			computerid
@@ -36,4 +36,4 @@ class findcid_handler extends BaseHandler {
 		exit();
 	}
 }
-$ACT_HANDLERS['api_findcid'] = new findcid_handler;
+Page::Register('api_findcid', new findcid_handler);

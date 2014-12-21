@@ -2,24 +2,47 @@
 /**
  * HTML Element Builders
  *
- * @package Spaceport
+ * Another common system I wrote.  Used for generating
+ * HTML, and additionally handles form validation and
+ * feedback.
+ *
+ * I should probably make this its own project considering
+ * how much shit uses it.
+ *
+ * @package QuickHTML
  * @author Rob Nelson <nexisentertainment@gmail.com>
  */
 
-class Element {
+class Element
+{
     /**
      * Textareas will bug the fuck out if they're shortened to <textarea /> (on
      * Firefox, at least).
      */
     public static $DontShortenNotation = array('textarea');
 
+    /**
+     * Name of element (a = <a>)
+     */
     public $name = '';
+    
+    /**
+     * Attributes and their values
+     */
     public $attributes = array();
+    
+    /**
+     * Child elements/strings.
+     */
     public $children = array();
 
+    /**
+     * Used in input elements.
+     */
     public $messages = array();
 
-    public function __construct($name, $attr = array(), $inner = array()) {
+    public function __construct($name, $attr = array(), $inner = array())
+    {
         $this->name = $name;
         $this->attributes = $attr;
         if (!is_array($inner))
@@ -28,7 +51,8 @@ class Element {
             $this->children = $inner;
     }
 
-    private function fmtAttributes() {
+    private function fmtAttributes()
+    {
         if (!is_array($this->attributes) || count($this->attributes) == 0)
             return '';
         $o = array();
@@ -39,17 +63,18 @@ class Element {
                 continue;
             }
             if (!is_string($v) && !is_int($v)) {
-                Page::Message('error', "{$this->name} - \$v=" . var_export($v, true));
+                Page::Message('error', "{$this->name}[{$k}] - \$v=" . var_export($v, true));
                 continue;
             }
             $o[] = "{$k}=\"" . htmlentities($v, ENT_QUOTES, 'ISO-8859-1', false) . "\"";
             //$o[]="{$k}=\"".htmlentities($v)."\"";
         }
         //var_dump($o);
-        return ' ' . implode(' ', $o);
+        return ' ' . implode(' ', $o); 
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         $attr = $this->fmtAttributes();
         $buf = "{$this->name}{$attr}";
         if (count($this->children) == 0 && !in_array($this->name, Element::$DontShortenNotation))
@@ -65,7 +90,8 @@ class Element {
         return $buf;
     }
 
-    public function prettyPrint($level = 0) {
+    public function prettyPrint($level = 0)
+    {
         $attr = $this->fmtAttributes();
         $buf = "{$this->name}{$attr}";
         if (count($this->children) == 0 && !in_array($this->name, Element::$DontShortenNotation))
@@ -81,12 +107,14 @@ class Element {
         return $buf;
     }
 
-    public function addChild($child) {
+    public function addChild($child)
+    {
         $this->children[] = $child;
         return $this;
     }
 
-    public function addChildren($child) {
+    public function addChildren($child)
+    {
         foreach (func_get_args() as $arg) {
             if (is_array($arg)) {
                 foreach ($arg as $_a)
@@ -98,7 +126,8 @@ class Element {
         return $this;
     }
 
-    public function addClass($class) {
+    public function addClass($class)
+    {
         if (!array_key_exists('class', $this->attributes))
             $this->setAttribute('class', $class);
         else
@@ -106,24 +135,28 @@ class Element {
         return $this;
     }
 
-    public function setAttribute($name, $value) {
+    public function setAttribute($name, $value)
+    {
         $this->attributes[$name] = $value;
         return $this;
     }
 
-    public function setAttributes($a = array()) {
+    public function setAttributes($a = array())
+    {
         foreach ($a as $k => $v) {
             $this->attributes[$k] = $v;
         }
         return $this;
     }
 
-    public function addLabel($label, $for) {
+    public function addLabel($label, $for)
+    {
         $this->addChild(new Element('label', array('for' => $for), array($label)));
         return $this;
     }
 
-    public function addPlus($formname, $for, $addval, $label, array $other = array()) {
+    public function addPlus($formname, $for, $addval, $label, array $other = array())
+    {
         //<a href="#" onclick="document.banform.seconds.value='3600';return
         // false;">1hr</a>
         $a = new Element('a');
@@ -136,7 +169,8 @@ class Element {
         return $this;
     }
 
-    public function addPreset($formname, $for, $label, $value, array $other = array()) {
+    public function addPreset($formname, $for, $label, $value, array $other = array())
+    {
         //<a href="#" onclick="document.banform.seconds.value='3600';return
         // false;">1hr</a>
         $a = new Element('a');
@@ -150,24 +184,29 @@ class Element {
         return $this;
     }
 
-    public function addBreak() {
+    public function addBreak()
+    {
         $this->addChild(new Element('br'));
         return $this;
     }
 
-    public function addTextbox($name, $default = '', $other = array()) {
+    public function addTextbox($name, $default = '', $other = array())
+    {
         return $this->addInput('textbox', $name, $default, $other);
     }
 
-    public function addPassword($name, $default = '', $other = array()) {
+    public function addPassword($name, $default = '', $other = array())
+    {
         return $this->addInput('password', $name, $default, $other);
     }
 
-    public function addEmail($name, $default = '', $other = array()) {
+    public function addEmail($name, $default = '', $other = array())
+    {
         return $this->addInput('email', $name, $default, $other);
     }
 
-    public function addButton($type, $name, $label, $value = null, $other = array()) {
+    public function addButton($type, $name, $label, $value = null, $other = array())
+    {
         if ($value != null)
             $other['value'] = $value;
         $other['type'] = $type;
@@ -177,38 +216,57 @@ class Element {
         return $this;
     }
 
-    public function addReset($name, $label = 'Reset', $value = null, $other = array()) {
+    public function addReset($name, $label = 'Reset', $value = null, $other = array())
+    {
         return $this->addButton('reset', $name, $label, $value, $other);
     }
 
-    public function addCheckbox($name, $value = '1', $other = array()) {
+    public function addCheckbox($name, $value = '1', $other = array())
+    {
         return $this->addInput('checkbox', $name, $value, $other);
     }
 
-    public function addSubmit($name, $label = 'Submit', $value = null, $other = array()) {
+    public function addSubmit($name, $label = 'Submit', $value = null, $other = array())
+    {
         return $this->addButton('submit', $name, $label, $value, $other);
     }
 
-    public function addMessage($message) {
+    public function addMessage($message)
+    {
         $span = new Element('li', array(), $message->message);
         $span->addClass('msg-' . $message->severity);
         $this->addChild($span);
     }
 
-    public function addInput($type, $name, $default = '', array $other = array()) {
+    public function addInput($type, $name, $default = '', array $other = array())
+    {
         $this->addChild(new Input($type, $name, $default, $other));
         return $this;
     }
 
-    public function addTextarea($name, $default = '', $other = array()) {
+    public function addTextarea($name, $default = '', $other = array())
+    {
         $other['name'] = $name;
         $this->addChild(new Element('textarea', $other, $default));
         return $this;
     }
 
-    public function addHidden($name, $value) {
+    public function addHidden($name, $value)
+    {
         //var_dump($value);
         return $this->addInput('hidden', $name, $value);
+    }
+    
+    public function addBookmarklet($label,$javascript,array $other=array()) {
+        //<a href="#" onclick="document.banform.seconds.value='3600';return false;">1hr</a>
+        $a = new Element('a');
+        $a->setAttributes($other);
+        $a->setAttribute('href', '#');
+        $a->setAttribute('onclick', "{$javascript}return false;");
+        $a->addChild($label);
+        $this->addChild('&nbsp;');
+        $this->addChild($a);
+        return $this;
     }
 
     /**
@@ -220,7 +278,8 @@ class Element {
      * @param default
      * @param other
      */
-    public function addSelect($name, array $options, $default = '', $other = array()) {
+    public function addSelect($name, array $options, $default = '', $other = array())
+    {
         $other['name'] = $name;
         $select = new Element('select', $other);
         foreach ($options as $k => $v) {
@@ -242,7 +301,8 @@ class Element {
     /**
      * Form validation;  Pass on to children by default
      */
-    public function Validate($_input) {
+    public function Validate($_input)
+    {
         if (empty($this->children))
             return true;
         $success = true;
@@ -254,37 +314,48 @@ class Element {
         return $success;
     }
 
+    protected function takeNSet(array &$attrArray, $attrName, $varName)
+    {
+        if (array_key_exists($attrName, $attrArray)) {
+            $this->$varName = $attrArray[$attrName];
+            unset($attrArray[$attrName]);
+        }
+    }
+
 }
 
-class Input extends Element {
+class Input extends Element
+{
     protected $required = false;
+    protected $hideStar = false;
     protected $maxLength = 0;
 
-    public function __construct($type, $name, $value = '', array $other = array()) {
+    public function __construct($type, $name, $value = '', array $other = array())
+    {
         $other['name'] = $name;
         $other['type'] = $type;
         if ($value != '')
             $other['value'] = $value;
-        if (array_key_exists('required', $other)) {
-            $this->required = $other['required'];
-            unset($other['required']);
-        }
-        if (array_key_exists('maxlength', $other)) {
-            $this->maxLength = intval($other['maxlength']);
-            unset($other['maxlength']);
-        }
+
+        $this->takeNSet($other, 'required', 'required');
+        $this->takeNSet($other, 'hidestar', 'hideStar');
+        $this->takeNSet($other, 'maxlength', 'maxLength');
+
         parent::__construct('input', $other);
     }
 
-    public function setRequired() {
+    public function setRequired()
+    {
         $this->required = true;
     }
 
-    public function setMaxLength($maxLength) {
+    public function setMaxLength($maxLength)
+    {
         $this->maxLength = $maxLength;
     }
 
-    public function Validate($_input) {
+    public function Validate($_input)
+    {
         $value = null;
         $name = $this->attributes['name'];
         if (array_key_exists($name, $_input))
@@ -306,16 +377,18 @@ class Input extends Element {
         return true;
     }
 
-    public function setValue($value) {
+    public function setValue($value)
+    {
         $this->attributes['value'] = $value;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         $buf = parent::__toString();
 
         $name = $this->attributes['name'];
 
-        if ($this->required) {
+        if ($this->required && !$this->hideStar) {
             $reqTag = new Element('span', array('class' => 'input-required'), '&#9733;');
             $buf .= $reqTag;
         }
@@ -331,7 +404,8 @@ class Input extends Element {
         return $buf;
     }
 
-    public function prettyPrint($level = 0) {
+    public function prettyPrint($level = 0)
+    {
         $buf = parent::__toString();
 
         $name = $this->attributes['name'];
@@ -354,11 +428,13 @@ class Input extends Element {
 
 }
 
-class FileUpload extends Input {
+class FileUpload extends Input
+{
     public $validTypes = array();
     public $uploadData = null;
 
-    public function __construct($name, array $validTypes, array $other = array()) {
+    public function __construct($name, array $validTypes, array $other = array())
+    {
 
         $other['type'] = 'file';
         $this->validTypes = $validTypes;
@@ -368,7 +444,8 @@ class FileUpload extends Input {
     /**
      * MUST BE CALLED OR SHIT WILL BREAK.
      */
-    public function Validate($devnull = array()) {
+    public function Validate($devnull = array())
+    {
         $name = $this->attributes['name'];
         if ($this->required) {
             if (!isset($_FILES[$name]) || $_FILES[$name]['size'] == 0) {
@@ -442,28 +519,33 @@ class FileUpload extends Input {
         return true;
     }
 
-    public function Cleanup() {
+    public function Cleanup()
+    {
         if ($this->uploadData == null)
             return;
         $this->GC($this->uploadData['tmp_name']);
     }
 
-    private function AssertWasValidated() {
+    private function AssertWasValidated()
+    {
         squad_assert('FileUpload not validated prior to attempting data access.', $this->uploadData != null);
     }
 
-    private function GC($file) {
+    private function GC($file)
+    {
         if (file_exists($file))
             unlink($file);
     }
 
-    public function GetMD5() {
+    public function GetMD5()
+    {
         if ($this->uploadData == null)
             return null;
         return md5_file($this->uploadData['tmp_name']);
     }
 
-    public function GetExt() {
+    public function GetExt()
+    {
         if ($this->uploadData == null)
             return null;
         $mime = getMime($this->uploadData['tmp_name']);
@@ -472,7 +554,8 @@ class FileUpload extends Input {
         return 'bin';
     }
 
-    public function MoveFileTo($dest) {
+    public function MoveFileTo($dest)
+    {
         if ($this->uploadData == null)
             return;
         $dir = dirname($dest);
@@ -481,11 +564,13 @@ class FileUpload extends Input {
         return move_uploaded_file($this->uploadData["tmp_name"], $dest);
     }
 
-    public function GetTemporaryFilename() {
+    public function GetTemporaryFilename()
+    {
         return $this->uploadData["tmp_name"];
     }
 
-    public function GetOriginalFilename() {
+    public function GetOriginalFilename()
+    {
         if ($this->uploadData == null)
             return null;
         return $this->uploadData['name'];
@@ -493,9 +578,11 @@ class FileUpload extends Input {
 
 }
 
-class TextArea extends Input {
+class TextArea extends Input
+{
 
-    public function __construct($name, $value = '', array $other = array()) {
+    public function __construct($name, $value = '', array $other = array())
+    {
         parent::__construct('textarea', $name, $value, $other);
         if ($value != '')
             $this->addChild($value);
@@ -505,11 +592,13 @@ class TextArea extends Input {
             unset($this->attributes['value']);
     }
 
-    public function setValue($val) {
+    public function setValue($val)
+    {
         $this->children = array($val);
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         $name = $this->attributes['name'];
         $buf = '';
         if ($this->required) {
@@ -532,7 +621,8 @@ class TextArea extends Input {
         return $buf;
     }
 
-    public function prettyPrint($level = 0) {
+    public function prettyPrint($level = 0)
+    {
 
         $name = $this->attributes['name'];
         if ($this->required) {
@@ -557,8 +647,10 @@ class TextArea extends Input {
 
 }
 
-class Form extends Element {
-    public function __construct($action, $method = 'get', $name = '', $other = array()) {
+class Form extends Element
+{
+    public function __construct($action, $method = 'get', $name = '', $other = array())
+    {
         parent::__construct('form', array('method' => $method, 'name' => $name, ));
         $this->attributes['name'] = $name;
         $this->attributes['method'] = $method;
@@ -567,15 +659,18 @@ class Form extends Element {
 
 }
 
-class TableRow extends Element {
-    public function __construct($class = '', $other = array()) {
+class TableRow extends Element
+{
+    public function __construct($class = '', $other = array())
+    {
         parent::__construct('tr');
         if ($class != '')
             $this->attributes['class'] = $class;
         $this->setAttributes($other);
     }
 
-    public function createCell($class = '', array $other = array()) {
+    public function createCell($class = '', array $other = array())
+    {
         if ($class != '')
             $other['class'] = $class;
         $td = new Element('td', $other);
@@ -583,14 +678,16 @@ class TableRow extends Element {
         return $td;
     }
 
-    public function createCells($count) {
+    public function createCells($count)
+    {
         $cells = array();
         for ($i = 0; $i < $count; $i++)
             $cells[] = $this->createCell();
         return $cells;
     }
 
-    public function createHeaderCell($class = '', array $other = array()) {
+    public function createHeaderCell($class = '', array $other = array())
+    {
         if ($class != '')
             $other['class'] = $class;
         $td = new Element('th', $other);
@@ -598,14 +695,16 @@ class TableRow extends Element {
         return $td;
     }
 
-    public function addHeader($children, array $other = array()) {
+    public function addHeader($children, array $other = array())
+    {
         $th = new Element('th', $other);
         $this->addChild($th);
         $th->addChild($children);
         return $th;
     }
 
-    public function addCell($children, array $other = array()) {
+    public function addCell($children, array $other = array())
+    {
         $th = new Element('td', $other);
         $this->addChild($th);
         $th->addChild($children);
@@ -614,15 +713,18 @@ class TableRow extends Element {
 
 }
 
-class Table extends Element {
-    public function __construct($class = '', $other = array()) {
+class Table extends Element
+{
+    public function __construct($class = '', $other = array())
+    {
         parent::__construct('table');
         if ($class != '')
             $this->attributes['class'] = $class;
         $this->setAttributes($other);
     }
 
-    public function createRow($class = '', array $other = array()) {
+    public function createRow($class = '', array $other = array())
+    {
         $tr = new TableRow($class, $other);
         $this->addChild($tr);
         return $tr;
@@ -632,7 +734,8 @@ class Table extends Element {
      * @param ... Cells
      * @return TR Element
      */
-    public function addRow() {
+    public function addRow()
+    {
         $row = $this->createRow();
         foreach (func_get_args() as $arg) {
             if (subclasses($arg, 'Element') && ($arg->name == 'td' || $arg->name == 'th'))
@@ -643,7 +746,8 @@ class Table extends Element {
         return $row;
     }
 
-    public function addHeadingsRow(array $labels) {
+    public function addHeadingsRow(array $labels)
+    {
         foreach (func_get_args() as $arg) {
             if (subclasses($arg, 'Element') && ($arg->name == 'td' || $arg->name == 'th'))
                 $row->addChild($arg);
@@ -655,11 +759,13 @@ class Table extends Element {
 
 }
 
-class Select extends Input {
+class Select extends Input
+{
     protected $options = array();
     protected $selected = '';
 
-    public function __construct($name, $options, $default = '', $other = array()) {
+    public function __construct($name, $options, $default = '', $other = array())
+    {
         parent::__construct('', $name, '', $other);
         $this->name = 'select';
         $this->options = $options;
@@ -678,7 +784,8 @@ class Select extends Input {
         }
     }
 
-    public function setValue($default) {
+    public function setValue($default)
+    {
         $this->children = array();
         foreach ($this->options as $k => $v) {
             $opt = new Element('option');

@@ -6,39 +6,141 @@
  *
  * Adapted from a Python class I wrote.
  *
- * @author Rob Nelson <rob@squad.com.mx>
+ * @author Rob Nelson <nexis@7chan.org>
  */
 
-class DBTable {
+// Handle translations between the database and the app.
+abstract class DBTranslator
+{
+    public abstract function toDB($input);
+    public abstract function fromDB($input);
+}
+
+class DBArrayTranslator extends DBTranslator
+{
+    public $delimiter = ';';
+    public function __construct($delim)
+    {
+        $this->delimiter = $delim;
+    }
+
+    public function toDB($input)
+    {
+        return implode($this->delimiter, $input);
+    }
+
+    public function fromDB($input)
+    {
+        return explode($this->delimiter, $input);
+    }
+
+}
+
+class DBJSONTranslator extends DBTranslator
+{
+
+    public function toDB($input)
+    {
+        return json_encode($input);
+    }
+
+    public function fromDB($input)
+    {
+        return json_decode($input);
+    }
+
+}
+
+class DBCustomTranslator extends DBTranslator
+{
+    private $to;
+    private $from;
+
+    public function __construct($to, $from)
+    {
+        $this->to = $to;
+        $this->from = $from;
+    }
+
+    public function toDB($input)
+    {
+        $func = $this->to;
+        if($func==null) return $input;
+        return $func($input);
+    }
+
+    public function fromDB($input)
+    {
+        $func=$this->from;
+        if($func==null) return $input;
+        return $func($input);
+    }
+
+}
+
+abstract class DBTable
+{
 
     /**
      * SQL column to class field associative array.
      *
      * DB column => class field
      */
-    private $_translation = array();
+    protected $_translation = array();
 
     /**
      * Functions to wrap around the inserted data (such as INET_ATON)
      *
      * DB column => array(function for reading, function for writing)
      */
-    private $_converters = array();
+    protected $_converters = array();
 
     /**
      * Set of table columns that are a part of the primary key
      */
-    private $_keys = array();
+    protected $_keys = array();
 
     /**
      * Database table.
      */
-    private $_name = '';
+    protected $_name = null;
+
+    /**
+     * Get a DBArrayTranslator for converting field values.
+     * @param string $delim Delimiter to use.
+     * @return DBArrayTranslator
+     */
+    public static function TYPE_ARRAY($delim)
+    {
+        return new DBArrayTranslator($delim);
+    }
+
+    /**
+     * Get a DBJSONTranslator for converting field values.
+     * @return DBJSONTranslator
+     */
+    public static function TYPE_JSON()
+    {
+        return new DBJSONTranslator();
+    }
+
+    protected function __construct()
+    {
+        $this->onInitialize();
+    }
+
+    /**
+     * Override to initialize the table metadata.
+     * @return void
+     */
+    abstract protected function onInitialize();
 
     /**
      * Override to define behavior that is to occur after processing a row.
+     * @return void
      */
-    public function OnPostLoad() {
+    public function onPostLoad()
+    {
         // Override.
     }
 
@@ -46,28 +148,59 @@ class DBTable {
      * Override to define behavior that is to occur before INSERTing, REPLACEing,
      * or UPDATE-ing.
      */
-    public function OnPreSave() {
+    public function onPreSave()
+    {
         // Override.
+    }
+
+    protected function dbInitialized()
+    {
+        return empty($this->_name);
     }
 
     /**
      * Set the database table's name.
      */
-    public function setTableName($tableName) {
+    protected function setTableName($tableName)
+    {
         $this->_name = $tableName;
+    }
+
+    public function getTableBindings()
+    {
+        return $this->_translation;
+    }
+
+    public function getTableKeys()
+    {
+        return $this->_keys;
+    }
+
+    public function getTableConverters()
+    {
+        return $this->_keys;
+    }
+
+    public function getTableName()
+    {
+        return $this->_name;
     }
 
     /**
      * Associate a table column with a class field.
      *
-     * @param sqlfield Table column
-     * @param pyfield Class field
-     * @param isKey Whether the table column is a part of the primary key
+     * @param string $sqlfield Table column
+     * @param string $pyfield Class field
+     * @param boolean $isKey Whether the table column is a part of the primary key
+     * @param DBTranslator|null $translator Translator used to convert values to and from a serialized format in the database.
      */
-    public function setFieldAssoc($sqlfield, $pyfield, $isKey = false) {
+    protected function setFieldAssoc($sqlfield, $pyfield, $isKey = false, $translator = null)
+    {
         $this->_translation[$sqlfield] = $pyfield;
         if ($isKey)
             $this->addKey($sqlfield);
+        if ($translator != null)
+            $this->_converters[$sqlfield] = $translator;
     }
 
     /**
@@ -78,15 +211,17 @@ class DBTable {
      * only)
      * @param writeFunction The method used when writing to the table (name only)
      */
-    public function setFieldTranslator($sqlField, $readFunction, $writeFunction) {
-        $this->_converters[$sqlField] = array($readFunction, $writeFunction);
+    protected function setFieldTranslator($sqlField, $readFunction, $writeFunction)
+    {
+        $this->_converters[$sqlField] = new DBCustomTranslator($writeFunction, $readFunction);
     }
 
     /**
-     * Ignore a table column (otherwise, you'll get warnings)
+     * Ignore a table column that won't be used by this DBTable (otherwise, you'll get warnings)
      * @param sqlfield Column to ignore
      */
-    public function ignoreField($sqlfield) {
+    protected function ignoreField($sqlfield)
+    {
         $this->_translation[$sqlfield] = null;
     }
 
@@ -94,7 +229,8 @@ class DBTable {
      * Add a primary key column.
      * @param sqlfield Column that's a part of the primary key
      */
-    public function addKey($sqlfield) {
+    protected function addKey($sqlfield)
+    {
         $this->_keys[] = $sqlfield;
     }
 
@@ -103,10 +239,11 @@ class DBTable {
      * @param row Row from ADODB (associative array of columnName => value)
      * @param optional Only set non-key values
      */
-    public function LoadFromRow($row, $optional = false) {
+    public function loadFromRow($row, $optional = false)
+    {
         foreach ($row as $key => $value) {
             if (!array_key_exists($key, $this->_translation) && !is_numeric($key)) {
-                Page::Message('warning', "Unknown field in table {$this->_name}: {$key}");
+                Page::Message('warning', "Unknown field in table " . $this->_name . ": {$key}");
             }
         }
 
@@ -122,82 +259,93 @@ class DBTable {
                 #Page::Message('info', "\$this->{$attrname} = \$row['{$dbname}']
                 # = {$row[$dbname]}");
                 $this->$attrname = $row[$dbname];
+                if (isset($this->_converters[$dbname]))
+                    $this->$attrname = $this->_converters[$dbname]->fromDB($this->$attrname);
             }
         }
         $this->OnPostLoad();
     }
 
+    public static function FromRow($row) {
+        $record = new static();
+        $record->loadFromRow($row);
+        return $record;
+    }
+
     /**
      * Delete this record from the database.
      */
-    public function Delete() {
-        global $db;
+    public function delete()
+    {
         $where = array();
         foreach ($this->_translation as $col => $attr) {
             if ($attr == null)
                 continue;
             $val = $this->$attr;
+            if (isset($this->_converters[$dbname]))
+                $val = $this->_converters[$dbname]->toDB($val);
             if (in_array($col, $this->_keys)) {
                 $where["`{$col}`=?"] = $val;
             }
         }
         $sql = sprintf('DELETE FROM %s WHERE %s', $this->_name, join(' AND ', array_keys($where)));
         $values = array_values($where);
-        return $db->Execute($sql, $values);
+        return DB::Execute($sql, $values);
     }
 
     /**
      * Insert this class as a new record.
      * @param lastID Return the ID of the new row?
      */
-    public function Insert($lastID = false) {
+    public function insert($lastID = false)
+    {
         $this->OnPreSave();
         global $db;
 
         $values = array();
-        $qmarks = array();
         $colList = array();
         foreach ($this->_translation as $dbname => $attrname) {
-            if ($attrname == null)
+            if ($attrname == null) {
                 continue;
-            $values[] = $this->$attrname;
-            $q = '?';
+            }
+
+            $value = $this->$attrname;
             if (isset($this->_converters[$dbname]))
-                $q = "{$this->_converters[$dbname][1]}(?)";
-            $qmarks[] = $q;
+                $value = $this->_converters[$dbname]->toDB($value);
+            $values[] = $value;
             $colList[] = "`{$dbname}`";
         }
-        $sql = "INSERT INTO `{$this->_name}` (" . implode(', ', $colList) . ") VALUES (" . implode(', ', $qmarks) . ")";
-        $err = $db->Execute($sql, $values);
+        $sql = sprintf('INSERT INTO `%s` (%s) VALUES (%s)', $this->_name, implode(', ', $colList), implode(', ', array_fill(0, count($values), '?')));
+        //var_dump(array_combine($colList,$values));
+        $err = DB::Execute($sql, $values);
         if (!$err) {
             Page::Message('error', $db->ErrorMsg());
         }
         if ($lastID)
-            return $db->Insert_ID();
+            return DB::Insert_ID();
         return false;
     }
 
     /**
      * Replace the existing record with this record.
      */
-    public function Replace() {
+    public function replace()
+    {
         $this->OnPreSave();
         global $db;
 
         $values = array();
-        $qmarks = array();
         $colList = array();
         foreach ($this->_translation as $dbname => $attrname) {
             if ($attrname == null)
                 continue;
-            $values[] = $this->$attrname;
-            $q = '?';
+            $value = $this->attrname;
             if (isset($this->_converters[$dbname]))
-                $q = "{$this->_converters[$dbname][1]}(?)";
-            $qmarks[] = $q;
+                $value = $this->_converters[$dbname]->toDB($value);
+            $values[] = $value;
             $colList[] = "`{$dbname}`";
         }
-        $sql = "REPLACE INTO `{$this->_name}` (" . implode(', ', $colList) . ") VALUES (" . implode(', ', $qmarks) . ")";
+        $sql = sprintf('REPLACE INTO `%s` (%s) VALUES (%s)', $this->_name, implode(', ', $colList), implode(', ', array_fill(0, count($values), '?')));
         $err = $db->Execute($sql, $values);
         if (!$err) {
             Page::Message('error', $db->ErrorMsg());
@@ -207,7 +355,8 @@ class DBTable {
     /**
      * Update the corresponding database entry with the data in this class.
      */
-    public function Update() {
+    public function update()
+    {
         $this->OnPreSave();
         global $db;
         $fields = array();
@@ -216,21 +365,22 @@ class DBTable {
             if ($attr == null)
                 continue;
             $val = $this->$attr;
+            if (isset($this->_converters[$col]))
+                $val = $this->_converters[$col]->toDB($val);
             if (in_array($col, $this->_keys)) {
                 $where["`{$col}`=?"] = $val;
             } else {
-                $q = '?';
-                if (isset($this->_converters[$col]))
-                    $q = "{$this->_converters[$col][1]}(?)";
-                $qmarks[] = $q;
-                $fields["`{$col}`={$q}"] = $val;
+                $qmarks[] = '?';
+                $fields["`{$col}`=?"] = $val;
             }
         }
+
         $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->_name, implode(', ', array_keys($fields)), join(' AND ', array_keys($where)));
         $values = array_values($fields);
         foreach (array_values($where) as $val)
             $values[] = $val;
-        return $db->Execute($sql, $values);
+        
+        return DB::Execute($sql, $values);
     }
 
 }

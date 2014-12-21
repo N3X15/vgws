@@ -30,8 +30,7 @@ foreach ($perfData as $what) {
 			<section id="header">
 				<h1>/fail/station</h1>
 				<ul id="plinks">
-				<? foreach($this->links as $name=>$dat): 
-				?>
+				<? foreach($this->links['/'] as $name=>$dat):?>
 					<li id="link-<?=$name ?>">
 						<a href="<?=$dat['url'] ?>"><img src="<?=$dat['image']?>" alt="<?=$dat['desc']?>" /></a>
 					</li>
@@ -50,8 +49,7 @@ foreach ($perfData as $what) {
 		<section id="footer">
 			<ul>
 				<li class="first">vgstation-web</li>
-				<li>Powered by PHP5, MySQL5, and Lighttpd</li>
-				<li><?=sprintf('Took %01.5f seconds to render this page.', (microtime(true) - $GLOBALS['sw_']['start']) / 1000) ?></li>
+					<li><?=sprintf('Took %01.5f seconds to render this page.', stopwatch('start')) ?></li>
 			</ul>
 			<?if($showPerfData):?>
 			<ul>

@@ -1,5 +1,5 @@
 <?php
-class chkban_handler extends BaseHandler {
+class chkban_handler extends Page {
 	public $parent = '';
 	public $description = "Check for Bans";
 
@@ -91,4 +91,4 @@ class chkban_handler extends BaseHandler {
 		exit();
 	}
 }
-$ACT_HANDLERS['api_chkban'] = new chkban_handler;
+Page::Register('api_chkban', new chkban_handler);

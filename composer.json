@@ -8,6 +8,8 @@
 		}
 	],
 	"require": {
-		"N3X15/Phinx": "master"
+		"N3X15/Phinx": "master",
+		"leafo/scssphp": "dev-master",
+		"leafo/scssphp-compass": "dev-master"
 	}
 }

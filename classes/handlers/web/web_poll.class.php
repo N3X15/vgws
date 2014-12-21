@@ -1,93 +1,121 @@
 <?php
+/*class PollDeleteAction extends AdminActionHandler {
+	
+}*/
 
-class poll_handler extends BaseHandler {
-	public $parent = '';
-	public $description = "Bans";
-	public $image = "/img/admins.png";
+$validPollTypes = array('OPTION', 'NUMVAL', 'TEXT', 'MULTICHOICE');
 
-	// /poll == list of polls
-	// /poll/1 == Poll details
-	public function OnBody() {
-		global $tpl, $db, $ADMIN_FLAGS;
-		$validPollTypes = array('OPTION','NUMVAL','TEXT','MULTICHOICE');
-/*
-		if (count($_POST) > 0 && $this->sess != false) {
-			if (array_key_exists('unban', $_POST)) {
-				foreach (explode(',',$_POST['unban']) as $id)
-					$db->Execute('DELETE FROM erro_ban WHERE id=?', array(intval($id)));
+class poll_handler extends Page {
+    public $parent = '/';
+    public $title = "Bans";
+    public $image = "/img/polls.png";
 
-			}
-			if (array_key_exists('banType', $_POST)) {
-				$ban = array();
-				$ban['type'] = $types[intval($_POST['banType'])];
-				$ban['ckey'] = $_POST['banCKey'];
-				$ban['reason'] = $_POST['banReason'];
-				$ban['ip'] = $_POST['banIP'];
-				$ban['cid'] = intval($_POST['banCID']);
-				$ban['duration'] = intval($_POST['banDuration']);
-				$ban['job'] = $_POST['jobs'];
-				$sql = <<<SQL
-INSERT INTO 
-	erro_ban 
-SET 
-	bantime=NOW(),
-	serverip='[Website Panel]',
-	bantype=?,
-	reason=?,
-	job=?,
-	duration=?,
-	rounds=1,
-	expiration_time=DATE_ADD(NOW(), INTERVAL ? MINUTE),
-	ckey=?,
-	computerid=?,
-	ip=?,
-	a_ckey=?,
-	a_computerid=?,
-	a_ip=?,
-	who='LOLIDK',
-	adminwho='LOLIDK'
-SQL;
-				if ($ban['type'] == 'JOB_TEMPBAN' || $ban['type'] == 'JOB_PERMABAN') {
-					//var_dump($ban['job']);
-					//exit();
-					foreach ($ban['job'] as $job) {
-						$args = array($ban['type'], $ban['reason'], $job, $ban['duration'], $ban['duration'], $ban['ckey'], $ban['cid'], $ban['ip'], $this->sess->ckey, '', $_SERVER['REMOTE_ADDR'], );
+    // /poll == list of polls
+    // /poll/1 == Poll details
+    public function OnBody() {
+        global $ADMIN_FLAGS, $validPollTypes;
 
-						//$db->debug=true;
-						$db->Execute($sql, $args);
-						//$db->debug=false;
-					}
-				} else {
-					$args = array($ban['type'], $ban['reason'], '', $ban['duration'], $ban['duration'], $ban['ckey'], $ban['cid'], $ban['ip'], $this->sess->ckey, '', $_SERVER['REMOTE_ADDR'], );
-
-					$db->Execute($sql, $args);
+        if (count($_POST) > 0 && $this->sess != false) {
+            if (array_key_exists('delpoll', $_POST)) {
+                foreach ($_POST['delpoll'] as $id) {
+                    $poll = Poll::GetByID(intval($id));
+                    $poll->Delete();
+                }
+            }
+            if (array_key_exists('delpoll_a', $_POST)) {
+                $poll = Poll::GetByID(intval($_POST['poll']));
+                if ($poll != null) {
+                	$poll->LoadOptions();
+                    foreach ($_POST['delpoll_a'] as $id) {
+                    	$id=intval($id);
+                        $poll->options[$id]->Delete();
+                    }
+                }
+            }
+            if (array_key_exists('addpoll', $_POST)) {
+                $poll = new Poll();
+                $poll->question = $_POST['question'];
+                if (in_array($_POST['type'], $validPollTypes))
+                    UserError('Invalid poll type.');
+                $poll->type = $_POST['type'];
+                switch($poll->type) {
+                    //Polls that have enumerated options
+                    case "OPTION" :
+                    case "MULTICHOICE" :
+						foreach($_POST['answers'] as $answer){
+							$poll->InsertTextOption($answer);
+						}
+						break;
 				}
+                $poll->Save();
+            }
+            if (array_key_exists('editpoll', $_POST)) {
+                $poll = Poll::GetByID(intval($_POST['pollID']));
+                $poll->question = $_POST['question'];
+                if (in_array($_POST['type'], $validPollTypes))
+                    UserError('Invalid poll type.');
+                $poll->type = $_POST['type'];
+                $poll->Save();
+            }
+            if (array_key_exists('addpoll_o', $_POST)) {
+                $poll = Poll::GetByID(intval($_POST['pollID']));
+                $poll->LoadOptions();
+
+                switch($poll->type) {
+                    //Polls that have enumerated options
+                    case "OPTION" :
+                    case "MULTICHOICE" :
+                        // I think
+                        return $this->AddMultichoiceOption($poll);
+                    case "NUMVAL" :
+                        return $this->AddNumvalOption();
+                    case "TEXT" :
+                        return $this->AddTextOption();
+                }
+            }
+            if (array_key_exists('rmpoll_o', $_POST)) {
+                $po = PollOption::GetByID(intval($_POST['pollID']),intval($_POST['rmpoll_o']));
+				$po->Delete();
+				
 			}
-		}
-*/
-		//$db->debug=true;
-		if(count($this->path)==1){
-			$res = $db->Execute("SELECT * FROM erro_poll_question ORDER BY id DESC");
-			if (!$res)
-				die('MySQL Error: ' . $db->ErrorMsg());
-			$tpl->assign('polls', $res);
-			$tpl->assign('validPollTypes', $validPollTypes);
-			return $tpl->fetch('web/polls/list.tpl.php');
-		}
-		else if(count($this->path)>1){
-			$pollID=intval($this->path[1]);
-			$poll = Poll::GetByID($pollID);
-			if (!$poll)
-				die('Unable to find poll ' .$pollID);
-			$tpl->assign('poll', $poll);
-			return $tpl->fetch('web/polls/'.strtolower($poll->type).'.tpl.php');
-		}
+        }
+        //$db->debug=true;
+        if (count($this->path) == 1) {
+            $res = DB::Execute("SELECT * FROM erro_poll_question ORDER BY id DESC");
+            if (!$res)
+                SQLError(DB::ErrorMsg());
+            $this->setTemplateVar('polls', $res);
+            $this->setTemplateVar('validPollTypes', $validPollTypes);
+            return $this->displayTemplate('web/polls/list.tpl.php');
+        } else if (count($this->path) > 1) {
+            $pollID = intval($this->path[1]);
+            $poll = Poll::GetByID($pollID);
+            if (!$poll)
+                UserError('Unable to find poll ' . $pollID);
+            $this->setTemplateVar('poll', $poll);
+            return $this->displayTemplate('web/polls/' . strtolower($poll->type) . '.tpl.php');
+        }
+    }
+
+    public function OnHeader() {
+        return '';
+    }
+	
+	public function OptionForm(Poll $poll){
+		$form = new Form(fmtURL('poll'),'post','optionform');
+		$form->addHidden('act', 'updatepoll');
+		$form->addHidden('pollID', $poll->ID);
+		$fields['question']=$form->addTextbox('question');
+		$fields['type']=$form->addSelect('type', $validPollTypes);
 	}
 
-	public function OnHeader() {
-		return '';
-	}
+    public function AddMultiChoiceOption(Poll $poll) {
+		$npo = new PollOption();
+		$npo->pollID = $poll->ID;
+		$npo->text = $_POST['choice'];
+		$npo->Insert();
+    }
 
 }
 
-$ACT_HANDLERS['web_poll'] = new poll_handler;
+Page::Register('web_poll', new poll_handler);

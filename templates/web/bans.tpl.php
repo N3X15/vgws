@@ -32,6 +32,7 @@ foreach($this->bans as $row) {
 		case 'JOB_TEMPBAN':
 		case 'TEMPBAN':
 		case 'CLUWNE':
+        case 'APPEARANCE':
 			$row['expiration_time_php']=strtotime($row['expiration_time']);
 			break;
 		default:
@@ -55,6 +56,7 @@ foreach($this->bans as $row) {
 			case 'PERMABAN':
 			case 'TEMPBAN':
 			case 'CLUWNE':
+			case 'APPEARANCE':
 				if(!array_key_exists($key, $bans)) {
 					$bans[$key]=$row;
 					$bans[$key]['job']=array($row['job']);
@@ -65,6 +67,11 @@ foreach($this->bans as $row) {
 		}
 	}
 }
+
+// Input filtering.
+$ip = filter_input(INPUT_GET, 'ip', FILTER_VALIDATE_IP, array('default'=>'', 'flags'=>FILTER_FLAG_IPV4|FILTER_FLAG_IPV6)); 
+$ckey = filter_input(INPUT_GET, 'ckey', FILTER_SANITIZE_STRING, array('default'=>'')); 
+$cid = filter_input(INPUT_GET, 'cid', FILTER_SANITIZE_STRING, array('default'=>'')); 
 ?>
 <?if($this->session!=false):?>
 <fieldset>
@@ -79,14 +86,14 @@ foreach($this->bans as $row) {
 		$row->createCell()->addSelect('banType',$this->bantypes);
 	$row = $table->createRow();
 		$row->createCell()->addLabel('Ckey:','banCKey');
-		$row->createCell()->addTextbox('banCKey',$_GET['ckey'],array('id'=>'banCKey'))
+		$row->createCell()->addTextbox('banCKey',$ckey,array('id'=>'banCKey'))
 		 				  ->addButton('button','getlast','Find Last CID/IP',null,array('id'=>'getlast'));
 	$row = $table->createRow();
 		$row->createCell()->addLabel('IP:','banIP');
-		$row->createCell()->addTextbox('banIP',$_GET['ip'],array('id'=>'banIP'));
+		$row->createCell()->addTextbox('banIP',$ip,array('id'=>'banIP'));
 	$row = $table->createRow();
 		$row->createCell()->addLabel('CID:','banCID');
-		$row->createCell()->addTextbox('banCID',$_GET['cid'],array('id'=>'banCID'));
+		$row->createCell()->addTextbox('banCID',$cid,array('id'=>'banCID'));
 	$row = $table->createRow();
 		$row->createCell()->addLabel('Reason:','banReason');
 		$row->createCell()->addTextarea('banReason');

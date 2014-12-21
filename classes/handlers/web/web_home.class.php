@@ -1,8 +1,8 @@
 <?php
 
-class homepage_handler extends BaseHandler {
+class homepage_handler extends Page {
 	public $parent = '/';
-	public $description = "Home page";
+	public $title = "Home page";
 	public $image = "/img/home.png";
 
 	public function OnBody() {
@@ -12,4 +12,4 @@ class homepage_handler extends BaseHandler {
 
 }
 
-$ACT_HANDLERS['web_home'] = new homepage_handler;
+Page::Register('web_home', new homepage_handler);

@@ -5,13 +5,13 @@ class BaseHandler {
 	public $image="";
 	public $sess=false;
 	public $adminOnly=false;
-	
+
 	public function handle($pi) {
 		global $tpl;
 
 		if(array_key_exists('s', $_REQUEST))
 			$this->sess=AdminSession::FetchSessionFor($_REQUEST['s']); // Cleaned.
-		
+
 		$this->path = $pi;
 		if($this->adminOnly && !$this->sess)
 		{
@@ -64,7 +64,7 @@ class BaseHandler {
 
 	/**
 	 * Output is appended to the end of the <head> tag.
-	 * 
+	 *
 	 * @return html
 	 */
 	public function OnHeader() {
@@ -79,7 +79,7 @@ class BaseHandler {
 class ExternalLinkHandler extends BaseHandler {
 	public $parent = '/';
 	public $url='';
-	public function ExternalLinkHandler($label,$img,$uri) {
+	public function __construct($label,$img,$uri) {
 		$this->description=$label;
 		$this->image=$img;
 		$this->url=$uri;

@@ -1,6 +1,6 @@
 <?php
 $perfData = array(
-	'Image::genThumb', 
+	'Image::genThumb',
 	'Post::Fix'
 );
 $pdO = '';
@@ -30,17 +30,17 @@ foreach ($perfData as $what) {
 			<section id="header">
 				<h1>/fail/station</h1>
 				<ul id="plinks">
-				<? foreach($this->links['/'] as $name=>$dat):?>
+				<?php foreach($this->links['/'] as $name=>$dat):?>
 					<li id="link-<?=$name ?>">
 						<a href="<?=$dat['url'] ?>"><img src="<?=$dat['image']?>" alt="<?=$dat['desc']?>" /></a>
 					</li>
-				<? endforeach; ?>
+				<?php endforeach; ?>
 				</ul>
-				<?if($this->session!=false):?>
+				<?php if($this->session!=false):?>
 				<div id="sessinfo">
 					Welcome back, <?=$this->session->ckey?> (<?=$this->session->role?>)
 				</div>
-				<?endif?>
+				<?php endif?>
 			</section>
 			<section id="content">
 				<?=$this->body ?>
@@ -51,11 +51,11 @@ foreach ($perfData as $what) {
 				<li class="first">vgstation-web</li>
 					<li><?=sprintf('Took %01.5f seconds to render this page.', stopwatch('start')) ?></li>
 			</ul>
-			<?if($showPerfData):?>
+			<?php if($showPerfData):?>
 			<ul>
 				<li class="first" style="color:black">Performance Data:</li><?=$pdO ?>
 			</ul>
-			<?endif; ?>
+			<?php endif; ?>
 		</section>
 	</body>
 </html>

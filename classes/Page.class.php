@@ -43,7 +43,7 @@ class ExternalLinkHandler extends Page
 {
     public $url = '';
     public $parent = '/';
-    public function ExternalLinkHandler($label, $img, $uri)
+    public function __construct($label, $img, $uri)
     {
         $this->description = $label;
         $this->image = $img;
@@ -83,7 +83,7 @@ class ActionHandler
     {
         // Override
     }
-    
+
     public function CanAccess() {
         return true;
     }
@@ -97,7 +97,7 @@ class AdminActionHandler extends ActionHandler {
             return false;
         return ($this->page->sess->flags & $flags) == $flags;
     }
-    
+
     public function CanAccess() {
         return $this->RequireFlags($this->requiredFlags);
     }
@@ -328,7 +328,7 @@ class Page
     {
         $this->path = $pi;
         $user = null;
-        
+
         if (array_key_exists('s', $_REQUEST)) {
             $this->sess = AdminSession::FetchSessionFor($_REQUEST['s']);
             if ($this->sess != false)
@@ -336,11 +336,11 @@ class Page
         } elseif (array_key_exists('s', $_SESSION)) {
             $this->sess = AdminSession::FetchSessionFor($_SESSION['s']);
         }
-        
+
         $this->user = null;
         if($this->sess!=null)
             $this->user = Admin::FindCKey($this->sess->ckey);
-        
+
         $this->assignTemplateUserVars();
         // Cleaned.
 
@@ -399,7 +399,7 @@ class Page
                     $actHideLinks = $ah->hideLinks;
                 }
             }
-            
+
             $this->setTemplateVar('links', ($actHideLinks /*|| $this->hideLinks*/) ? array() : $this->OnLinks());
             #$this->setTemplateVar('user', $this->user);
             #$this->setTemplateVar('stylesheets', $this->stylesheets);

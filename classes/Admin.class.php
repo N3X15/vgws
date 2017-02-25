@@ -126,4 +126,21 @@ class Admin extends DBTable
     public function canEdit(Admin $admin) {
         return $this->hasRight(R_PERMISSIONS) && $this->Level > $admin->Level;
     }
+
+		public function getRenderedFlags(int $flag, string $name, bool $showControls){
+			$hasFlag=($this->Flags & $flag) == $flag;
+			$span = new Element('span',array('class'=>'clm'.$name));
+			$span->addClass('flags');
+			$span->addClass($hasFlag?'flagset':'flagunset');
+			if($showControls)
+			{
+					$child = new Input('checkbox',"flags[{$this->CKey}][]",$flag,array('title'=>$name));
+					if($hasFlag)
+							$child.setAttribute('checked','checked');
+					$span->addChild($child);
+			} else {
+					$span->addChild($hasFlag?'&#x2713;':'&#x2717;');
+			}
+			return $span;
+		}
 }

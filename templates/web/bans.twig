@@ -1,0 +1,237 @@
+{% if session != false %}
+<fieldset>
+	<legend>New Ban</legend>
+	<p>Add a new ban.</p>
+	<form name="banform" action="{{ constant('WEB_ROOT') ~ '/index.php/bans'}}" method="post">
+		<input type="hidden" name="s" value="{{ session.id|e('html_attr')}}" />
+		<table>
+			<tr>
+				<td>
+					<label for="banType">Type:</label>
+				</td>
+				<td>
+					{{ static('PForm','Select',['banType', bantypes]) }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="banCKey">CKey:</label>
+				</td>
+				<td>
+					<input type="textbox" name="banCKey" id="banCKey" />
+					<button id="getlast">Find Last CID/IP</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="banIP">IP:</label>
+				</td>
+				<td>
+					<input type="textbox" name="banIP" id="banIP" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="banCID">CID:</label>
+				</td>
+				<td>
+					<input type="textbox" name="banCID" id="banCID" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="banReason">Reason:</label>
+				</td>
+				<td>
+					<textarea name="banReason"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="banJobs">Jobs:</label>
+				</td>
+				<td>
+					<b>Presets:</b>
+					{% for name, jobs in static('Jobs', 'GetCategories') %}
+					<a href="javascript:
+					{%- for job in jobs -%}
+					$('banJobs').tagit('createTag', '{{ job }}');
+					{%- endfor -%}
+					">{{ name }}</a>
+					{% endfor %}
+					<a href="javascript:$('banJobs').tagit('removeAll');">Clear</a>
+					<ul class="jobs" id="banJobs"></ul>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="banDuration">Duration (minutes):</label>
+				</td>
+				<td>
+					<input type="textbox" name="banDuration" id="banDuration" />
+					<script type="text/javascript">
+					$(function(){
+						function addBanDuration(minutes) {
+							$('#banDuration').val(parseInt($('#banDuration').val()) + minutes);
+						}
+					});
+					</script>
+					<a href="#" onclick="addBanDuration(60);return false;">+1h</a>
+					<a href="#" onclick="addBanDuration(60*24);return false;">+1d</a>
+					<a href="#" onclick="addBanDuration(60*24*7);return false;">+1w</a>
+					<a href="#" onclick="addBanDuration(60*24*30);return false;">+1M</a>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<button type="submit" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</fieldset>
+{% endif %}
+<h1>Bans</h1>
+<form action="{{ fmtURL('bans') }}" method="post">
+	{% if session %}
+	<input type="hidden" name="s" value="{{ session.id }}" />
+	{% endif %}
+	<table class="fancy">
+		<thead>
+			<th>
+				CKey
+			</th>
+			<th>
+				Why
+			</th>
+			<th>
+				Banning Admin
+			</th>
+			<th>
+				Expires
+			</th>
+			{% if session != false %}
+			<th>
+				Controls
+			</th>
+			{% endif %}
+		</thead>
+		<tbody>
+			{% for row in bans %}
+			{% set hasIP = row.ip != '' %}
+			{% set hasCID = row.computerid != '' %}
+			<tr>
+				<td class="clmName">
+					<span class="ckey">{{ row.ckey }}</span>
+					{% if hasIP or hasCID %}
+					<table class="details">
+						{% if hasIP %}
+						<tr>
+							<th>IP:</th><td>{{ row.ip }}</td>
+						</tr>
+						{% endif %}
+						{% if hasCID %}
+						<tr>
+							<th><abbr title="Computer ID">CID</abbr>:</th>
+							<td>{{ row.computerid }}</td>
+						</tr>
+						{% endif %}
+					</table>
+					{% endif %}
+				</td>
+				<td>
+					{{ row.reason|nl2br }}
+				</td>
+				<td class="clmName">
+					{{ row.a_ckey }}
+				</td>
+				<td class="clmExpires">
+					{{ row.expiration_time }}
+				</td>
+				{% if session != false %}
+				<td class="clmControls">
+					<button name="unban" value="{{ row.id }}" type="submit">
+						Unban
+					</button>
+				</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+
+	<h1>Job Bans</h1>
+	<table>
+		<thead>
+			<th>
+				CKey
+			</th>
+			<th>
+				Job(s)
+			</th>
+			<th>
+				Why
+			</th>
+			<th>
+				Banning Admin
+			</th>
+			<th>
+				Expires
+			</th>
+			<th>
+				Controls
+			</th>
+		</thead>
+		<tbody>
+			{% for row in jbans %}
+			{% set hasIP = row.ip != '' %}
+			{% set hasCID = row.computerid != '' %}
+			<tr>
+				<td class="clmName">
+					<span class="ckey">{{ row.ckey }}</span>
+					{% if hasIP or hasCID %}
+					<table class="details">
+						{% if hasIP %}
+						<tr>
+							<th>IP:</th><td>{{ row.ip }}</td>
+						</tr>
+						{% endif %}
+						{% if hasCID %}
+						<tr>
+							<th><abbr title="Computer ID">CID</abbr>:</th>
+							<td>{{ row.computerid }}</td>
+						</tr>
+						{% endif %}
+					</table>
+					{% endif %}
+				</td>
+				<td class="clmJobs">
+					<ul>
+						{% for job in row.job %}
+						<li>
+							<a href="#">{{ job }}</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</td>
+				<td>
+					{{ row.reason }}
+				</td>
+				<td class="clmName">
+					{{ row.a_ckey }}
+				</td>
+				<td class="clmExpires">
+					{{ row.expiration_time }}
+				</td>
+				{% if session != false %}
+				<td class="clmControls">
+					<button name="unban" value="{{row.id|join(',')}}" type="submit">
+						Unban
+					</button>
+				</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</form>

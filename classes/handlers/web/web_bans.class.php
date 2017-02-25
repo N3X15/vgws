@@ -1,7 +1,7 @@
 <?php
 
-class bans_handler extends Page {
-    public $parent = '/';
+class BanListPage extends Page {
+    public $relurl = '/bans';
     public $title = "Bans";
     public $image = "/img/bans.png";
 
@@ -60,9 +60,9 @@ class bans_handler extends Page {
                 $ban['duration'] = intval($_POST['banDuration']);
                 $ban['job'] = $_POST['jobs'];
                 $sql = <<<SQL
-INSERT INTO 
-	erro_ban 
-SET 
+INSERT INTO
+	erro_ban
+SET
 	bantime=NOW(),
 	serverip='[Website Panel]',
 	bantype=?,
@@ -104,13 +104,91 @@ SQL;
 					AND expiration_time > Now()
 				)
 			)
-			AND isnull(unbanned) 
+			AND isnull(unbanned)
 		ORDER BY ckey");
         if (!$res)
             SQLError(DB::ErrorMsg());
-        $this->setTemplateVar('bans', $res);
+        /*
+          0 => string 'id' (length=2)
+          1 => string 'bantime' (length=7)
+          2 => string 'serverip' (length=8)
+          3 => string 'bantype' (length=7)
+          4 => string 'reason' (length=6)
+          5 => string 'job' (length=3)
+          6 => string 'duration' (length=8)
+          7 => string 'rounds' (length=6)
+          8 => string 'expiration_time' (length=15)
+          9 => string 'ckey' (length=4)
+          10 => string 'computerid' (length=10)
+          11 => string 'ip' (length=2)
+          12 => string 'a_ckey' (length=6)
+          13 => string 'a_computerid' (length=12)
+          14 => string 'a_ip' (length=4)
+          15 => string 'who' (length=3)
+          16 => string 'adminwho' (length=8)
+          17 => string 'edits' (length=5)
+          18 => string 'unbanned' (length=8)
+          19 => string 'unbanned_datetime' (length=17)
+          20 => string 'unbanned_ckey' (length=13)
+          21 => string 'unbanned_computerid' (length=19)
+          22 => string 'unbanned_ip' (length=11)
+         */
+        $jbans=array();
+        $bans=array();
+        foreach($res as $row) {
+        	$key=md5($row['ckey'].$row['reason']);
+        	switch($row['bantype']) {
+        		case 'JOB_TEMPBAN':
+        		case 'TEMPBAN':
+        		case 'CLUWNE':
+            case 'APPEARANCE':
+        			$row['expiration_time_php']=strtotime($row['expiration_time']);
+        			break;
+        		default:
+        			$row['expiration_time'] = 'PERMANENT';
+        			break;
+        	}
+        	if($row['expiration_time']=='PERMANENT' || $row['expiration_time_php']>time())
+        	{
+        		switch($row['bantype']) {
+        			case 'JOB_PERMABAN':
+        			case 'JOB_TEMPBAN':
+        				if(!array_key_exists($key, $jbans)) {
+        					$jbans[$key]=$row;
+        					$jbans[$key]['job']=array($row['job']);
+        					$jbans[$key]['id']=array($row['id']);
+        				} else {
+        					$jbans[$key]['job'][]=$row['job'];
+        					$jbans[$key]['id'][]=$row['id'];
+        				}
+        				break;
+        			case 'PERMABAN':
+        			case 'TEMPBAN':
+        			case 'CLUWNE':
+        			case 'APPEARANCE':
+        				if(!array_key_exists($key, $bans)) {
+        					$bans[$key]=$row;
+        					$bans[$key]['job']=array($row['job']);
+        				} else {
+        					$bans[$key][]=$row['job'];
+        				}
+        				break;
+        		}
+        	}
+        }
+
+        // Input filtering.
+        $ip = filter_input(INPUT_GET, 'ip', FILTER_VALIDATE_IP, array('default'=>'', 'flags'=>FILTER_FLAG_IPV4|FILTER_FLAG_IPV6));
+        $ckey = filter_input(INPUT_GET, 'ckey', FILTER_SANITIZE_STRING, array('default'=>''));
+        $cid = filter_input(INPUT_GET, 'cid', FILTER_SANITIZE_STRING, array('default'=>''));
+
+        $this->setTemplateVar('bans', $bans);
+        $this->setTemplateVar('jbans', $jbans);
+        $this->setTemplateVar('ip', $ip);
+        $this->setTemplateVar('ckey', $ckey);
+        $this->setTemplateVar('cid', $cid);
         $this->setTemplateVar('bantypes', $types);
-        return $this->displayTemplate('web/bans.tpl.php');
+        return $this->displayTemplate('web/bans');
     }
 
     public function OnHeader() {
@@ -118,7 +196,7 @@ SQL;
         $autocomplete = implode("','", Jobs::$KnownJobs);
         return <<<EOF
 		 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function(){
 	//-------------------------------
 	// Minimal
 	//-------------------------------
@@ -149,4 +227,4 @@ EOF;
 
 }
 
-Page::Register('web_bans', new bans_handler);
+Router::Register('/bans/?', new BanListPage());

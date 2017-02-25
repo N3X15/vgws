@@ -113,6 +113,8 @@ class AdminActionHandler extends ActionHandler {
  */
 class Page
 {
+    public static $SiteLinks=[];
+
     /**
      * Pages registered for routing.  key => class
      */
@@ -136,9 +138,9 @@ class Page
     public $path = array();
 
     /**
-     * Savant3 Engine
+     * Twig Engine
      */
-    public $tpl = NULL;
+    public static $tpl = null;
 
 
     /**
@@ -166,6 +168,13 @@ class Page
 
     public $adminOnly = false;
 
+    /**
+     * Twig variables.
+     */
+    private $tmplVars = array();
+
+    public $wrapper = 'wrapper'; // wrapper template ID
+
     public static function Register($route, $handler)
     {
         self::$registeredPages[$route] = $handler;
@@ -184,9 +193,12 @@ class Page
 
     public function __construct()
     {
-        global $db, $tpl;
-        $this->db = &$db;
-        $this->tpl = &$tpl;
+    }
+
+    public function getURL() {
+      if(!empty($this->url))
+        return $this->url;
+      return fmtURL(explode('/',$this->relurl));
     }
 
     public function RegisterAction($actionName, $handler)
@@ -210,7 +222,8 @@ class Page
      */
     public function setTemplateVar($k, $v)
     {
-        $this->tpl->assign($k, $v);
+        //$this->tpl->assign($k, $v);
+        $this->tmplVars[$k] = $v;
     }
 
     /**
@@ -219,6 +232,14 @@ class Page
     public static function DumpMessages()
     {
         var_dump(Page::$messages);
+    }
+
+    public static function Initialize()
+    {
+        $loader = new Twig_Loader_Filesystem(TEMPLATE_DIR);
+        self::$tpl = new Twig_Environment($loader, array('cache' => CACHE_DIR . '/cache', 'strict' => true, 'debug' => true));
+        //self::$tpl->addExtension(new KuTwigExtension());
+        self::$tpl->addExtension(new VGWSExtension());
     }
 
     /**
@@ -312,21 +333,31 @@ class Page
     }
 
     /**
-     * Display something with Savant.
+     * Display something with Twig.
      */
     public function displayTemplate($id)
     {
-        if (!file_exists(TEMPLATE_DIR . '/' . $id))
-            error('Template ' . TEMPLATE_DIR . '/' . $id . ' cannot be found.');
-        return $this->tpl->fetch($id);
+        $file = TEMPLATE_DIR . '/' . $id . '.twig';
+        if (!file_exists($file)) {
+            error('Template ' . $file . ' cannot be found.');
+        }
+        //Kint::dump($file,$this->tmplVars);
+        //return self::$tpl->fetch($id . '.tpl.php');
+        try {
+            return self::$tpl->render($id . '.twig', $this->tmplVars);
+        } catch (Exception $e) {
+            #error($e->getMessage());
+            error('<pre>'.strval($e).'</pre>');
+            error('<pre>'.strval(self::$tpl->__toString()).'</pre>');
+        }
     }
 
     /**
      * Wrapper around OnBody and friends.
      */
-    public function handle($pi)
+    public function handle()
     {
-        $this->path = $pi;
+        //$this->path = $pi;
         $user = null;
 
         if (array_key_exists('s', $_REQUEST)) {
@@ -344,7 +375,6 @@ class Page
         $this->assignTemplateUserVars();
         // Cleaned.
 
-        $this->path = $pi;
         if ($this->adminOnly && !$this->sess) {
             header('HTTP/1.1 403 Forbidden');
             UserError('Access Denied');
@@ -400,7 +430,7 @@ class Page
                 }
             }
 
-            $this->setTemplateVar('links', ($actHideLinks /*|| $this->hideLinks*/) ? array() : $this->OnLinks());
+            $this->setTemplateVar('links', Page::$SiteLinks);
             #$this->setTemplateVar('user', $this->user);
             #$this->setTemplateVar('stylesheets', $this->stylesheets);
             #$this->setTemplateVar('scripts', $this->scripts);
@@ -410,7 +440,7 @@ class Page
             $this->setTemplateVar('head', $this->onHeader());
             #$this->setTemplateVar('js_vars', $this->js_assignments);
 
-            $this->tpl->display('wrapper.tpl.php');
+            echo $this->displayTemplate($this->wrapper);
         }
     }
 
@@ -487,6 +517,21 @@ class Page
     public function OnHeader()
     {
         return '';
+    }
+
+
+    /**
+     * Klein shit
+     */
+    public function handleKleinRequest($request, $response, $service, $app)
+    {
+        $this->request=$request;
+        $this->response=$response;
+        $this->handle();
+    }
+    public function skipThis()
+    {
+        throw new \Klein\Exceptions\DispatchHaltedException(null, \Klein\Exceptions\DispatchHaltedException::SKIP_THIS);
     }
 
 }

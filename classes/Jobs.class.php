@@ -3,15 +3,15 @@
 class Jobs {
 	/**
 	 * Add or remove jobs, depending on your distro of SS13.
-	 * 
+	 *
 	 * Used in jobbans.
 	 */
 	public static $KnownJobs=array(
-		'Assistant', 
+		'Assistant',
 		'Atmospheric Technician',
 		'Bartender',
 		'Botanist',
-		'Captain', 
+		'Captain',
 		'Cargo Technician',
 		'Chaplain',
 		'Chef',
@@ -40,34 +40,34 @@ class Jobs {
 		'Virologist',
 		'Warden'
 	);
-	
+
 	/**
 	 * Job categories/regions.
-	 * 
+	 *
 	 * Used to group jobs for jobbans.
 	 */
 	public static $Categories=array(
-		'Command'=>array( 
+		'Command'=>array(
 			'Captain',
 			'Head of Personnel',
 			'Head of Security',
 			'Chief Engineer',
 			'Research Director',
 			'Chief Medical Officer'
-		), 
-		'Security'=>array( 
+		),
+		'Security'=>array(
 			'Head of Security',
 			'Warden',
 			'Detective',
 			'Security Officer'
 		),
-		'Engineering'=>array( 
+		'Engineering'=>array(
 			'Chief Engineer',
 			'Station Engineer',
 			'Atmospheric Technician',
 			'Roboticist'
 		),
-		'Medical'=>array( 
+		'Medical'=>array(
 			'Chief Medical Officer',
 			'Medical Doctor',
 			'Geneticist',
@@ -98,20 +98,24 @@ class Jobs {
 			'Mime',
 			'Assistant'
 		),
-		'Silicon'=>array( 
+		'Silicon'=>array(
 			'AI',
 			'Cyborg',
 			'Mobile MMI',
 			'pAI'
-		), 
-		'Antagonist'=>array( 
+		),
+		'Antagonist'=>array(
 			'Traitor',
 			'Changeling',
 			'Nuke Operative',
 			'Revolutionary',
 			'Cultist',
 			'Wizard'
-		) 
+		)
 
 	);
+
+	public static function GetCategories() {
+		return Jobs::$Categories;
+	}
 }

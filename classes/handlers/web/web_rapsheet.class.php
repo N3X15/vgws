@@ -1,64 +1,95 @@
 <?php
 
-class rapsheet_handler extends Page {
-	public $parent='';
-	public $title = "Rapsheet";
-	public $image = "/img/admins.png";
-	public function OnBody() {
-		global $ADMIN_FLAGS;
-		$types=array(
-			'PERMABAN',
-			'TEMPBAN',
-			'JOB_PERMABAN',
-			'JOB_TEMPBAN',
-			'APPEARANCE'
-		);
-		
-		//$db->debug=true;
-		$res = DB::Execute("SELECT * FROM erro_ban
-		WHERE
-			ckey=?
-		ORDER BY ckey",array($_REQUEST['ckey']));
-		if(!$res)
-			SQLError($db->ErrorMsg());
+class RapsheetPage extends Page
+{
+    public $relurl = '/rapsheet';
+    public $title = "Rapsheet";
+    public $image = "/img/admins.png";
+    public $adminOnly = true;
+    public function OnBody()
+    {
+        global $ADMIN_FLAGS;
+        $types=array(
+            'PERMABAN',
+            'TEMPBAN',
+            'JOB_PERMABAN',
+            'JOB_TEMPBAN',
+            'APPEARANCE'
+        );
+
+        $pd = DB::Execute("SELECT * FROM erro_player WHERE ckey=? ORDER BY ckey", array($_REQUEST['ckey']));
+        if (!$pd) {
+            SQLError($db->ErrorMsg());
+        }
+        $this->setTemplateVar('playerdata', $pd);
+
+
+        $banres = DB::Execute("SELECT * FROM erro_ban WHERE ckey=? ORDER BY ckey", array($_REQUEST['ckey']));
+        if (!$banres) {
+            SQLError($db->ErrorMsg());
+        }
+        $jbans = array();
         $bans = array();
-        foreach($res as $row) {
+        foreach ($banres as $row) {
+            $key = md5($row['ckey'] . $row['reason']);
             $row['ban_active']=false;
-            switch($row['bantype']) {
-                case 'PERMABAN':
-                case 'APPEARANCE':
-                case 'JOB_PERMABAN':
-                    $row['ban_active']=true;
-                    break;
+            switch ($row['bantype']) {
+                case 'JOB_TEMPBAN':
                 case 'TEMPBAN':
                 case 'CLUWNE':
-                case 'JOB_TEMPBAN':
-                    $row['ban_active'] = $row['expiration_time'] > time();
+                case 'APPEARANCE':
+                    $row['expiration_time_php'] = strtotime($row['expiration_time']);
+                    $row['ban_active'] = $row['expiration_time_php'] > time();
+                    break;
+                default:
+                    $row['expiration_time'] = 'PERMANENT';
+                    $row['ban_active']=true;
                     break;
             }
-            if(is_null($row['ban_active']))
+            if (is_null($row['ban_active'])) {
                 $row['ban_active']=false;
+            }
+            if ($row['expiration_time'] == 'PERMANENT' || $row['expiration_time_php'] > time()) {
+                switch ($row['bantype']) {
+                    case 'JOB_PERMABAN':
+                    case 'JOB_TEMPBAN':
+                        if (!array_key_exists($key, $jbans)) {
+                            $jbans[$key] = $row;
+                            $jbans[$key]['job'] = array($row['job']);
+                            $jbans[$key]['id'] = array($row['id']);
+                        } else {
+                            $jbans[$key]['job'][] = $row['job'];
+                            $jbans[$key]['id'][] = $row['id'];
+                        }
+                        break;
+                    case 'PERMABAN':
+                    case 'TEMPBAN':
+                    case 'CLUWNE':
+                    case 'APPEARANCE':
+                        if (!array_key_exists($key, $bans)) {
+                            $bans[$key] = $row;
+                            $bans[$key]['job'] = array($row['job']);
+                        } else {
+                            $bans[$key][] = $row['job'];
+                        }
+                        break;
+                }
+            }
         }
-		$this->setTemplateVar('bans',$res);
-		
-		$pd = DB::Execute("SELECT * FROM erro_player
-		WHERE
-			ckey=?
-		ORDER BY ckey",array($_REQUEST['ckey']));
-		if(!$pd)
-			SQLError($db->ErrorMsg());
-		$this->setTemplateVar('playerdata', $pd);
-		
-		$this->setTemplateVar('bantypes',$types);
-		$this->setTemplateVar('ckey',$_REQUEST['ckey']);
-		return $this->displayTemplate('web/rapsheet.tpl.php');
-	}
-	public function OnHeader() {
-		$target = fmtAPIURL('findcid');
-		$autocomplete=implode("','",Jobs::$KnownJobs);
-		return <<<EOF
+
+        $this->setTemplateVar('bans', $bans);
+        $this->setTemplateVar('jbans', $jbans);
+        $this->setTemplateVar('bantypes', $types);
+        $this->setTemplateVar('ckey', $_REQUEST['ckey']);
+        return $this->displayTemplate('web/rapsheet');
+    }
+    public function OnHeader()
+    {
+        $target = fmtAPIURL('findcid');
+        $autocomplete=implode("','", Jobs::$KnownJobs);
+        return <<<EOF
 		 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function(){
 	//-------------------------------
 	// Minimal
 	//-------------------------------
@@ -85,7 +116,7 @@ $(document).ready(function(){
 });
 		</script>
 EOF;
-	}
+    }
 }
-		
-Page::Register('web_rapsheet',new rapsheet_handler);
+
+Router::Register('/rapsheet/?', new RapsheetPage);

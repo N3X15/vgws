@@ -5,11 +5,17 @@ error_reporting(E_ALL & ~(E_NOTICE));
 require ('../config.php');
 require ('../classes/classes.php');
 
-Page::Register('web_forum', new ExternalLinkHandler('Forums', '/img/forum.png', 'http://vg13.undo.it/forum/index.php'));
-Page::Register('web_wiki', new ExternalLinkHandler('Wiki', '/img/wiki.png', '/wiki/'));
+// This is just for the header.  Routing is handled by Router.
+Page::$SiteLinks=[
+  new HomePage(),        // /?
+  new AdminListPage(),   // /admins/?
+  new BanListPage(),     // /bans/?
+  new PollListPage(),    // /poll/?
+  new ExternalLinkHandler('Forums', '/img/forum.png', '/forum/'),
+  new ExternalLinkHandler('Wiki', '/img/wiki.png', '/wiki/'),
+  new ExternalLinkHandler('GitHub', '/img/pinned-octocat.svg', 'https://github.com/d3athrow/vgstation13'),
+  new ExternalLinkHandler('Minimaps', '/img/map.png', 'http://game.ss13.moe/minimaps'),
+  new ExternalLinkHandler('Statistics', '/img/statsicon.png', 'http://stats.ss13.moe'),
+];
 
-$PI = array();
-if(array_key_exists('PATH_INFO', $_SERVER))
-	$PI = explode('/', $_SERVER['PATH_INFO']);
-
-RouteRequest($PI);
+Router::Route();

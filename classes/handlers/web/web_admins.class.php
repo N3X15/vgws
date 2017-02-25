@@ -82,15 +82,14 @@ class SetAdminRank extends AdminActionHandler
     }
 }
 
-class admins_handler extends Page
+class AdminListPage extends Page
 {
-    public $parent = '/';
+    public $relurl = '/admins';
     public $title = "Admins";
     public $image = "/img/admins.png";
     public function __construct()
     {
         parent::__construct();
-        #$this->RegisterAction('add', new Manage_Boards_AddAction($this));
         $this->RegisterAction('delete', new DeleteAdmin($this, false));
         $this->RegisterAction('setrank', new SetAdminRank($this, false));
         $this->RegisterAction('update', new UpdateAdminPermission($this, false));
@@ -99,12 +98,16 @@ class admins_handler extends Page
     {
         global $ADMIN_FLAGS, $ADMIN_RANKS;
         $res = DB::Execute("SELECT * FROM erro_admin ORDER BY rank, ckey");
-        $this->setTemplateVar('admins', $res);
+        $admins=[];
+        foreach($res as $arow){
+          $admins[]=Admin::FromRow($arow);
+        }
+        $this->setTemplateVar('admins', $admins);
         $this->setTemplateVar('ADMIN_FLAGS', $ADMIN_FLAGS);
         $this->setTemplateVar('ADMIN_RANKS', $ADMIN_RANKS);
         $this->setTemplateVar('isAdmin', $this->sess != null && ($this->sess->flags & R_PERMISSIONS) == R_PERMISSIONS);
-        return $this->displayTemplate('web/admins.tpl.php');
+        return $this->displayTemplate('web/admins');
     }
 }
 
-Page::Register('web_admins', new admins_handler);
+Router::Register('/admins/?', new AdminListPage());

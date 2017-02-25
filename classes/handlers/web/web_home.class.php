@@ -1,15 +1,14 @@
 <?php
 
-class homepage_handler extends Page {
-	public $parent = '/';
-	public $title = "Home page";
+class HomePage extends Page {
+  public $relurl = '/';
+	public $title = "Home";
 	public $image = "/img/home.png";
 
 	public function OnBody() {
-		global $tpl, $db, $ALLOWED_TAGS;
-		return $tpl->fetch('web/home.tpl.php');
+		return $this->displayTemplate('web/home');
 	}
 
 }
 
-Page::Register('web_home', new homepage_handler);
+Router::Register('/?', new HomePage());

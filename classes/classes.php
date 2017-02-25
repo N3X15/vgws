@@ -21,7 +21,6 @@ define('SCSS_DIR',     PATH_ROOT . '/style');
 define('PUBLIC_DIR', PATH_ROOT . '/htdocs');
 
 // Libs
-require_once ('Savant3.php');
 require_once ("adodb/adodb-exceptions.inc.php");
 require_once ('adodb/adodb.inc.php');
 
@@ -37,6 +36,8 @@ require_once CORE_DIR . '/HTML/Element.class.php';
 require_once CORE_DIR . '/HTML/PForm.class.php';
 #require_once CORE_DIR . '/HTML/KuForm.class.php';
 require_once CORE_DIR . '/DBTable.class.php';
+require_once CORE_DIR . '/Router.class.php';
+require_once CORE_DIR . '/TwigExtensions.class.php';
 require_once CORE_DIR . '/Page.class.php';
 require_once CORE_DIR . '/Admin.class.php';
 require_once CORE_DIR . '/QF.class.php';
@@ -62,11 +63,6 @@ require_once CORE_DIR . '/handlers/api/api_findcid.class.php';
 if (!defined('DB_DSN'))
     error('You forgot to set up DB_DSN in config.php.  {$driver}://{$username}:{$password}@{$hostname}/{$schema}[?persist] (use rawurlencode on the password if needed.)');
 
+Page::Initialize();
 DB::Initialize();
 //$db->debug=true;
-
-////////////////////////////////
-// Set up Savant 3
-////////////////////////////////
-$tpl = new Savant3();
-$tpl->addPath('template', CORE_DIR . '/../templates');

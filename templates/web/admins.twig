@@ -1,0 +1,51 @@
+<h1>Administrators</h1>
+{% if isAdmin %}
+<form action="{{ constant('WEB_ROOT') ~ "index.php/admins"}}" method="post">
+{% endif %}
+  <div class='table'>
+  	<div>
+  		<span class='header'>
+  			Name
+  		</span>
+  		<span class='header'>
+  		    Rank
+  		</span>
+  		{% for flag, fname in ADMIN_FLAGS %}
+  		<span class='header'>
+  			{{ fname }}
+  		</span>
+  		{% endfor %}
+  	</div>
+    {% for admin in admins %}
+    {% set showControls = isAdmin and (user.ID != admin.ID) and user.canEdit(admin) %}
+    <div>
+  		<span class="clmName">
+        {% if not showControls %}
+        <input type="checkbox" name="ckeys[]" value="{{admin.CKey}}" />
+        {% endif %}
+  			{{ admin.CKey }}
+  		</span>
+  		<span class="clmRank">
+  			{{ admin.Rank }}
+  		</span>
+      {% for flag, name in ADMIN_FLAGS %}
+      {{ admin.getRenderedFlags(flag, name, showControls)|raw }}
+      {% endfor %}
+	   </div>
+    {% endfor %}
+  </div>
+  {% if isAdmin %}
+  <div class="controls">
+    <button type="submit" name="act" value="update">Update</button>
+    <button type="submit" name="act" value="delete">Delete</button>
+    <select name="rank">
+      <option value="" selected disabled hidden>Rank</option>
+      {% for name in ADMIN_RANKS|keys %}
+      <option value="{{ name }}">{{ name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" name="act" value="setrank">Set Rank</button>
+  </div>
+  </form>
+  {% endif %}
+</div>

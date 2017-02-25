@@ -1,0 +1,200 @@
+<h1>Rapsheet for {{ ckey }}</h1>
+
+<h2>Player Info</h2>
+<table class="fancy">
+	<thead>
+		<th>#</th>
+		<th>CKey/CID</th>
+		<th>First Seen</th>
+		<th>Last Seen</th>
+		<th>Rank</th>
+	</thead>
+	<tbody>
+	{% for row in playerdata %}
+	{% set hasIP = row.ip != '' %}
+	{% set hasCID = row.computerid != '' %}
+		<tr>
+			<td class="clmID">
+				{{ row.id }}
+			</td>
+			<td class="clmName">
+				<span class="ckey">{{ row.ckey }}</span>
+				{% if hasIP or hasCID %}
+				<table class="details">
+					{% if hasIP %}
+					<tr>
+						<th>IP:</th>
+						<td>{{ row.ip }}</td>
+					</tr>
+					{% endif %}
+					{% if hasCID %}
+					<tr>
+						<th><abbr title="Computer ID">CID</abbr>:</th>
+						<td>{{ row.computerid  }}</td>
+					</tr>
+					{% endif %}
+				</table>
+				{% endif %}
+			</td>
+			<td class="clmFirstSeen">
+				{{ row.firstseen  }}
+			</td>
+			<td class="clmLastSeen">
+				{{ row.lastseen  }}
+			</td>
+			<td class="clmRank">
+				{{ row.lastadminrank  }}
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+<form action="<?=fmtURL('bans') ?>" method="post">
+	<h1>Bans</h1>
+	<input type="hidden" name="s" value="{{ session.id }}" />
+	<table class="fancy">
+		<thead>
+			<th>
+				CKey
+			</th>
+			<th>
+				Why
+			</th>
+			<th>
+				Banning Admin
+			</th>
+			<th>
+				When
+			</th>
+			<th>
+				Expires
+			</th>
+			<th>
+				Controls
+			</th>
+		</thead>
+		<tbody>
+		{% for row in bans %}
+		{% set hasIP = row.ip != '' %}
+		{% set hasCID = row.computerid != '' %}
+		{% set hasUnbanned = row.unbanned != '' %}
+		<tr{% if hasUnbanned %} class="unbanned"{% endif %}>
+			<td class="clmName">
+				<span class="ckey">{{ row.ckey  }}</span>
+				{% if hasCID or hasIP %}
+				<table class="details">
+					{% if hasIP %}
+					<tr>
+						<th>IP:</th><td>{{ row.ip  }}</td>
+					</tr>
+					{% endif %}
+					{% if hasCID %}
+					<tr>
+						<th><abbr title="Computer ID">CID</abbr>:</th>
+						<td>{{ row.computerid  }}</td>
+					</tr>
+					{% endif %}
+				</table>
+				{% endif %}
+			</td>
+			<td>
+				{{ row.reason|nl2br }}
+			</td>
+			<td class="clmName">
+				{{ row.a_ckey  }}
+			</td>
+			<td class="clmWhen">
+				{{ row.bantime  }}
+			</td>
+			<td class="clmExpires">
+				{{ row.expiration_time  }}
+			</td>
+			<td class="clmControls">
+				<button name="unban" value="{{ row.id  }}" type="submit">
+					Unban
+				</button>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<h1>Job Bans</h1>
+<table>
+	<tr>
+		<th>
+			CKey
+		</th>
+		<th>
+			Job(s)
+		</th>
+		<th>
+			Why
+		</th>
+		<th>
+			Banning Admin
+		</th>
+		<th>
+			When
+		</th>
+		<th>
+			Expires
+		</th>
+		<th>
+			Controls
+		</th>
+	</tr>
+	{% for row in jbans %}
+	{% set hasIP = row.ip != '' %}
+	{% set hasCID = row.computerid != '' %}
+	{% set hasUnbanned = row.unbanned != '' %}
+	<tr{% if hasUnbanned %} class="unbanned"{% endif %}>
+		<td class="clmName">
+			<span class="ckey">{{ row.ckey  }}</span>
+			{% if hasCID or hasIP %}
+			<table class="details">
+				{% if hasIP %}
+				<tr>
+					<th>IP:</th><td>{{ row.ip  }}</td>
+				</tr>
+				{% endif %}
+				{% if hasCID %}
+				<tr>
+					<th><abbr title="Computer ID">CID</abbr>:</th>
+					<td>{{ row.computerid  }}</td>
+				</tr>
+				{% endif %}
+			</table>
+			{% endif %}
+		</td>
+		<td class="clmJobs">
+			<ul>
+				{% for job in row.job %}
+				<li>
+					<a href="#">{{ job  }}</a>
+				</li>
+				{% endfor %}
+			</ul>
+		</td>
+		<td>
+			{{ row.reason  }}
+		</td>
+		<td class="clmName">
+			{{ row.a_ckey  }}
+		</td>
+		<td class="clmWhen">
+			{{ row.bantime  }}
+		</td>
+		<td class="clmExpires">
+			{{ row.expiration_time  }}
+		</td>
+		<td class="clmControls">
+			<button name="unban" value="<?=implode(',', $row.id) ?>" type="submit">
+				Unban
+			</button>
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+</form>

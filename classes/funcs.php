@@ -133,7 +133,8 @@ function fmtURL() {
     $o = WEB_ROOT . '/index.php';
     if (count($args) > 0) {
         foreach ($args as $arg) {
-            $o .= '/' . $arg;
+            if(!empty($arg))
+              $o .= '/' . $arg;
         }
     }
     return $o;

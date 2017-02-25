@@ -16,8 +16,8 @@ foreach ($perfData as $what) {
 ?><!DOCREF html>
 <html>
 	<head>
-		<title>/fail/station - <?=$this->title?></title>
-		<link rel="stylesheet" href="<?=WEB_ROOT ?>/style.css" />
+		<title>/vg/station Test - <?=$this->title?></title>
+		<link rel="stylesheet" href="<?=WEB_ROOT ?>/style.php/style.scss" />
 		<link rel="stylesheet" href="<?=WEB_ROOT ?>/jquery.tagit.css" />
 		<link rel="stylesheet" href="<?=WEB_ROOT ?>/jquery-ui-1.10.0.custom.min.css" />
 		<script src="<?=WEB_ROOT ?>/js/jquery-1.9.0.js" type="text/javascript"></script>

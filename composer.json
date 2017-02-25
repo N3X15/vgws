@@ -1,15 +1,17 @@
 {
-	"name": "N3X15/vgstation13-web",
-	"minimum-stability": "dev",
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/N3X15/phinx.git"
-		}
-	],
-	"require": {
-		"N3X15/Phinx": "master",
-		"leafo/scssphp": "dev-master",
-		"leafo/scssphp-compass": "dev-master"
-	}
+    "name": "N3X15/vgstation13-web",
+    "minimum-stability": "dev",
+    "repositories": [{
+        "type": "vcs",
+        "url": "https://github.com/N3X15/phinx.git"
+    }],
+    "require": {
+        "N3X15/Phinx": "master",
+        "leafo/scssphp": "dev-master",
+        "leafo/scssphp-compass": "dev-master",
+        "klein/klein": "dev-master",
+        "twbs/bootstrap": "^3.3@dev",
+        "twbs/bootstrap-sass": "^3.3@dev",
+        "twig/twig": "^2.0"
+    }
 }

@@ -1,0 +1,11 @@
+@function asset_url($category,$path) {
+  @return unquote("url(" + $base_image_uri + "/" + $category + '/' + $path + ")");
+}
+@function jquery_asset($path) {
+  @return asset_url("jQuery",$path);
+}
+
+@mixin calc($property, $expression) {
+  #{$property}: -webkit-calc(#{$expression});
+  #{$property}: calc(#{$expression});
+} 

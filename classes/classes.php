@@ -12,10 +12,10 @@ define('PATH_ROOT', dirname(dirname(__FILE__)));
 define('CORE_DIR', dirname(__FILE__));
 
 // Inclusions and whatnot.
-define('LIB_DIR', PATH_ROOT . '/lib');
-define('CACHE_DIR', PATH_ROOT . "/cache");
+define('LIB_DIR',      PATH_ROOT . '/lib');
+define('CACHE_DIR',    PATH_ROOT . "/cache");
 define('TEMPLATE_DIR', PATH_ROOT . "/templates");
-define('SCSS_DIR', PATH_ROOT . '/style');
+define('SCSS_DIR',     PATH_ROOT . '/style');
 
 // Publically-viewable crap.
 define('PUBLIC_DIR', PATH_ROOT . '/htdocs');

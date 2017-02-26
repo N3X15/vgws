@@ -1,0 +1,12 @@
+<p>
+	<a href="{{ fmtURL('home') }}">Home</a> &gt; <a href="{{ fmtURL('poll') }}">Polls</a>
+</p>
+<h2>Poll Details</h2>
+<h3>Question:</h3>
+<p><em>{{ poll.question|e|nl2br }}</em></p>
+<h3>Answers:</h3>
+{% for response in responses %}
+<div class="polltext">
+	{{ response|e }}
+</div>
+{% endfor %}

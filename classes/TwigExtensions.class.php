@@ -7,6 +7,7 @@ class VGWSExtension extends \Twig_Extension
             new \Twig_SimpleFunction('static', array($this, 'twig_static_call'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('fmtURL', 'fmtURL'),
             new \Twig_SimpleFunction('empty', 'empty'),
+            new \Twig_SimpleFunction('round', 'round'),
         );
     }
 

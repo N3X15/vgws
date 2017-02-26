@@ -47,8 +47,7 @@ class Poll {
     }
 
     public static function GetByID($id) {
-        global $db;
-        $res = $db->Execute('SELECT * FROM erro_poll_question WHERE id=?', array($id));
+        $res = DB::Execute('SELECT * FROM erro_poll_question WHERE id=?', array($id));
         if (!$res)
             return null;
         foreach ($res as $row) {
@@ -84,7 +83,7 @@ class Poll {
 
     public function LoadOptions() {
         global $db;
-        $res = $db->Execute('SELECT * FROM erro_poll_option WHERE pollid=?', array($this->ID));
+        $res = DB::Execute('SELECT * FROM erro_poll_option WHERE pollid=?', array($this->ID));
         foreach ($res as $row) {
             $opt = PollOption::FromRow($row);
             $this->options[$opt->ID] = $opt;
@@ -93,7 +92,7 @@ class Poll {
 
     public function GetVotesForOption() {
         global $db;
-        $res = $db->Execute('SELECT COUNT(*) as count, optionid FROM erro_poll_vote WHERE pollid=? GROUP BY optionid ORDER BY COUNT(*) DESC', array($this->ID));
+        $res = DB::Execute('SELECT COUNT(*) as count, optionid FROM erro_poll_vote WHERE pollid=? GROUP BY optionid ORDER BY COUNT(*) DESC', array($this->ID));
         if (!$res)
             return null;
         $results = array();
@@ -112,7 +111,7 @@ class Poll {
 
     public function GetVotesForNumVal() {
         global $db;
-        $res = $db->Execute('SELECT COUNT(*) as count, optionid, rating FROM erro_poll_vote WHERE pollid=? GROUP BY optionid, rating ORDER BY COUNT(*) DESC', array($this->ID));
+        $res = DB::Execute('SELECT COUNT(*) as count, optionid, rating FROM erro_poll_vote WHERE pollid=? GROUP BY optionid, rating ORDER BY COUNT(*) DESC', array($this->ID));
         if (!$res)
             return null;
         $results = array();
@@ -145,7 +144,7 @@ class Poll {
          `replytext` text NOT NULL,
          `adminrank` varchar(32) NOT NULL DEFAULT 'Player',
          */
-        $res = $db->Execute('SELECT replytext,ckey FROM erro_poll_textreply WHERE pollid=?', array($this->ID));
+        $res = DB::Execute('SELECT replytext,ckey FROM erro_poll_textreply WHERE pollid=?', array($this->ID));
         if (!$res)
             return null;
         $results = array();
@@ -200,7 +199,7 @@ class PollOption extends DBTable {
 
     public static function GetByID($pollID,$id) {
         global $db;
-        $res = $db->Execute('SELECT * FROM erro_poll_option WHERE pollid=? AND id=?', array($pollID,$id));
+        $res = DB::Execute('SELECT * FROM erro_poll_option WHERE pollid=? AND id=?', array($pollID,$id));
         if (!$res)
             SQLError("Failed to get poll option " . intval($id).' from poll '.intval($pollID));
         foreach ($res as $row) {

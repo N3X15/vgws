@@ -1,0 +1,31 @@
+<p>
+	<a href="{{ fmtURL('home') }}">Home</a> &gt; <a href="{{ fmtURL('poll') }}">Polls</a>
+</p>
+<h2>Poll Details</h2>
+<h3>Question:</h3>
+<p><em>{{ poll.question|e|nl2br }}</em></p>
+<h3>Answers:</h3>
+<table>
+	<thead>
+		<th>Answer</th>
+		<th>Respondants</th>
+		<th>%</th>
+	</thead>
+	<tbody>
+		{% for opt in poll.options %}
+		{% set respondants=responses[opt.ID] %}
+		<tr>
+			<th class="clmText">{{ opt.text }}</th>
+			<td class="clmRespondants">{{ respondants }}</td>
+			<td class="clmPercent">
+				{% if (not respondants) or (not totalRespondants) %}
+				0%
+				{% else %}
+					{{ "%0.2f%%"|format((respondants/totalRespondants)*100) }}
+				{% endif %}
+				<span class="bar{% if winningCount==respondants %} green{% endif %}" style="width:{{ 500*(respondants/totalRespondants) }}px">&nbsp;</span>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

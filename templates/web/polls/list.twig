@@ -1,0 +1,55 @@
+<h1>Polls</h1>
+<form action="{{ fmtURL('poll') }}" method="post">
+	{% if session != false %}
+		<input type="hidden" name="s" value="{{ session.id }}" />
+	{% endif %}
+	<table class="fancy">
+		<thead>
+			<th>
+				ID
+			</th>
+			<th>
+				Question
+			</th>
+			<th>
+				Expires
+			</th>
+			{% if session != false %}
+			<th>
+				Controls
+			</th>
+			{% endif %}
+		</thead>
+		<tbody>
+		{% for poll in polls %}
+		<tr>
+			<td class="clmID">
+				{{ poll.ID }}
+			</td>
+			<td class="clmQuestion">
+				{#<?if(in_array($poll->type,$this->validPollTypes)):?>#}
+				{% if poll.type in validPollTypes %}
+				<a href="{{ fmtURL('poll', poll.ID) }}">
+				{% endif %}
+				{{ poll.question|e|nl2br }}
+				{% if poll.type in validPollTypes %}
+				</a>
+				{% else %}
+				<i>(Unknown polltype '{{ poll.type }}')</i>
+				{% endif %}
+			</td>
+			<td class="clmExpires">
+				{{ poll.end }}
+			</td>
+			{% if session != false %}
+			<td class="clmControls">
+				<button name="remove" value="{{ poll.ID }}" type="submit">
+					Remove
+				</button>
+			</td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+</form>

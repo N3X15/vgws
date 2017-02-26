@@ -1,0 +1,50 @@
+<p>
+	<a href="{{ fmtURL('home') }}">Home</a> &gt; <a href="{{ fmtURL('poll') }}">Polls</a>
+</p>
+<h2>Poll Details</h2>
+<h3>Big Question:</h3>
+<p><em>{{ poll.question|e|nl2br }}</em></p>
+
+{% for opt in poll.options %}
+<table>
+	<thead>
+		<caption>{{ opt.text }}</caption>
+		<th>Answer</th>
+		<th>Value</th>
+		<th>Respondants</th>
+		<th colspan="2">%</th>
+	</thead>
+	<tbody>
+		{% set midVal = round((opt.maxVal + opt.minVal) / 2) %}
+		{% set winningCount=responses[opt.ID]["winner"] %}
+		{% set totalRespondants=responses[opt.ID]["total"] %}
+		{% for i in opt.minVal..opt.maxVal %}
+			{% set respondants=0 %}
+			{% if i in responses[opt.ID] %}
+				{% set respondants=responses[opt.ID][i] %}
+			{% endif %}
+		<tr>
+			<th class="clmText">
+				{% if i == opt.minVal %}
+				{{ opt.descMin }}
+				{% elseif i == midVal %}
+				{{ opt.descMid }}
+				{% elseif i == opt.maxVal %}
+				{{ opt.descMax }}
+				{% endif %}
+			</th>
+			<th>{{ i }}</th>
+			<td class="clmRespondants">
+				{{ respondants }}
+			</td>
+			<td class="clmPercent">
+				{{ "%0.2f%%"|format((respondants/totalRespondants)*100) }}
+			</td>
+			<td>
+				<span class="bar{% if winningCount == respondants %} green{% endif %}" style="width:{{ (500 * (respondants / totalRespondants)) }}px">&nbsp;</span>
+			</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% endfor %}

@@ -120,13 +120,18 @@ class PollListPage extends Page
     // /poll/1 == Poll details
     public function OnBody()
     {
+        global $validPollTypes;
         $res = DB::Execute("SELECT * FROM erro_poll_question ORDER BY id DESC");
         if (!$res) {
             SQLError(DB::ErrorMsg());
         }
-        $this->setTemplateVar('polls', $res);
+        $polls=[];
+        foreach ($res as $row) {
+            $polls[]=new Poll($row);
+        }
+        $this->setTemplateVar('polls', $polls);
         $this->setTemplateVar('validPollTypes', $validPollTypes);
-        return $this->displayTemplate('web/polls/list.tpl.php');
+        return $this->displayTemplate('web/polls/list');
     }
 
     public function OnHeader()
@@ -152,27 +157,33 @@ class PollListPage extends Page
     }
 }
 
-class PollDisplayPage extends Page {
-  public function __construct()
-  {
-      parent::__construct();
-      $this->RegisterAction('delpoll_a', new DeletePollOptionsAction($this, false));
-      $this->RegisterAction('addpoll_o', new AddPollOptionAction($this, false));
-      $this->RegisterAction('rmpoll_o', new RemovePollOptionAction($this, false));
-  }
+class PollDisplayPage extends Page
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->RegisterAction('delpoll_a', new DeletePollOptionsAction($this, false));
+        $this->RegisterAction('addpoll_o', new AddPollOptionAction($this, false));
+        $this->RegisterAction('rmpoll_o', new RemovePollOptionAction($this, false));
+    }
 
-  public function OnBody() {
-    if (count($this->path) == 1) {
-    } elseif (count($this->path) > 1) {
+    public function OnBody()
+    {
+        global $validPollTypes;
         $pollID = intval($this->request->param('pollid'));
         $poll = Poll::GetByID($pollID);
         if (!$poll) {
             UserError('Unable to find poll ' . $pollID);
         }
         $this->setTemplateVar('poll', $poll);
-        return $this->displayTemplate('web/polls/' . strtolower($poll->type) . '.tpl.php');
+        $this->setTemplateVar('validPollTypes', $validPollTypes);
+        $poll->LoadOptions();
+        $responses=$poll->GetVotes();
+        $this->setTemplateVar('responses', $responses);
+        $this->setTemplateVar('totalRespondants', isset($responses['total']) ? $responses['total'] : []);
+        $this->setTemplateVar('winningCount', isset($responses['winner']) ? $responses['winner'] : []);
+        return $this->displayTemplate('web/polls/' . strtolower($poll->type));
     }
-  }
 }
 
 Router::Register('/poll/?', new PollListPage());

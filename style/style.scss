@@ -1,3 +1,14 @@
+/**
+ * SCSS Stylesheet
+ *
+ * Transformed into CSS by htdocs/style.php.
+ *
+ * Blah blah MIT License (c)2017 VGWS Contributors.
+ */
+// PREDEFINED VARIABLES
+/////////////////////////////////////
+// These variables are set by style.php and correspond to internal VGWS variables.
+$base_image_uri: '[WEB_ROOT]/img' !default;
 
 // For using compass mixins.
 @import "compass/css3";
@@ -16,7 +27,7 @@ body, html {
 }
 
 section#header {
-  background: url('/img/vgstation-logo-backshadow.png') left top no-repeat;
+  background: image_asset('vgstation-logo-backshadow.png') left top no-repeat;
   padding-left: 150px;
   padding-top: 55px;
   height: 100px;

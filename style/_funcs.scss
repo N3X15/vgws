@@ -1,11 +1,21 @@
+@function get_base_image_uri() {
+  @return $base_image_uri !global;
+}
 @function asset_url($category,$path) {
-  @return unquote("url(" + $base_image_uri + "/" + $category + '/' + $path + ")");
+  @if ($category == '') {
+    @return unquote("url(" + $base_image_uri + '/' + $path + ")");
+  } @else {
+    @return unquote("url(" + $base_image_uri + "/" + $category + '/' + $path + ")");
+  }
 }
 @function jquery_asset($path) {
   @return asset_url("jQuery",$path);
+}
+@function image_asset($path) {
+  @return asset_url("",$path);
 }
 
 @mixin calc($property, $expression) {
   #{$property}: -webkit-calc(#{$expression});
   #{$property}: calc(#{$expression});
-} 
+}

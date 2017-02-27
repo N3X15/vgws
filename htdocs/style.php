@@ -6,10 +6,18 @@ set_error_handler(function ($code, $errstr, $errfile, $errline) {
 require ('../config.php');
 require ('../classes/classes.php');
 
+function scss_string($input){
+  return sprintf('"%s"',$input);
+}
+
 $scss = new \Leafo\ScssPhp\Compiler();
 new scss_compass($scss);
 $scss->setFormatter("Leafo\ScssPhp\Formatter\Crunched");
 $scss->setLineNumberStyle(\Leafo\ScssPhp\Compiler::LINE_COMMENTS);
 $scss->addImportPath(SCSS_DIR);
+$scss->setVariables([
+  'base_image_uri' => scss_string(WEB_ROOT.'/img'),
+  'base_uri' => scss_string(WEB_ROOT),
+]);
 $server = new CMW_SCSS_Server(SCSS_DIR, null, $scss);
 $server->serve();

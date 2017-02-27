@@ -28,6 +28,7 @@ class DeletePollOptionsAction extends AdminActionHandler
                 $id=intval($id);
                 $poll->options[$id]->Delete();
             }
+            $poll->Delete();
         }
     }
 }

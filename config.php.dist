@@ -56,9 +56,7 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
  *
  * Specifies absolute path to /vg/station-web, without dangling slashes.
  */
-define('WEB_ROOT','');
-
-define('WEB_ROOT','');
+define('WEB_ROOT','http://coolstation.tld');
 
 define('DB_TYPE','mysqli');// or postgres
 
@@ -90,4 +88,21 @@ define('NUM_IMAGES_PER_PAGE',8*10);
  * Name of the session-tracking cookie.
  */
 define('SESSION_TOKEN', 'vgstation13_session');
-define('SESSION_DOMAIN', 'your.site.here');
+define('SESSION_DOMAIN', 'coolstation.tld');
+
+// BAN CONFIGURATION
+define('BANCONF_PUBLIC',    1);
+define('BANCONF_JOB_BASED', 2);
+define('BANCONF_PERMANENT', 4);
+
+define('SITE_TITLE', 'Title of the Site');
+
+// Add/remove ban types as needed.
+$CONFIG_BAN_TYPES=array(
+    'PERMABAN' => BANCONF_PUBLIC | BANCONF_PERMANENT,
+    'TEMPBAN' => BANCONF_PUBLIC,
+    'JOB_PERMABAN' => BANCONF_PUBLIC | BANCONF_JOB_BASED | BANCONF_PERMANENT,
+    'JOB_TEMPBAN' => BANCONF_PUBLIC | BANCONF_JOB_BASED,
+    'APPEARANCE' => BANCONF_PUBLIC, // vg
+    //'CLUWNE'     => BANCONF_PUBLIC | BANCONF_PERMANENT // old vg
+);

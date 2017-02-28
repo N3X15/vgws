@@ -44,6 +44,7 @@ bm = BuildMaestro()
 
 #bm.add(CoffeeBuildTarget('htdocs/js/vgws.js',    ['coffee/src/vgws.coffee']))
 bm.add(CoffeeBuildTarget('htdocs/js/editpoll.multichoice.js',    ['coffee/editpoll.multichoice.coffee']))
+bm.add(CoffeeBuildTarget('htdocs/js/editpoll.option.js',    ['coffee/editpoll.multichoice.coffee']))
 #bm.add(SCSSBuildTarget('htdocs/css/style.css', ['style/style.scss'], [], import_paths=['style'], compass=True))
 
 bm.RecognizeType(SCSSBuildTarget)

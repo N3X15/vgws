@@ -1,3 +1,4 @@
+{% import "macros.twig" as macros %}
 <p>
 	<a href="{{ fmtURL('home') }}">Home</a> &gt; <a href="{{ fmtURL('poll') }}">Polls</a>
 </p>
@@ -38,12 +39,7 @@
 				{{ respondants }}
 			</td>
 			<td class="clmPercent">
-				<div class="progress-bar">
-					<span class="progress-bar-text">
-						{{ "%0.2f%%"|format((respondants/totalRespondants)*100) }}
-					</span>
-					<span class="progress-bar-progress{% if winningCount == respondants %} green{% endif %}" style="width:{{ (500 * (respondants / totalRespondants)) }}px">&nbsp;</span>
-				</div>
+				{{ macros.pollbar(respondants, totalRespondants, winningCount) }}
 			</td>
 		</tr>
 		{% endfor %}

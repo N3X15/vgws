@@ -13,20 +13,22 @@ class Router
     {
         if (self::$router == null) {
             // Update request when we have a subdirectory
-            if(isset($_SERVER['REQUEST_URI'])) {
-                if(ltrim(WEB_ROOT, '/')){
+            if (isset($_SERVER['REQUEST_URI'])) {
+                if (ltrim(WEB_ROOT, '/')) {
                     $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen(WEB_ROOT));
                 }
-                if(startswith($_SERVER['REQUEST_URI'],'/index.php')){
+                if (startswith($_SERVER['REQUEST_URI'], '/index.php')) {
                     $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 10);
                 }
             }
+            // Bug with PHP 7...?
+            if (isset($_SERVER['PATH_INFO']) && (isset($_SERVER['REQUEST_URI']) || $_SERVER['REQUEST_URI']===false)) {
+                $_SERVER['REQUEST_URI']=$_SERVER['PATH_INFO'];
+            }
 
             self::$router = new \Klein\Klein();
-            self::$router->respond(function($request, $response, $service, $app)
-            {
-                self::$router->onError(function($klein, $errMsg)
-                {
+            self::$router->respond(function ($request, $response, $service, $app) {
+                self::$router->onError(function ($klein, $errMsg) {
                     error($errMsg);
                 });
             });
@@ -35,7 +37,7 @@ class Router
                 switch ($code) {
                     case 404:
                         $pg = "<h2>Error: 404</h2><p>Available pages:</p><ul>";
-                        foreach(self::$pages as $route => $page) {
+                        foreach (self::$pages as $route => $page) {
                             $pg .= "<li><b>{$route}:</b> {$page->title}</li>";
                         }
                         $pg .="</ul><p>Sent pathname: {$router->request()->pathname()}</p>";
@@ -74,5 +76,4 @@ class Router
         self::Initialize();
         self::$router->dispatch();
     }
-
 }

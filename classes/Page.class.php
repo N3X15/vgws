@@ -160,6 +160,9 @@ class Page
      */
     private $actions = array();
 
+    public $scripts = [];
+    public $js_assignments=[];
+
     public $image = null;
 
     public $description = 'N/A';
@@ -430,15 +433,15 @@ class Page
                 }
             }
 
+            $this->setTemplateVar('head', $this->onHeader());
+            $this->setTemplateVar('subpagelinks', $this->onSubPages());
+            $this->setTemplateVar('body', ($actResponse == null) ? $this->onBody() : $actResponse);
             $this->setTemplateVar('links', Page::$SiteLinks);
             #$this->setTemplateVar('user', $this->user);
             #$this->setTemplateVar('stylesheets', $this->stylesheets);
-            #$this->setTemplateVar('scripts', $this->scripts);
-            $this->setTemplateVar('body', ($actResponse == null) ? $this->onBody() : $actResponse);
-            $this->setTemplateVar('subpagelinks', $this->onSubPages());
+            $this->setTemplateVar('scripts', $this->scripts);
             $this->setTemplateVar('title', $this->title);
-            $this->setTemplateVar('head', $this->onHeader());
-            #$this->setTemplateVar('js_vars', $this->js_assignments);
+            $this->setTemplateVar('js_vars', $this->js_assignments);
 
             echo $this->displayTemplate($this->wrapper);
         }

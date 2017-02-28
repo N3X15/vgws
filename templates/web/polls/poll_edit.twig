@@ -1,0 +1,8 @@
+<h1>Edit Poll {{ poll.ID }}</h1>
+<form class="{{ fmtURL('poll', poll.ID, 'edit') }}">
+  <input type="hidden" name="hidID" value="{{poll.ID}}" />
+  <div>
+    <label for="txtQuestion">Question:</label>
+    <input type="textbox" name="txtQuestion" value="{{ poll.question|e('html_attr') }}" />
+  </div>
+</form>

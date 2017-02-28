@@ -38,10 +38,12 @@
 				{{ respondants }}
 			</td>
 			<td class="clmPercent">
-				{{ "%0.2f%%"|format((respondants/totalRespondants)*100) }}
-			</td>
-			<td>
-				<span class="bar{% if winningCount == respondants %} green{% endif %}" style="width:{{ (500 * (respondants / totalRespondants)) }}px">&nbsp;</span>
+				<div class="progress-bar">
+					<span class="progress-bar-text">
+						{{ "%0.2f%%"|format((respondants/totalRespondants)*100) }}
+					</span>
+					<span class="progress-bar-progress{% if winningCount == respondants %} green{% endif %}" style="width:{{ (500 * (respondants / totalRespondants)) }}px">&nbsp;</span>
+				</div>
 			</td>
 		</tr>
 		{% endfor %}

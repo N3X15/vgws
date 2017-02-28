@@ -124,7 +124,7 @@ abstract class DBTable
         return new DBJSONTranslator();
     }
 
-    protected function __construct()
+    public function __construct()
     {
         $this->onInitialize();
     }
@@ -282,8 +282,8 @@ abstract class DBTable
             if ($attr == null)
                 continue;
             $val = $this->$attr;
-            if (isset($this->_converters[$dbname]))
-                $val = $this->_converters[$dbname]->toDB($val);
+            if (isset($this->_converters[$col]))
+                $val = $this->_converters[$col]->toDB($val);
             if (in_array($col, $this->_keys)) {
                 $where["`{$col}`=?"] = $val;
             }
@@ -379,7 +379,7 @@ abstract class DBTable
         $values = array_values($fields);
         foreach (array_values($where) as $val)
             $values[] = $val;
-        
+
         return DB::Execute($sql, $values);
     }
 

@@ -13,5 +13,11 @@
         "twbs/bootstrap": "^3.3@dev",
         "twbs/bootstrap-sass": "^3.3@dev",
         "twig/twig": "^2.0"
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "cp vendor/twbs/bootstrap/dist/fonts/* htdocs/fonts/",
+            "cp -rv vendor/twbs/bootstrap-sass/assets/stylesheets/bootstrap/* style/bootstrap/"
+        ]
     }
 }

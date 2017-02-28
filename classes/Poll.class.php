@@ -187,7 +187,7 @@ class PollOption extends DBTable {
         $this->setFieldAssoc('id', 'ID', true);
         $this->setFieldAssoc('pollid', 'pollID', true);
         $this->setFieldAssoc('text', 'text');
-        $this->setFieldAssoc('calculated', 'percentagecalc');
+        //$this->setFieldAssoc('calculated', 'percentagecalc');
 
         $this->setFieldAssoc('minval', 'minVal');
         $this->setFieldAssoc('maxval', 'maxVal');
@@ -210,7 +210,7 @@ class PollOption extends DBTable {
 
 	public function Delete() {
 		parent::Delete();
-		DB::Delete('DELETE FROM erro_poll_vote WHERE optionid=?');
+		DB::Execute('DELETE FROM erro_poll_vote WHERE optionid=?', [$this->ID]);
 	}
 
 }

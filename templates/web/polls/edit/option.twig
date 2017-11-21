@@ -1,0 +1,25 @@
+<p>
+	<a href="{{ fmtURL('home') }}">Home</a> &gt; <a href="{{ fmtURL('poll') }}">Polls</a>
+</p>
+
+<h1>Edit Poll {{ poll.ID }}</h1>
+<div class="form">
+	<input type="hidden" name="hidID" value="{{poll.ID}}" />
+	<fieldset>
+		<legend>General</legend>
+		<div>
+		  <label for="txtQuestion">Question:</label>
+		  <textarea id="txtQuestion">{{ poll.question|e }}</textarea>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Multiple Choice</legend>
+		<div class="controls" id="optcontrols">
+			<span class="glyphicon glyphicon-plus" id="cmdAddOption"></span>
+		</div>
+	</fieldset>
+	<div class="controls">
+		<button id="" class="green">Save</button>
+		<button class="green">Cancel</button>
+	</div>
+</div>

@@ -1,7 +1,7 @@
 <?php
 define('ERROR_HANDLER_SET',1);
 set_error_handler(function ($code, $errstr, $errfile, $errline) {
-    echo "/* $code -> $errstr */";
+    echo "\n/* $code -> $errstr */";
 });
 require ('../config.php');
 require ('../classes/classes.php');

@@ -1,0 +1,3 @@
+cmd: python
+args:
+  - build.py

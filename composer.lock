@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f7633f1c452d4ac9f96f85acf90e207",
+    "content-hash": "c0cdb4b1e5b9008a242172f62d7c2d75",
     "packages": [
         {
             "name": "N3X15/phinx",
@@ -133,20 +133,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafo/scssphp.git",
-                "reference": "b5db19b0dd98807279cea399917b38487ed4e8ba"
+                "reference": "69cb0ca734665c9a9ea41dd3e3d6f7a65dfdd93d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/b5db19b0dd98807279cea399917b38487ed4e8ba",
-                "reference": "b5db19b0dd98807279cea399917b38487ed4e8ba",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/69cb0ca734665c9a9ea41dd3e3d6f7a65dfdd93d",
+                "reference": "69cb0ca734665c9a9ea41dd3e3d6f7a65dfdd93d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "kherge/box": "~2.5",
-                "phpunit/phpunit": "~3.7",
+                "phpunit/phpunit": "~4.6",
                 "squizlabs/php_codesniffer": "~2.5"
             },
             "bin": [
@@ -178,7 +177,7 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2017-02-25 01:56:16"
+            "time": "2017-10-14 18:48:01"
         },
         {
             "name": "leafo/scssphp-compass",
@@ -268,12 +267,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/class-loader.git",
-                "reference": "2c8de07a8a4cc4da9c018ab7a81888b80e762f93"
+                "reference": "5d7aa644f5c5c7828f97d2d2f4957d2a7ad3ab17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/class-loader/zipball/2c8de07a8a4cc4da9c018ab7a81888b80e762f93",
-                "reference": "2c8de07a8a4cc4da9c018ab7a81888b80e762f93",
+                "url": "https://api.github.com/repos/symfony/class-loader/zipball/5d7aa644f5c5c7828f97d2d2f4957d2a7ad3ab17",
+                "reference": "5d7aa644f5c5c7828f97d2d2f4957d2a7ad3ab17",
                 "shasum": ""
             },
             "require": {
@@ -313,7 +312,7 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-18 19:13:35"
+            "time": "2017-11-05 15:25:56"
         },
         {
             "name": "symfony/config",
@@ -321,12 +320,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "284c23a90ca0876381dc3285e97d0aafd79e44bf"
+                "reference": "f4f3f1d7090c464434bbbc3e8aa2b41149c59196"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/284c23a90ca0876381dc3285e97d0aafd79e44bf",
-                "reference": "284c23a90ca0876381dc3285e97d0aafd79e44bf",
+                "url": "https://api.github.com/repos/symfony/config/zipball/f4f3f1d7090c464434bbbc3e8aa2b41149c59196",
+                "reference": "f4f3f1d7090c464434bbbc3e8aa2b41149c59196",
                 "shasum": ""
             },
             "require": {
@@ -369,7 +368,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-21 09:00:26"
+            "time": "2017-11-07 11:56:23"
         },
         {
             "name": "symfony/console",
@@ -377,12 +376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "42645e1a6d36fd4177751bea0e607d039c9a1b7d"
+                "reference": "41e0cb13e9ac22926dd2b34f52da419cce5199cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/42645e1a6d36fd4177751bea0e607d039c9a1b7d",
-                "reference": "42645e1a6d36fd4177751bea0e607d039c9a1b7d",
+                "url": "https://api.github.com/repos/symfony/console/zipball/41e0cb13e9ac22926dd2b34f52da419cce5199cb",
+                "reference": "41e0cb13e9ac22926dd2b34f52da419cce5199cb",
                 "shasum": ""
             },
             "require": {
@@ -430,7 +429,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-21 14:21:52"
+            "time": "2017-11-19 18:39:05"
         },
         {
             "name": "symfony/debug",
@@ -544,12 +543,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-apcu.git",
-                "reference": "5d4474f447403c3348e37b70acc2b95475b7befa"
+                "reference": "04f62674339602def515bff4bc6901fc1d4951e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/5d4474f447403c3348e37b70acc2b95475b7befa",
-                "reference": "5d4474f447403c3348e37b70acc2b95475b7befa",
+                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/04f62674339602def515bff4bc6901fc1d4951e8",
+                "reference": "04f62674339602def515bff4bc6901fc1d4951e8",
                 "shasum": ""
             },
             "require": {
@@ -558,10 +557,13 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3-dev"
+                    "dev-master": "1.6-dev"
                 }
             },
             "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Apcu\\": ""
+                },
                 "files": [
                     "bootstrap.php"
                 ]
@@ -589,7 +591,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2017-10-11 12:05:26"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -597,12 +599,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "e79d363049d1c2128f133a2667e4f4190904f7f4"
+                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/e79d363049d1c2128f133a2667e4f4190904f7f4",
-                "reference": "e79d363049d1c2128f133a2667e4f4190904f7f4",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
                 "shasum": ""
             },
             "require": {
@@ -614,7 +616,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3-dev"
+                    "dev-master": "1.6-dev"
                 }
             },
             "autoload": {
@@ -648,7 +650,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14 01:06:16"
+            "time": "2017-10-11 12:05:26"
         },
         {
             "name": "symfony/yaml",
@@ -656,12 +658,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "707f112ff3c2c1b9b1d995135cf9ebc5222cea13"
+                "reference": "d819bf267e901727141fe828ae888486fd21236e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/707f112ff3c2c1b9b1d995135cf9ebc5222cea13",
-                "reference": "707f112ff3c2c1b9b1d995135cf9ebc5222cea13",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/d819bf267e901727141fe828ae888486fd21236e",
+                "reference": "d819bf267e901727141fe828ae888486fd21236e",
                 "shasum": ""
             },
             "require": {
@@ -697,7 +699,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-21 08:33:48"
+            "time": "2017-11-05 15:25:56"
         },
         {
             "name": "twbs/bootstrap",
@@ -705,12 +707,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "9b7d1406b922300c5d01e99026e4fffc67445185"
+                "reference": "2c2ac3356425e192f7537227508c809a14aa5850"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/9b7d1406b922300c5d01e99026e4fffc67445185",
-                "reference": "9b7d1406b922300c5d01e99026e4fffc67445185",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/2c2ac3356425e192f7537227508c809a14aa5850",
+                "reference": "2c2ac3356425e192f7537227508c809a14aa5850",
                 "shasum": ""
             },
             "replace": {
@@ -748,7 +750,7 @@
                 "responsive",
                 "web"
             ],
-            "time": "2016-09-22 10:06:30"
+            "time": "2017-10-04 07:51:34"
         },
         {
             "name": "twbs/bootstrap-sass",
@@ -756,12 +758,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap-sass.git",
-                "reference": "5d6b2ebba0c2a5885ce2f0e01e9218db3d3b5e47"
+                "reference": "51486a8bd836d32b9f413e911ed83b433ef4ad39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap-sass/zipball/5d6b2ebba0c2a5885ce2f0e01e9218db3d3b5e47",
-                "reference": "5d6b2ebba0c2a5885ce2f0e01e9218db3d3b5e47",
+                "url": "https://api.github.com/repos/twbs/bootstrap-sass/zipball/51486a8bd836d32b9f413e911ed83b433ef4ad39",
+                "reference": "51486a8bd836d32b9f413e911ed83b433ef4ad39",
                 "shasum": ""
             },
             "type": "library",
@@ -801,7 +803,7 @@
                 "css",
                 "sass"
             ],
-            "time": "2016-07-25 19:58:53"
+            "time": "2017-11-01 16:13:03"
         },
         {
             "name": "twig/twig",
@@ -809,12 +811,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "4569e476a80e99fa45d964116915abe7c75e6a4c"
+                "reference": "0b9a64d842bf7f15c9f3964909100a6663e97db2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/4569e476a80e99fa45d964116915abe7c75e6a4c",
-                "reference": "4569e476a80e99fa45d964116915abe7c75e6a4c",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/0b9a64d842bf7f15c9f3964909100a6663e97db2",
+                "reference": "0b9a64d842bf7f15c9f3964909100a6663e97db2",
                 "shasum": ""
             },
             "require": {
@@ -824,17 +826,20 @@
             "require-dev": {
                 "psr/container": "^1.0",
                 "symfony/debug": "~2.7",
-                "symfony/phpunit-bridge": "~3.2"
+                "symfony/phpunit-bridge": "~3.3@dev"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
                     "Twig_": "lib/"
+                },
+                "psr-4": {
+                    "Twig\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -864,7 +869,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-02-23 14:55:46"
+            "time": "2017-11-12 18:48:08"
         }
     ],
     "packages-dev": [],

@@ -1,3 +1,13 @@
 *.bak
 vendor/
 /config.php
+/htdocs/js/editpoll.multichoice.js
+/htdocs/js/editpoll.option.js
+/htdocs/js/lib/jquery.min.js
+/htdocs/js/lib/jquery.min.map
+/.build
+/.remote-sync.json
+/lib/js
+/style/bootstrap
+/htdocs/jquery.tagit.css
+/htdocs/css/lib/images

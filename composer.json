@@ -1,5 +1,5 @@
 {
-    "name": "N3X15/vgstation13-web",
+    "name": "n3x15/vgstation13-web",
     "minimum-stability": "dev",
     "repositories": [{
         "type": "vcs",

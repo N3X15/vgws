@@ -1,58 +1,59 @@
-import __future__
-
-import codecs
-import hashlib
-import json
 import os
-import re
-import shutil
 import sys
 
 from buildtools import log, os_utils
-from buildtools.config import YAMLConfig
-from buildtools.maestro import BuildMaestro, ReplaceTextTarget
+from buildtools.maestro import BuildMaestro
+from buildtools.maestro.base_target import SingleBuildTarget
+from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget
 from buildtools.maestro.coffeescript import CoffeeBuildTarget
-from buildtools.maestro.web import SCSSBuildTarget, SCSSConvertTarget
 
-OUTDIR = os.path.join('js')
-JSLIB = 'js-src/lib'
+class JQueryUIBuildTarget(SingleBuildTarget):
+    BT_LABEL = 'JQUERYUI'
+    def __init__(self, base_path):
+        self.base_path = base_path
+        self.all_files = []
+        for root, _, files in os.walk(self.base_path):
+            for basefilename in files:
+                self.all_files.append(os.path.join(root,basefilename))
+        super().__init__(target=os.path.join(self.base_path,'dist','jquery-ui.min.js'), files=self.all_files[:100])
 
-npm_packages = []
-gem_packages = []
-COFFEE = os_utils.which('coffee')
-if COFFEE is None:
-    npm_packages += ['coffee-script']
-SASS = os_utils.which('sass')
-if SASS is None:
-    gem_packages += ['sass', 'compass']
-SASS_CONVERT = os_utils.which('sass-convert')
-if SASS_CONVERT is None:
-    gem_packages += ['sass', 'compass']
-if len(gem_packages) > 0:
-    log.critical('Please run `gem update --system && gem install ' + ' '.join(gem_packages) + '`')
-    sys.exit(1)
-if len(npm_packages) > 0:
-    log.critical('Please run `npm install -g ' + ' '.join(npm_packages) + '`')
-    sys.exit(1)
-NPM = os_utils.which('npm')
-os_utils.ensureDirExists(OUTDIR)
-
-os_utils.single_copy('bower_components/jquery/dist/jquery.min.js', 'htdocs/js/lib')
-os_utils.single_copy('bower_components/jquery/dist/jquery.min.map', 'htdocs/js/lib')
+    def build(self):
+        with os_utils.Chdir(os.path.join(self.base_path)):
+            os_utils.cmd([os_utils.which('npm'), 'install'], echo=True, show_output=True, critical=True)
+            os_utils.cmd([os_utils.which('grunt'), 'concat', 'uglify:main'], echo=True, show_output=True, critical=True)
 
 bm = BuildMaestro()
+bm.colors=False
+HTDOCS_JSLIB = os.path.join('htdocs','js','lib')
+HTDOCS_CSSLIB = os.path.join('htdocs','css', 'lib')
+BOOTSTRAP_ROOT = os.path.join('vendor', 'twbs', 'bootstrap', 'dist', 'fonts')
+FONTS = ['glyphicons-halflings-regular']
+FONT_EXT = ['eot', 'svg', 'ttf', 'woff', 'woff2']
+
+for font_id in FONTS:
+    for ext in FONT_EXT:
+        basefilename = font_id + '.' + ext
+        bm.add(CopyFileTarget(os.path.join('htdocs', 'fonts', basefilename), os.path.join(BOOTSTRAP_ROOT,basefilename), verbose=False))
+
+JQUERY_ROOT = os.path.join('lib','js','jquery')
+bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery.min.js'), os.path.join(JQUERY_ROOT, 'dist', 'jquery.min.js')))
+bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery.min.map'), os.path.join(JQUERY_ROOT, 'dist', 'jquery.min.map')))
+
+JQUERY_UI_ROOT = os.path.join('lib','js','jquery-ui')
+jqui_builder = JQueryUIBuildTarget(JQUERY_UI_ROOT)
+bm.add(jqui_builder)
+bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'), jqui_builder.target, dependencies=[jqui_builder.target]))
+
+TAGIT_ROOT = os.path.join('lib','js','tag-it')
+bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'tag-it.min.js'), os.path.join(TAGIT_ROOT, 'js', 'tag-it.min.js')))
+#bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery.min.map'), os.path.join(TAGIT_ROOT, 'dist', 'tagit.min.map'))) # I wish.
+
+JQUI_THEME_ROOT = os.path.join('lib','js','jquery-ui-themes', 'themes', 'smoothness')
+bm.add(CopyFileTarget(os.path.join(HTDOCS_CSSLIB, 'jquery-ui.min.css'), os.path.join(JQUI_THEME_ROOT, 'jquery-ui.min.css')))
+bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.jqui_theme.target'), os.path.join(JQUI_THEME_ROOT, 'images'), os.path.join(HTDOCS_CSSLIB, 'images')))
 
 #bm.add(CoffeeBuildTarget('htdocs/js/vgws.js',    ['coffee/src/vgws.coffee']))
-bm.add(CoffeeBuildTarget('htdocs/js/editpoll.multichoice.js',    ['coffee/editpoll.multichoice.coffee']))
-bm.add(CoffeeBuildTarget('htdocs/js/editpoll.option.js',    ['coffee/editpoll.multichoice.coffee']))
+bm.add(CoffeeBuildTarget(os.path.join('htdocs', 'js', 'editpoll.multichoice.js'), [os.path.join('coffee', 'editpoll.multichoice.coffee')]))
+bm.add(CoffeeBuildTarget(os.path.join('htdocs', 'js', 'editpoll.option.js'),      [os.path.join('coffee', 'editpoll.multichoice.coffee')]))
 #bm.add(SCSSBuildTarget('htdocs/css/style.css', ['style/style.scss'], [], import_paths=['style'], compass=True))
-
-bm.RecognizeType(SCSSBuildTarget)
-bm.RecognizeType(SCSSConvertTarget)
-bm.RecognizeType(CoffeeBuildTarget)
-bm.RecognizeType(ReplaceTextTarget)
-
-bm.saveRules('Makefile.pmk')
-bm.loadRules('Makefile.pmk')
-#bm.saveRules('Makefile.after.pmk')
-bm.run()
+bm.as_app()

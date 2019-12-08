@@ -6,7 +6,7 @@ from buildtools.maestro import BuildMaestro
 from buildtools.maestro.base_target import SingleBuildTarget
 from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget
 from buildtools.maestro.coffeescript import CoffeeBuildTarget
-from buildtools.maestro.nodejs import YarnBuildTarget
+from buildtools.maestro.nodejs import YarnBuildTarget, ComposerBuildTarget
 
 class JQueryUIBuildTarget(SingleBuildTarget):
     BT_LABEL = 'JQUERYUI'
@@ -34,6 +34,9 @@ FONT_EXT = ['eot', 'svg', 'ttf', 'woff', 'woff2']
 yarn_install = YarnBuildTarget(modules_dir=os.path.join('lib','js'))
 bm.add(yarn_install)
 
+composer_install = ComposerBuildTarget()
+bm.add(composer_install)
+
 for font_id in FONTS:
     for ext in FONT_EXT:
         basefilename = font_id + '.' + ext
@@ -55,6 +58,10 @@ bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'tag-it.min.js'), os.path.join(
 JQUI_THEME_ROOT = os.path.join('lib','js','jquery-ui-themes', 'themes', 'smoothness')
 bm.add(CopyFileTarget(os.path.join(HTDOCS_CSSLIB, 'jquery-ui.min.css'), os.path.join(JQUI_THEME_ROOT, 'jquery-ui.min.css'), dependencies=[yarn_install.target]))
 bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.jqui_theme.target'), os.path.join(JQUI_THEME_ROOT, 'images'), os.path.join(HTDOCS_CSSLIB, 'images'), dependencies=[yarn_install.target]))
+
+# cp -rv vendor/twbs/bootstrap-sass/assets/stylesheets/bootstrap/* style/bootstrap/
+source = os.path.join('vendor','twbs','bootstrap-sass', 'assets', 'stylesheets', 'bootstrap')
+bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.bootstrap-sass.target'), os.path.join('style', 'bootstrap'), source, dependencies=[composer_install.target]))
 
 #bm.add(CoffeeBuildTarget('htdocs/js/vgws.js',    ['coffee/src/vgws.coffee']))
 bm.add(CoffeeBuildTarget(os.path.join('htdocs', 'js', 'editpoll.multichoice.js'), [os.path.join('coffee', 'editpoll.multichoice.coffee')]))

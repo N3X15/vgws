@@ -11,7 +11,7 @@
     "jquery": "^3.2.1",
     "jquery-ui": "^1.12.1",
     "jquery-ui-themes": "^1.12.0",
-    "tag-it": "https://github.com/aehlke/tag-it.git"
+    "tag-it": "https://github.com/ytxiuxiu/tag-it.git"
   },
   "directories": {
     "lib": "lib"
@@ -19,5 +19,8 @@
   "scripts": {
     "build": "python build"
   },
-  "flat": true
+  "flat": true,
+  "resolutions": {
+    "tag-it": "0.0.0"
+  }
 }

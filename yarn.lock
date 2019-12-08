@@ -14,6 +14,6 @@ jquery@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
-"tag-it@https://github.com/aehlke/tag-it.git":
+tag-it@0.0.0, "tag-it@https://github.com/ytxiuxiu/tag-it.git":
   version "0.0.0"
-  resolved "https://github.com/aehlke/tag-it.git#6ccd2de95e7cf7e254ad1a82e946450c21e40421"
+  resolved "https://github.com/ytxiuxiu/tag-it.git#d88aa93e5f29519c9d58c5d73162f2f531eaf9c5"

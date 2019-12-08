@@ -1,0 +1,1 @@
+-e git+https://gitlab.com/N3X15/python-build-tools.git@ff02947f7e7cf2e914aa715cda9fd42b06357812#egg=pybuildtools

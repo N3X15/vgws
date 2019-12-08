@@ -1,0 +1,6 @@
+[submodule "lib/tag-it.js"]
+	path = lib/tag-it.js
+	url = https://github.com/fagianijunior/tag-it.git
+[submodule "lib/jquery-ui"]
+	path = lib/jquery-ui
+	url = https://github.com/jquery/jquery-ui.git

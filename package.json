@@ -1,6 +1,6 @@
 {
   "name": "vgws",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Shitty /vg/station website thing.",
   "main": "index.php",
   "repository": "git@github.com:N3X15/vgws.git",
@@ -8,10 +8,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "jquery": "^3.2.1",
-    "jquery-ui": "^1.12.1",
-    "jquery-ui-themes": "^1.12.0",
-    "tag-it": "https://github.com/ytxiuxiu/tag-it.git"
+    "coffeescript": "^2.4.1",
+    "dart-sass": "^1.23.7",
+    "jquery": "^3.4.1",
+    "jquery-ui-themes": "^1.12.0"
   },
   "directories": {
     "lib": "lib"
@@ -21,6 +21,6 @@
   },
   "flat": true,
   "resolutions": {
-    "tag-it": "0.0.0"
+    "chokidar": "3.3.0"
   }
 }

@@ -6,7 +6,7 @@
         "url": "https://github.com/N3X15/phinx.git"
     }],
     "require": {
-        "N3X15/Phinx": "master",
+        "n3x15/phinx": "master",
         "leafo/scssphp": "dev-master",
         "leafo/scssphp-compass": "dev-master",
         "klein/klein": "dev-master",

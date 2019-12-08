@@ -13,7 +13,7 @@ $icon-font-path: '[WEB_ROOT]/fonts/' !default; // For glyphicons.
 @import "bootstrap/_variables";
 @import "bootstrap/_mixins";
 @import "bootstrap/_glyphicons"; // For using compass mixins.
-@import "compass/css3"; // Our own mixins
+//@import "compass/css3"; // Our own mixins
 @import "_funcs"; // VARIABLES
 
 $white-button-gradient: linear-gradient(to bottom, #ffffff 0%, #cfcfcf 100%);

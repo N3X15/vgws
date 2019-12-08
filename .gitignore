@@ -7,7 +7,7 @@ vendor/
 /htdocs/js/lib/jquery.min.map
 /.build
 /.remote-sync.json
-/lib/js
+/node_modules
 /style/bootstrap
 /htdocs/jquery.tagit.css
 /htdocs/css/lib/images
@@ -16,3 +16,5 @@ vendor/
 /htdocs/js/lib/jquery-ui.min.js
 /htdocs/js/lib/tag-it.min.js
 /yarn-error.log
+/htdocs
+/.venv

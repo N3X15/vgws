@@ -9,12 +9,14 @@
 /////////////////////////////////////
 // These variables are set by style.php and correspond to internal VGWS variables.
 $base_image_uri: '[WEB_ROOT]/img' !default;
-$icon-font-path: '[WEB_ROOT]/fonts/' !default; // For glyphicons.
+$icon-font-path: '[WEB_ROOT]/fonts/' !default;
+// For glyphicons.
 @import "bootstrap/_variables";
 @import "bootstrap/_mixins";
-@import "bootstrap/_glyphicons"; // For using compass mixins.
-//@import "compass/css3"; // Our own mixins
-@import "_funcs"; // VARIABLES
+@import "bootstrap/_glyphicons";
+@import "_funcs";
+
+// VARIABLES
 
 $white-button-gradient: linear-gradient(to bottom, #ffffff 0%, #cfcfcf 100%);
 $green-button-gradient: linear-gradient(to bottom, #009900 0%, #006600 100%);
@@ -38,7 +40,8 @@ html {
 }
 
 section#header {
-    background: image_asset('vgstation-logo-backshadow.png') left top no-repeat;
+    background: image_asset('vgstation2-logo.png') left top no-repeat;
+    background-size: contain;
     padding-left: 150px;
     padding-top: 55px;
     height: 100px;

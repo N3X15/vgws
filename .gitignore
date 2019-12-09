@@ -20,3 +20,4 @@
 /.gitmodules.yml
 /.pre-commit-config.yaml
 /htdocs/manifest.json
+/lib/js 

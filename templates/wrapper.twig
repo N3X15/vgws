@@ -20,7 +20,7 @@
 			{% endfor %}
 		</script>
 		{% for script in scripts %}
-		<script src="{{ constant('WEB_ROOT') }}/js/{{ script }}" type="text/javascript"></script>
+		<script src="{{ constant('WEB_ROOT') }}/{{ asset(script) }}" type="text/javascript"></script>
 		{% endfor %}
 		{{ head|raw }}
 	</head>

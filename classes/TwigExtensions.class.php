@@ -8,6 +8,7 @@ class VGWSExtension extends \Twig_Extension
             new \Twig_SimpleFunction('fmtURL', 'fmtURL'),
             new \Twig_SimpleFunction('empty', 'empty'),
             new \Twig_SimpleFunction('round', 'round'),
+            new \Twig_SimpleFunction('asset', array($this, 'twig_asset_call')),
         );
     }
 
@@ -17,6 +18,11 @@ class VGWSExtension extends \Twig_Extension
         if (class_exists($class) && method_exists($class, $function))
             return call_user_func_array(array($class, $function), $args);
         return null;
+    }
+
+    function twig_asset_call($class, $function, $args = array())
+    {
+        return Assets::Get($args[0]);
     }
 
 

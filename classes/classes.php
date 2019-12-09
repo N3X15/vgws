@@ -29,6 +29,7 @@ require_once PATH_ROOT . '/vendor/autoload.php';
 // Just loads all of the classes without screwing around with 50 includes.
 
 require_once CORE_DIR . '/funcs.php';
+require_once CORE_DIR . '/Assets.class.php';
 require_once CORE_DIR . '/Debug.class.php';
 require_once CORE_DIR . '/SCSS.class.php';
 require_once CORE_DIR . '/DB.class.php';

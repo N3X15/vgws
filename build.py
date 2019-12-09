@@ -230,7 +230,7 @@ if args.deploy:
         'js',
         #'src',
         'css',
-        'images',
+        'img',
         'fonts',
         'svg',
     ]
@@ -243,7 +243,7 @@ if args.deploy:
         'index.php',
         'style.php',
         'api.php',
-        'manifest.json'
+        #'manifest.json'
     ]
 
     PRIVATE_FILES = [
@@ -264,13 +264,15 @@ if args.deploy:
     public_dir_ops=[]
     for basedir in PUBLIC_DIRS:
         public_dir_ops += [bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, f'{basedir}-to-public.tgt'),
-                                                  source=os.path.join(basedir),
+                                                  source=os.path.join('htdocs', basedir),
                                                   destination=os.path.join('dist', PUBLIC_OUT, basedir))).target]
 
     public_file_ops=[]
     for basefilename in PUBLIC_FILES:
         public_file_ops += [bm.add(CopyFileTarget(target=os.path.join('dist', PUBLIC_OUT, basefilename),
                                                   filename=os.path.join(basefilename)))]
+    public_file_ops += [bm.add(CopyFileTarget(target=os.path.join('dist', PUBLIC_OUT, 'manifest.json'),
+                                                  filename=os.path.join('htdocs', 'manifest.json')))]
 
     BT_MAIN = []
     #clean = maestro.add(CommandBuildTarget(targets=['@clean'], files=[], cmd=['ssh', '-i', KEYFILE, 'root@192.168.9.5', 'cd /host/ws-tux-001/htdocs/chanman && bash ./clean.sh'], show_output=False, echo=False))

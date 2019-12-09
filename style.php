@@ -10,10 +10,10 @@ function scss_string($input){
   return sprintf('"%s"',$input);
 }
 
-$scss = new \Leafo\ScssPhp\Compiler();
-new scss_compass($scss);
-$scss->setFormatter("Leafo\ScssPhp\Formatter\Crunched");
-$scss->setLineNumberStyle(\Leafo\ScssPhp\Compiler::LINE_COMMENTS);
+$scss = new \ScssPhp\ScssPhp\Compiler();
+#new scss_compass($scss);
+$scss->setFormatter('\ScssPhp\ScssPhp\Formatter\Crunched');
+$scss->setLineNumberStyle(\ScssPhp\ScssPhp\Compiler::LINE_COMMENTS);
 $scss->addImportPath(SCSS_DIR);
 $scss->setVariables([
   'base_image_uri' => scss_string(WEB_ROOT.'/img'),

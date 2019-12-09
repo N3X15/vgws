@@ -1,7 +1,7 @@
 <?php
 // From ChanMan Web Services (A private project, thus far)
-
-class CMW_SCSS_Server extends \Leafo\ScssPhp\Server
+use ScssPhp\ScssPhp\Server;
+class CMW_SCSS_Server extends Server
 {
     protected $dir='style';
     /**

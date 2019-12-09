@@ -202,6 +202,10 @@ style = bm.add(DartSCSSBuildTarget(
 
 style_bashed = bashCache(style.target, outdirname='css')
 
+bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, 'imgs-to-htdocs.tgt'),
+                       source=os.path.join('img'),
+                       destination=os.path.join('htdocs', 'img')))
+
 # This requires having ssh access and rsync.
 if args.deploy:
 
@@ -311,8 +315,8 @@ if args.deploy:
     chgroup = cfg.get('servers.deploy.chown.group', 'www-data')
     commands = [
         #f'rm -rfv {app_root}/data/cache/tag{{cache,id2name,name2id}}{{,.json}}',
-        #f'mkdir -pv {app_root}/data/cache {app_root}/lib/php',
-        f'chown -R {chuser}:{chgroup} {app_root}/data/cache {app_root}/composer.json {app_root}/composer.lock {app_root}/lib/php',
+        f'mkdir -pv {app_root}/style/scss_cache',
+        f'chown -R {chuser}:{chgroup} {app_root}/composer.json {app_root}/composer.lock {app_root}/vendor',
         #f'chmod +x {app_root}/lib/php/bin/phinx',
         f'cd {app_root}',
         f'sudo -u {chuser} composer i -o --no-interaction --no-dev',

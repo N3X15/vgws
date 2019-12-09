@@ -21,10 +21,13 @@ define('SCSS_DIR',     PATH_ROOT . '/style');
 define('PUBLIC_DIR', PATH_ROOT . '/htdocs');
 
 // Libs
-require_once ("adodb/adodb-exceptions.inc.php");
-require_once ('adodb/adodb.inc.php');
+#require_once ("adodb/adodb-exceptions.inc.php");
+#require_once ('adodb/adodb.inc.php');
 
 require_once PATH_ROOT . '/vendor/autoload.php';
+
+// Stupid fucking decision made by ScssPhp dev means it's not included in the autoload.
+require_once PATH_ROOT . '/vendor/scssphp/scssphp/example/Server.php';
 
 // Just loads all of the classes without screwing around with 50 includes.
 

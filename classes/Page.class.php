@@ -239,8 +239,8 @@ class Page
 
     public static function Initialize()
     {
-        $loader = new Twig_Loader_Filesystem(TEMPLATE_DIR);
-        self::$tpl = new Twig_Environment($loader, array('cache' => CACHE_DIR . '/cache', 'strict' => true, 'debug' => true));
+        $loader = new \Twig\Loader\FilesystemLoader(TEMPLATE_DIR);
+        self::$tpl = new \Twig\Environment($loader, array('cache' => CACHE_DIR . '/cache', 'strict' => true, 'debug' => true));
         //self::$tpl->addExtension(new KuTwigExtension());
         self::$tpl->addExtension(new VGWSExtension());
     }

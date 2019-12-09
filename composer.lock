@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ff774052bb311ff54fbf4f02ab2eca9f",
+    "content-hash": "1e0ba97ee89e70a565ccc6d7c695beae",
     "packages": [
         {
             "name": "N3X15/phinx",
@@ -182,104 +182,17 @@
             "time": "2017-02-02T03:08:40+00:00"
         },
         {
-            "name": "leafo/scssphp",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/leafo/scssphp.git",
-                "reference": "69cb0ca734665c9a9ea41dd3e3d6f7a65dfdd93d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/69cb0ca734665c9a9ea41dd3e3d6f7a65dfdd93d",
-                "reference": "69cb0ca734665c9a9ea41dd3e3d6f7a65dfdd93d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.6",
-                "squizlabs/php_codesniffer": "~2.5"
-            },
-            "bin": [
-                "bin/pscss"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Leafo\\ScssPhp\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Leaf Corcoran",
-                    "email": "leafot@gmail.com",
-                    "homepage": "http://leafo.net"
-                }
-            ],
-            "description": "scssphp is a compiler for SCSS written in PHP.",
-            "homepage": "http://leafo.github.io/scssphp/",
-            "keywords": [
-                "css",
-                "less",
-                "sass",
-                "scss",
-                "stylesheet"
-            ],
-            "time": "2017-10-14T18:48:01+00:00"
-        },
-        {
-            "name": "leafo/scssphp-compass",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/leafo/scssphp-compass.git",
-                "reference": "f1631ddb17731326863954d99b39694f0bbed6ec"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp-compass/zipball/f1631ddb17731326863954d99b39694f0bbed6ec",
-                "reference": "f1631ddb17731326863954d99b39694f0bbed6ec",
-                "shasum": ""
-            },
-            "require": {
-                "leafo/scssphp": "dev-master"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "compass.inc.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Leaf Corcoran",
-                    "email": "leafot@gmail.com",
-                    "homepage": "http://leafo.net"
-                }
-            ],
-            "description": "Compass for scssphp",
-            "homepage": "http://leafo.net/scssphp/",
-            "time": "2012-08-02T02:04:32+00:00"
-        },
-        {
             "name": "psr/log",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+                "reference": "5628725d0e4d687e29575eb41f9d5ee7de33a84c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/5628725d0e4d687e29575eb41f9d5ee7de33a84c",
+                "reference": "5628725d0e4d687e29575eb41f9d5ee7de33a84c",
                 "shasum": ""
             },
             "require": {
@@ -288,7 +201,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.1.x-dev"
                 }
             },
             "autoload": {
@@ -313,7 +226,68 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2019-11-12T16:45:05+00:00"
+        },
+        {
+            "name": "scssphp/scssphp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scssphp/scssphp.git",
+                "reference": "5816909654e1f695d4b6252c2a3d1875337f2107"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/5816909654e1f695d4b6252c2a3d1875337f2107",
+                "reference": "5816909654e1f695d4b6252c2a3d1875337f2107",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-json": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3",
+                "squizlabs/php_codesniffer": "~2.5",
+                "twbs/bootstrap": "~4.3",
+                "zurb/foundation": "~6.5"
+            },
+            "bin": [
+                "bin/pscss"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ScssPhp\\ScssPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "homepage": "https://github.com/robocoder"
+                },
+                {
+                    "name": "Cédric Morin",
+                    "email": "cedric@yterium.com",
+                    "homepage": "https://github.com/Cerdic"
+                }
+            ],
+            "description": "scssphp is a compiler for SCSS written in PHP.",
+            "homepage": "http://scssphp.github.io/scssphp/",
+            "keywords": [
+                "css",
+                "less",
+                "sass",
+                "scss",
+                "stylesheet"
+            ],
+            "time": "2019-12-08T12:52:31+00:00"
         },
         {
             "name": "symfony/class-loader",
@@ -321,12 +295,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/class-loader.git",
-                "reference": "5d7aa644f5c5c7828f97d2d2f4957d2a7ad3ab17"
+                "reference": "8194721a1e2768cfb95079581889c41eec7a5959"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/class-loader/zipball/5d7aa644f5c5c7828f97d2d2f4957d2a7ad3ab17",
-                "reference": "5d7aa644f5c5c7828f97d2d2f4957d2a7ad3ab17",
+                "url": "https://api.github.com/repos/symfony/class-loader/zipball/8194721a1e2768cfb95079581889c41eec7a5959",
+                "reference": "8194721a1e2768cfb95079581889c41eec7a5959",
                 "shasum": ""
             },
             "require": {
@@ -366,7 +340,7 @@
             ],
             "description": "Symfony ClassLoader Component",
             "homepage": "https://symfony.com",
-            "time": "2017-11-05T15:25:56+00:00"
+            "time": "2018-11-11T11:18:13+00:00"
         },
         {
             "name": "symfony/config",
@@ -374,17 +348,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "f4f3f1d7090c464434bbbc3e8aa2b41149c59196"
+                "reference": "7dd5f5040dc04c118d057fb5886563963eb70011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/f4f3f1d7090c464434bbbc3e8aa2b41149c59196",
-                "reference": "f4f3f1d7090c464434bbbc3e8aa2b41149c59196",
+                "url": "https://api.github.com/repos/symfony/config/zipball/7dd5f5040dc04c118d057fb5886563963eb70011",
+                "reference": "7dd5f5040dc04c118d057fb5886563963eb70011",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.9",
-                "symfony/filesystem": "~2.3|~3.0.0"
+                "symfony/filesystem": "~2.3|~3.0.0",
+                "symfony/polyfill-ctype": "~1.8"
             },
             "require-dev": {
                 "symfony/yaml": "~2.7|~3.0.0"
@@ -422,7 +397,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2017-11-07T11:56:23+00:00"
+            "time": "2018-11-26T09:38:12+00:00"
         },
         {
             "name": "symfony/console",
@@ -430,12 +405,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "41e0cb13e9ac22926dd2b34f52da419cce5199cb"
+                "reference": "cbcf4b5e233af15cd2bbd50dee1ccc9b7927dc12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/41e0cb13e9ac22926dd2b34f52da419cce5199cb",
-                "reference": "41e0cb13e9ac22926dd2b34f52da419cce5199cb",
+                "url": "https://api.github.com/repos/symfony/console/zipball/cbcf4b5e233af15cd2bbd50dee1ccc9b7927dc12",
+                "reference": "cbcf4b5e233af15cd2bbd50dee1ccc9b7927dc12",
                 "shasum": ""
             },
             "require": {
@@ -449,7 +424,7 @@
                 "symfony/process": "~2.1|~3.0.0"
             },
             "suggest": {
-                "psr/log": "For using the console logger",
+                "psr/log-implementation": "For using the console logger",
                 "symfony/event-dispatcher": "",
                 "symfony/process": ""
             },
@@ -483,7 +458,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-11-19T18:39:05+00:00"
+            "time": "2018-11-20T15:55:20+00:00"
         },
         {
             "name": "symfony/debug",
@@ -597,12 +572,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-apcu.git",
-                "reference": "04f62674339602def515bff4bc6901fc1d4951e8"
+                "reference": "a8e961c841b9ec52927a87914f8820a1ad8f8116"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/04f62674339602def515bff4bc6901fc1d4951e8",
-                "reference": "04f62674339602def515bff4bc6901fc1d4951e8",
+                "url": "https://api.github.com/repos/symfony/polyfill-apcu/zipball/a8e961c841b9ec52927a87914f8820a1ad8f8116",
+                "reference": "a8e961c841b9ec52927a87914f8820a1ad8f8116",
                 "shasum": ""
             },
             "require": {
@@ -611,7 +586,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -645,7 +620,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-10-11T12:05:26+00:00"
+            "time": "2019-11-27T13:56:44+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -711,12 +686,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296"
+                "reference": "7b4aab9743c30be783b73de055d24a39cf4b954f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
-                "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7b4aab9743c30be783b73de055d24a39cf4b954f",
+                "reference": "7b4aab9743c30be783b73de055d24a39cf4b954f",
                 "shasum": ""
             },
             "require": {
@@ -728,7 +703,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.13-dev"
                 }
             },
             "autoload": {
@@ -762,7 +737,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-10-11T12:05:26+00:00"
+            "time": "2019-11-27T14:18:11+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -770,16 +745,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "d819bf267e901727141fe828ae888486fd21236e"
+                "reference": "02c1859112aa779d9ab394ae4f3381911d84052b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/d819bf267e901727141fe828ae888486fd21236e",
-                "reference": "d819bf267e901727141fe828ae888486fd21236e",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/02c1859112aa779d9ab394ae4f3381911d84052b",
+                "reference": "02c1859112aa779d9ab394ae4f3381911d84052b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": ">=5.3.9",
+                "symfony/polyfill-ctype": "~1.8"
             },
             "type": "library",
             "extra": {
@@ -811,7 +787,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-11-05T15:25:56+00:00"
+            "time": "2018-11-11T11:18:13+00:00"
         },
         {
             "name": "twbs/bootstrap",
@@ -980,13 +956,12 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "leafo/scssphp": 20,
-        "leafo/scssphp-compass": 20,
         "klein/klein": 20,
         "twbs/bootstrap": 20,
         "twbs/bootstrap-sass": 20,
         "twig/twig": 20,
-        "adodb/adodb-php": 20
+        "adodb/adodb-php": 20,
+        "scssphp/scssphp": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

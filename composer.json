@@ -10,8 +10,9 @@
         "leafo/scssphp": "dev-master",
         "leafo/scssphp-compass": "dev-master",
         "klein/klein": "dev-master",
-        "twbs/bootstrap": "^3.3@dev",
-        "twbs/bootstrap-sass": "^3.3@dev",
-        "twig/twig": "^2.0"
+        "twbs/bootstrap": "dev-master",
+        "twbs/bootstrap-sass": "^3.4@dev",
+        "twig/twig": "3.x-dev",
+        "adodb/adodb-php": "dev-master"
     }
 }

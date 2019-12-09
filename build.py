@@ -188,6 +188,7 @@ bootstrap_files = bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.bootstrap-s
 
 #mkCoffee('vgws')
 mkCoffee('editpoll') # coffee/editpoll.coffee -> tmp/js/editpoll.js -> tmp/js/editpoll.min.js -> htdocs/js/ab/cd/editpoll_min-{md5sum[4:]}.js
+mkCoffee('rapsheet')
 
 style = bm.add(DartSCSSBuildTarget(
     target='htdocs/css/style.css',
@@ -208,7 +209,6 @@ bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, 'imgs-to-htdocs.tgt'),
 
 # This requires having ssh access and rsync.
 if args.deploy:
-
     def deploy_dir(bm, dirname, is_private=False, deps=[]):
         host = cfg.get('servers.deploy.host', None)
         user = cfg.get('servers.deploy.user', None)
@@ -236,7 +236,7 @@ if args.deploy:
         'css',
         'img',
         'fonts',
-        'svg',
+        #'svg',
     ]
     PRIVATE_DIRS = [
         'style',
@@ -300,13 +300,13 @@ if args.deploy:
         loose_files += ['/'.join(['dist', prefix, '.', filename])]
     dest = os.path.join(cfg.get('paths.APP_ROOT', None), prefix).replace('\\', '/')
     deployuri = f'{user}@{host}:{dest}'
-    BT_MAIN += [bm.add(RSyncRemoteTarget(loose_files, deployuri, name='loose-public', keyfile=KEYFILE, dependencies=[], show_output=False))]
+    BT_MAIN += [bm.add(RSyncRemoteTarget(loose_files, deployuri, name='loose-public', keyfile=KEYFILE, dependencies=[] + [x.target for x in js_targets], show_output=False))]
     loose_files = []
     for filename in PRIVATE_FILES:
         loose_files += ['/'.join(['dist', '.', filename])]
     dest = os.path.join(cfg.get('paths.APP_ROOT', None)).replace('\\', '/')
     deployuri = f'{user}@{host}:{dest}'
-    loose_private = bm.add(RSyncRemoteTarget(loose_files, deployuri, name='loose-private', keyfile=KEYFILE, dependencies=[] + [x.target for x in js_targets], show_output=True))
+    loose_private = bm.add(RSyncRemoteTarget(loose_files, deployuri, name='loose-private', keyfile=KEYFILE, dependencies=[], show_output=True))
     BT_MAIN += [loose_private]
     loose_private.dependencies += [style.target]+[x.target for x in js_targets]
 

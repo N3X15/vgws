@@ -22,9 +22,9 @@ class VGWSExtension extends AbstractExtension
         return null;
     }
 
-    function twig_asset_call($class, $function, $args = array())
+    function twig_asset_call($ID)
     {
-        return Assets::Get($args[0]);
+        return Assets::Get($ID);
     }
 
 

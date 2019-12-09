@@ -235,7 +235,7 @@ class EditPollPage extends Page
         global $validPollTypes;
         $this->pollID = intval($this->request->param('pollid'));
         $this->poll = Poll::GetByID($this->pollID);
-        $this->scripts[]='editpoll.min.js';
+        $this->scripts[]=Assets::Get('js/editpoll.min.js');
 
         $this->js_assignments['POLL_ID']=$this->pollID;
         $this->js_assignments['AJAX_URI']=fmtURL('poll',$this->pollID,'edit');

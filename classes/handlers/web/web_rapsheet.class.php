@@ -5,7 +5,7 @@ class RapsheetPage extends Page
     public $relurl = '/rapsheet';
     public $title = "Rapsheet";
     public $image = "/img/admins.png";
-    public $adminOnly = true;
+    //public $adminOnly = true;
     public function OnBody()
     {
         global $ADMIN_FLAGS;
@@ -77,45 +77,15 @@ class RapsheetPage extends Page
             }
         }
 
+        $this->js_assignments['API_TARGET'] = fmtAPIURL('findcid');
+        $this->js_assignments['AUTOCOMPLETE'] = Jobs::$KnownJobs;
+        $this->scripts[] = Assets::Get('js/rapsheet.min.js');
+
         $this->setTemplateVar('bans', $bans);
         $this->setTemplateVar('jbans', $jbans);
         $this->setTemplateVar('bantypes', $types);
         $this->setTemplateVar('ckey', $_REQUEST['ckey']);
         return $this->displayTemplate('web/rapsheet');
-    }
-    public function OnHeader()
-    {
-        $target = fmtAPIURL('findcid');
-        $autocomplete=implode("','", Jobs::$KnownJobs);
-        return <<<EOF
-		 <script type="text/javascript">
-$(document).ready(function(){
-	//-------------------------------
-	// Minimal
-	//-------------------------------
-	$('.jobs').tagit({
-		fieldName: 'jobs[]',
-		availableTags: ['{$autocomplete}']
-	});
-	$("button#getlast").click(function(){
-		$.post("{$target}",
-		{
-		  ckey:$("#banCKey").val()
-		},
-		function(data,status){
-		  //alert("Returned: "+status);
-		  if(status=="success"){
-		  	rows=data.split("\\n");
-		  	$("#banIP").val(rows[0]);
-		  	$("#banCID").val(rows[1]);
-		  } else {
-		  	alert("Couldn't find that ckey.");
-		  }
-		});
-	});
-});
-		</script>
-EOF;
     }
 }
 

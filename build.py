@@ -316,11 +316,11 @@ if args.deploy:
     commands = [
         #f'rm -rfv {app_root}/data/cache/tag{{cache,id2name,name2id}}{{,.json}}',
         f'mkdir -pv {app_root}/style/scss_cache',
-        f'chown -R {chuser}:{chgroup} {app_root}/composer.json {app_root}/composer.lock {app_root}/vendor',
+        #f'chown -R {chuser}:{chgroup} {app_root}/composer.json {app_root}/composer.lock {app_root}/vendor{app_root}/vendor',
+        f'chown -R {chuser}:{chgroup} {app_root}',
         #f'chmod +x {app_root}/lib/php/bin/phinx',
         f'cd {app_root}',
         f'sudo -u {chuser} composer i -o --no-interaction --no-dev',
-        #f'sudo -u www-data composer u -o --no-interaction --no-dev',
         f'cd -',
     ]
     keypath = KEYFILE

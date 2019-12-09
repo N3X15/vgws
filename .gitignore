@@ -21,3 +21,5 @@
 /.pre-commit-config.yaml
 /htdocs/manifest.json
 /lib/js 
+/nano 
+/buildconf.yml 

@@ -1,0 +1,22 @@
+###
+# This file is used only for building htdocs/, and will not be deployed to the server.
+###
+servers:
+  deploy:
+    # SSH user and host. Used in rsync.
+    host: ss13.example.com
+    user: root
+    # Path to the SSH key you use to deploy to your server.
+    # Used in ssh -i
+    #keyfile: A:\.ssh\id_rsa
+    keyfile: ~/.ssh/id_rsa
+    chown:
+      user: 'www-data'
+      group: 'www-data'
+paths:
+  # Root of your application directory.
+  APP_ROOT: /var/www/chanman.example.com
+
+  # Publically-accessible stuff served by your HTTP server, relative to APP_ROOT.
+  # If you're putting this in a vhost, you can put 'htdocs' or 'www' here.
+  PUBLIC_OUT: .

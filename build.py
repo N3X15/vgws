@@ -6,7 +6,7 @@ from buildtools.config import YAMLConfig
 from buildtools.maestro import BuildMaestro
 from buildtools.maestro.base_target import SingleBuildTarget
 from buildtools.maestro.coffeescript import CoffeeBuildTarget
-from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget
+from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget, ExtractArchiveTarget
 from buildtools.maestro.git import GitSubmoduleCheckTarget
 from buildtools.maestro.package_managers import YarnBuildTarget, ComposerBuildTarget
 from buildtools.maestro.shell import CommandBuildTarget
@@ -178,13 +178,17 @@ theme_var2 = bm.add(ReplaceTextTarget('tmp/tag-it.fixed.css', theme_converted.ta
 }))
 '''
 # JQuery UI
-bm.add(DownloadFileTarget())
+jqui_dl=bm.add(DownloadFileTarget(target=os.path.join('tmp', 'jquery-ui-1.12.1.zip'),
+                                  url='https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip'))
+jqui_extract = bm.add(ExtractArchiveTarget(target_dir=os.path.join('tmp','jquery-ui-1.12.1'),
+                                           archive=jqui_dl.target))
 js_targets += [bm.add(UglifyJSTarget(
-    inputfile=os.path.join(JSLIB, 'jquery-ui-1.12.1', 'jquery-ui.js'),
-    target=os.path.join(JS_LIB_OUT, 'jquery-ui.min.js'),
+    inputfile=os.path.join('tmp', 'jquery-ui-1.12.1', 'jquery-ui.js'),
+    target=os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'),
     mangle=False,
     compress_opts=['keep_fnames,unsafe'],
-    uglify_executable=UGLIFY
+    uglify_executable=UGLIFY,
+    dependencies=[jqui_extract.target]
 ))]
 JQUI_THEME_ROOT = os.path.join(YARNLIB,'jquery-ui-themes', 'themes', 'smoothness')
 bm.add(CopyFileTarget(os.path.join(HTDOCS_CSSLIB, 'jquery-ui.min.css'), os.path.join(JQUI_THEME_ROOT, 'jquery-ui.min.css'), dependencies=[yarn_install.target]))

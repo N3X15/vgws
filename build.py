@@ -165,6 +165,8 @@ def mkCoffee(basename, dependencies=[]):
     js_targets += [bashed]
     return bashed
 
+# JQuery UI
+# Shit I'm not doing yet...
 '''
 JQUERYUI_THEME = os.path.join(JSLIB, 'jquery-ui-themes', 'themes', 'base')
 JQUERYUI_BASE_THEME = os.path.join(JSLIB, 'jquery-ui-themes', 'themes', 'base')
@@ -177,13 +179,16 @@ theme_var2 = bm.add(ReplaceTextTarget('tmp/tag-it.fixed.css', theme_converted.ta
     r'\-\-var\-': '$'
 }))
 '''
-# JQuery UI
+# JQUI comes precompiled but only as a ZIP on a webpage. So first, we download it.
+# I made this target class just for you pomf.  Just for you.
 jqui_dl=bm.add(DownloadFileTarget(target=os.path.join('tmp', 'jquery-ui-1.12.1.zip'),
                                   url='https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip'))
-jqui_extract = bm.add(ExtractArchiveTarget(target_dir=os.path.join('tmp','jquery-ui-1.12.1'),
-                                           archive=jqui_dl.target))
+# Now we extract it.  Another Pomf special class.
+jqui_extract = bm.add(ExtractArchiveTarget(target_dir=os.path.join('tmp', 'jquery-ui'),
+                                           archive=jqui_dl.target,
+                                           provides=[os.path.join('tmp', 'jquery-ui', 'jquery-ui-1.12.1', 'jquery-ui.js')]))
 js_targets += [bm.add(UglifyJSTarget(
-    inputfile=os.path.join('tmp', 'jquery-ui-1.12.1', 'jquery-ui.js'),
+    inputfile=os.path.join('tmp', 'jquery-ui', 'jquery-ui-1.12.1', 'jquery-ui.js'),
     target=os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'),
     mangle=False,
     compress_opts=['keep_fnames,unsafe'],

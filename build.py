@@ -10,7 +10,7 @@ from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget
 from buildtools.maestro.git import GitSubmoduleCheckTarget
 from buildtools.maestro.package_managers import YarnBuildTarget, ComposerBuildTarget
 from buildtools.maestro.shell import CommandBuildTarget
-from buildtools.maestro.web import CacheBashifyFiles, DartSCSSBuildTarget, EBashLayoutFlags, UglifyJSTarget
+from buildtools.maestro.web import CacheBashifyFiles, DartSCSSBuildTarget, EBashLayoutFlags, UglifyJSTarget, DownloadFileTarget
 
 class RSyncRemoteTarget(SingleBuildTarget):
     BT_LABEL = 'RSYNC'
@@ -177,18 +177,31 @@ theme_var2 = bm.add(ReplaceTextTarget('tmp/tag-it.fixed.css', theme_converted.ta
     r'\-\-var\-': '$'
 }))
 '''
-
+# JQuery UI
+bm.add(DownloadFileTarget())
+js_targets += [bm.add(UglifyJSTarget(
+    inputfile=os.path.join(JSLIB, 'jquery-ui-1.12.1', 'jquery-ui.js'),
+    target=os.path.join(JS_LIB_OUT, 'jquery-ui.min.js'),
+    mangle=False,
+    compress_opts=['keep_fnames,unsafe'],
+    uglify_executable=UGLIFY
+))]
 JQUI_THEME_ROOT = os.path.join(YARNLIB,'jquery-ui-themes', 'themes', 'smoothness')
 bm.add(CopyFileTarget(os.path.join(HTDOCS_CSSLIB, 'jquery-ui.min.css'), os.path.join(JQUI_THEME_ROOT, 'jquery-ui.min.css'), dependencies=[yarn_install.target]))
 bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.jqui_theme.target'), os.path.join(JQUI_THEME_ROOT, 'images'), os.path.join(HTDOCS_CSSLIB, 'images'), dependencies=[yarn_install.target]))
+js_targets += [
+    bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'), os.path.join(JQUERY_ROOT, 'dist', 'jquery.min.js'), dependencies=[yarn_install.target])),
+    bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.map'), os.path.join(JQUERY_ROOT, 'dist', 'jquery.min.map'), dependencies=[yarn_install.target]))
+]
 
 # cp -rv vendor/twbs/bootstrap-sass/assets/stylesheets/bootstrap/* style/bootstrap/
 source = os.path.join('vendor','twbs','bootstrap-sass', 'assets', 'stylesheets', 'bootstrap')
 bootstrap_files = bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.bootstrap-sass.target'), source, os.path.join('style', 'bootstrap'), dependencies=[composer_install.target]))
 
-#mkCoffee('vgws')
-mkCoffee('editpoll') # coffee/editpoll.coffee -> tmp/js/editpoll.js -> tmp/js/editpoll.min.js -> htdocs/js/ab/cd/editpoll_min-{md5sum[4:]}.js
+# coffee/editpoll.coffee -> tmp/js/editpoll.js -> tmp/js/editpoll.min.js -> htdocs/js/ab/cd/editpoll_min-{md5sum[4:]}.js
+mkCoffee('editpoll')
 mkCoffee('rapsheet')
+mkCoffee('vgws')
 
 style = bm.add(DartSCSSBuildTarget(
     target='htdocs/css/style.css',
@@ -276,7 +289,8 @@ if args.deploy:
         public_file_ops += [bm.add(CopyFileTarget(target=os.path.join('dist', PUBLIC_OUT, basefilename),
                                                   filename=os.path.join(basefilename)))]
     public_file_ops += [bm.add(CopyFileTarget(target=os.path.join('dist', PUBLIC_OUT, 'manifest.json'),
-                                                  filename=os.path.join('htdocs', 'manifest.json')))]
+                                              filename=os.path.join('htdocs', 'manifest.json'),
+                                              dependencies=[x.target for x in js_targets]))]
 
     BT_MAIN = []
     #clean = maestro.add(CommandBuildTarget(targets=['@clean'], files=[], cmd=['ssh', '-i', KEYFILE, 'root@192.168.9.5', 'cd /host/ws-tux-001/htdocs/chanman && bash ./clean.sh'], show_output=False, echo=False))
@@ -287,20 +301,24 @@ if args.deploy:
         if dirname == 'css':
             deps = [style_bashed.target]
         BT_MAIN += [deploy_dir(bm, dirname, is_private=False, deps=public_dir_ops+deps)]
+
     for dirname in PRIVATE_DIRS:
         deps = []
         if dirname in ('classes', 'vendor'):
             deps = [composer_install.target]
         BT_MAIN += [deploy_dir(bm, dirname, is_private=True, deps=private_dir_ops+deps)]
+
     host = cfg.get('servers.deploy.host', None)
     user = cfg.get('servers.deploy.user', None)
     loose_files = []
     prefix = cfg.get('paths.PUBLIC_OUT', '.')
     for filename in PUBLIC_FILES:
         loose_files += ['/'.join(['dist', prefix, '.', filename])]
+    loose_files += ['/'.join(['dist', prefix, '.', 'manifest.json'])]
     dest = os.path.join(cfg.get('paths.APP_ROOT', None), prefix).replace('\\', '/')
     deployuri = f'{user}@{host}:{dest}'
-    BT_MAIN += [bm.add(RSyncRemoteTarget(loose_files, deployuri, name='loose-public', keyfile=KEYFILE, dependencies=[] + [x.target for x in js_targets], show_output=False))]
+    BT_MAIN += [bm.add(RSyncRemoteTarget(loose_files, deployuri, name='loose-public', keyfile=KEYFILE, dependencies=[] + [x.target for x in js_targets+public_file_ops], show_output=False))]
+
     loose_files = []
     for filename in PRIVATE_FILES:
         loose_files += ['/'.join(['dist', '.', filename])]

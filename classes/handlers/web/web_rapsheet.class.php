@@ -5,7 +5,8 @@ class RapsheetPage extends Page
     public $relurl = '/rapsheet';
     public $title = "Rapsheet";
     public $image = "/img/admins.png";
-    //public $adminOnly = true;
+    public $adminOnly = true;
+    
     public function OnBody()
     {
         global $ADMIN_FLAGS;

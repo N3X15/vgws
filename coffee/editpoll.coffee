@@ -22,7 +22,7 @@ loadPollOptions = () ->
   return
 
 # Wait for document init
-$ ->
+core.whenReady ->
   $Options=$('#optcontrols')
   if $Options.length > 0
     $('#cmdAddOption').on 'click', (e) ->

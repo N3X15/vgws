@@ -196,6 +196,7 @@ class Page
 
     public function __construct()
     {
+      $this->scripts[]= Assets::Get('js/vgws.min.js');
     }
 
     public function getURL() {

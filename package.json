@@ -11,6 +11,7 @@
     "coffeescript": "^2.4.1",
     "dart-sass": "^1.23.7",
     "jquery": "^3.4.1",
+    "jquery-ui": "^1.12.1",
     "jquery-ui-themes": "^1.12.0",
     "uglify-es": "^3.3.9"
   },

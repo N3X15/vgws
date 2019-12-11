@@ -4,6 +4,7 @@ class VGWSCore
     log.info 'Starting up VGWS JS...'
     @bodyCallbacks = []
     @bodyIsReady = false
+    @Wait = null
 
   setRecurringTimer: (delay, callback) ->
     return setInterval callback, delay
@@ -39,7 +40,7 @@ class VGWSCore
       data:   data
     .done callback
     return
-    
+
   api_post: (endpoint, action, data, callback) ->
     if action != null
       data['act'] = action

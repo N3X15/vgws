@@ -104,7 +104,11 @@ FONTS = ['glyphicons-halflings-regular']
 FONT_EXT = ['eot', 'svg', 'ttf', 'woff', 'woff2']
 COFFEE = os.path.join(YARNLIB, '.bin', 'coffee.cmd' if os.name == 'nt' else 'coffee')
 UGLIFY = os.path.join(YARNLIB, '.bin', 'uglifyjs.cmd' if os.name == 'nt' else 'uglifyjs')
+MANIFEST_OUT = os.path.join('htdocs', 'manifest.json')
 
+if os.path.isfile(MANIFEST_OUT):
+    with open(MANIFEST_OUT, 'w') as f:
+        f.write('{}')
 js_targets = []
 
 submodules = bm.add(GitSubmoduleCheckTarget())
@@ -136,7 +140,6 @@ js_targets += [
 ]
 
 BC_LAYOUT = EBashLayoutFlags.NAME | EBashLayoutFlags.HASHDIR
-MANIFEST_OUT = os.path.join('htdocs', 'manifest.json')
 def bashCache(filename, basedir='htdocs', destdir='htdocs', outdirname=None):
     return bm.add(CacheBashifyFiles(destdir=destdir,
                                     source=filename,
@@ -210,6 +213,11 @@ mkCoffee('bans')
 mkCoffee('editpoll')
 mkCoffee('rapsheet')
 mkCoffee('core', files=[
+    os.path.join('coffee', 'core', '_functions.coffee'),
+    os.path.join('coffee', 'core', 'JQConfirm.coffee'),
+    os.path.join('coffee', 'core', 'JQPrompt.coffee'),
+    os.path.join('coffee', 'core', 'Message.coffee'),
+    os.path.join('coffee', 'core', 'Modal.coffee'),
     os.path.join('coffee', 'core', 'VGWSCore.coffee'),
     os.path.join('coffee', 'core', 'VGWSLogProxy.coffee'),
     os.path.join('coffee', 'core', 'zzStartup.coffee'),

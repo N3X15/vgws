@@ -5,7 +5,7 @@ $ ->
     availableTags: window.AUTOCOMPLETE
 
   $('button#getlast').click ->
-    $.post window.API_TARGET, { ckey: $('#banCKey').val() }, (data, status) ->
+    core.api_post ['findcid'], null, { ckey: $('#banCKey').val() }, (data, status) ->
       #alert("Returned: "+status);
       if status == 'success'
         rows = data.split('\\n')

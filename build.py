@@ -146,10 +146,12 @@ def bashCache(filename, basedir='htdocs', destdir='htdocs', outdirname=None):
                                     dependencies=[filename],
                                     flags=BC_LAYOUT))
 
-def mkCoffee(basename, dependencies=[]):
+def mkCoffee(basename, dependencies=[], files=None):
     global js_targets
+    if files is None:
+        files=[os.path.join('coffee', f'{basename}.coffee')]
     built_js = bm.add(CoffeeBuildTarget(target=os.path.join('tmp', 'js', f'{basename}.js'),
-                                        files=[os.path.join('coffee', f'{basename}.coffee')],
+                                        files=files,
                                         coffee_executable=COFFEE,
                                         make_map=False,
                                         dependencies=[yarn_install.target]+dependencies))
@@ -198,19 +200,20 @@ js_targets += [bm.add(UglifyJSTarget(
 JQUI_THEME_ROOT = os.path.join(YARNLIB,'jquery-ui-themes', 'themes', 'smoothness')
 bm.add(CopyFileTarget(os.path.join(HTDOCS_CSSLIB, 'jquery-ui.min.css'), os.path.join(JQUI_THEME_ROOT, 'jquery-ui.min.css'), dependencies=[yarn_install.target]))
 bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.jqui_theme.target'), os.path.join(JQUI_THEME_ROOT, 'images'), os.path.join(HTDOCS_CSSLIB, 'images'), dependencies=[yarn_install.target]))
-js_targets += [
-    bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'), os.path.join(JQUERY_ROOT, 'dist', 'jquery.min.js'), dependencies=[yarn_install.target])),
-    bm.add(CopyFileTarget(os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.map'), os.path.join(JQUERY_ROOT, 'dist', 'jquery.min.map'), dependencies=[yarn_install.target]))
-]
 
 # cp -rv vendor/twbs/bootstrap-sass/assets/stylesheets/bootstrap/* style/bootstrap/
 source = os.path.join('vendor','twbs','bootstrap-sass', 'assets', 'stylesheets', 'bootstrap')
 bootstrap_files = bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.bootstrap-sass.target'), source, os.path.join('style', 'bootstrap'), dependencies=[composer_install.target]))
 
 # coffee/editpoll.coffee -> tmp/js/editpoll.js -> tmp/js/editpoll.min.js -> htdocs/js/ab/cd/editpoll_min-{md5sum[4:]}.js
+mkCoffee('bans')
 mkCoffee('editpoll')
 mkCoffee('rapsheet')
-mkCoffee('vgws')
+mkCoffee('core', files=[
+    os.path.join('coffee', 'core', 'VGWSCore.coffee'),
+    os.path.join('coffee', 'core', 'VGWSLogProxy.coffee'),
+    os.path.join('coffee', 'core', 'zzStartup.coffee'),
+])
 
 style = bm.add(DartSCSSBuildTarget(
     target='htdocs/css/style.css',

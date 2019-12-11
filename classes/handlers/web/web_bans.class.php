@@ -178,9 +178,14 @@ SQL;
         }
 
         // Input filtering.
-        $ip = filter_input(INPUT_GET, 'ip', FILTER_VALIDATE_IP, array('default'=>'', 'flags'=>FILTER_FLAG_IPV4|FILTER_FLAG_IPV6));
+        $ip   = filter_input(INPUT_GET, 'ip',   FILTER_VALIDATE_IP,     array('default'=>'', 'flags'=>FILTER_FLAG_IPV4|FILTER_FLAG_IPV6));
         $ckey = filter_input(INPUT_GET, 'ckey', FILTER_SANITIZE_STRING, array('default'=>''));
-        $cid = filter_input(INPUT_GET, 'cid', FILTER_SANITIZE_STRING, array('default'=>''));
+        $cid  = filter_input(INPUT_GET, 'cid',  FILTER_SANITIZE_STRING, array('default'=>''));
+
+
+        $this->js_assignments['API_FIND_CID'] = fmtAPIURL('findcid');
+        $this->js_assignments['AUTOCOMPLETE_JOBS'] = Jobs::$KnownJobs;
+        $this->scripts[] = Assets::Get('js/bans.min.js');
 
         $this->setTemplateVar('bans', $bans);
         $this->setTemplateVar('jbans', $jbans);
@@ -192,35 +197,8 @@ SQL;
     }
 
     public function OnHeader() {
-        $target = fmtAPIURL('findcid');
-        $autocomplete = implode("','", Jobs::$KnownJobs);
         return <<<EOF
 		 <script type="text/javascript">
-$(document).ready(function(){
-	//-------------------------------
-	// Minimal
-	//-------------------------------
-	$('.jobs').tagit({
-		fieldName: 'jobs[]',
-		availableTags: ['{$autocomplete}']
-	});
-	$("button#getlast").click(function(){
-		$.post("{$target}",
-		{
-		  ckey:$("#banCKey").val()
-		},
-		function(data,status){
-		  //alert("Returned: "+status);
-		  if(status=="success"){
-		  	rows=data.split("\\n");
-		  	$("#banIP").val(rows[0]);
-		  	$("#banCID").val(rows[1]);
-		  } else {
-		  	alert("Couldn't find that ckey.");
-		  }
-		});
-	});
-});
 		</script>
 EOF;
     }

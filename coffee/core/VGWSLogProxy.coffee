@@ -34,24 +34,3 @@ class VGWSLogProxy
     if console and @Level <= 1
       newargs = @_processargs '!ERROR!', message, args...
       console.error newargs...
-
-class VGWSCore
-  constructor: ->
-    log.info 'Starting up VGWS JS...'
-    @bodyCallbacks = []
-    @bodyIsReady = false
-
-  whenReady: (cb) =>
-    if @bodyIsReady
-      cb()
-      return
-    @bodyCallbacks.push cb
-    return
-
-log = new VGWSLogProxy
-core = new VGWSCore
-$ ->
-  core.bodyIsReady = yes
-  for cb in core.bodyCallbacks
-    cb()
-  return

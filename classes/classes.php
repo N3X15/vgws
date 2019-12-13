@@ -47,6 +47,8 @@ require_once CORE_DIR . '/Admin.class.php';
 require_once CORE_DIR . '/QF.class.php';
 require_once CORE_DIR . '/Jobs.class.php';
 require_once CORE_DIR . '/Poll.class.php';
+require_once CORE_DIR . '/Lobby/Animation.php';
+require_once CORE_DIR . '/Lobby/Pool.php';
 
 $ACT_HANDLERS = array();
 
@@ -56,6 +58,8 @@ require_once CORE_DIR . '/handlers/web/web_admins.class.php';
 require_once CORE_DIR . '/handlers/web/web_bans.class.php';
 require_once CORE_DIR . '/handlers/web/web_rapsheet.class.php';
 require_once CORE_DIR . '/handlers/web/web_poll.class.php';
+
+require_once CORE_DIR . '/handlers/web/web_lobbyscreen.class.php';
 
 // SERVER API HANDLERS
 require_once CORE_DIR . '/handlers/api/api_chkban.class.php';

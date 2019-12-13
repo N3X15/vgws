@@ -4,6 +4,7 @@ nOpts=0
 
 loadPollOptions = () ->
   # POST (?!) to our AJAX endpoint, with content {ajax:1,act:"getpoll_o",pollID:...}
+  # TODO: This is not very RESTful...
   $.ajax
     type : 'POST'
     url : AJAX_URI

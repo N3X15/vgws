@@ -212,6 +212,7 @@ bootstrap_files = bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.bootstrap-s
 mkCoffee('bans')
 mkCoffee('editpoll')
 mkCoffee('rapsheet')
+mkCoffee('lobby-core', files=[os.path.join('coffee', 'lobby', 'core.coffee')])
 mkCoffee('core', files=[
     os.path.join('coffee', 'core', '_functions.coffee'),
     os.path.join('coffee', 'core', 'JQConfirm.coffee'),
@@ -240,6 +241,8 @@ bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, 'imgs-to-htdocs.tgt'),
                        source=os.path.join('img'),
                        destination=os.path.join('htdocs', 'img')))
 
+
+lobbytool = bm.add(CommandBuildTarget([os.path.join('htdocs', 'data', 'lobby.json')], files=['lobbyscreens', 'main', '__POOL__.toml'], cmd=[sys.executable, 'lobbytool.py', 'collect']))
 # This requires having ssh access and rsync.
 if args.deploy:
     def deploy_dir(bm, dirname, is_private=False, deps=[]):
@@ -275,6 +278,7 @@ if args.deploy:
         'style',
         'classes',
         'templates',
+        'data',
     ]
     PUBLIC_FILES = [
         'index.php',
@@ -312,7 +316,7 @@ if args.deploy:
                                               filename=os.path.join('htdocs', 'manifest.json'),
                                               dependencies=[x.target for x in js_targets]))]
 
-    BT_MAIN = []
+    BT_MAIN = [lobbytool]
     #clean = maestro.add(CommandBuildTarget(targets=['@clean'], files=[], cmd=['ssh', '-i', KEYFILE, 'root@192.168.9.5', 'cd /host/ws-tux-001/htdocs/chanman && bash ./clean.sh'], show_output=False, echo=False))
     for dirname in PUBLIC_DIRS:
         deps = []
@@ -364,12 +368,15 @@ if args.deploy:
     keypath = KEYFILE
     if os_utils.is_windows() and ':' in keypath:
         keypath = keypath.replace('\\','/')
-    BT_MAIN = [x.target for x in BT_MAIN if x is not None]
+    allbts = []
+    for x in BT_MAIN:
+        if x is not None:
+            allbts += x.provides()
     bm.add(CommandBuildTarget(
         targets=['@after'],
-        files=BT_MAIN,
+        files=allbts,
         cmd=['ssh', '-i', keypath, f'{user}@{host}', ' && '.join(commands)],
-        dependencies=BT_MAIN,
+        dependencies=allbts,
         show_output=True,
         echo=False))
 bm.as_app(argp)

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ constant('SITE_TITLE') }} Lobby</title>
+		<link rel="stylesheet" href="{{ constant('WEB_ROOT') }}/style.php/lobby.scss" />
+		<link rel="stylesheet" href="{{ constant('WEB_ROOT') }}/css/jquery.tagit.css" />
+		<link rel="stylesheet" href="{{ constant('WEB_ROOT') }}/css/lib/jquery-ui.min.css" />
+		<script src="{{ constant('WEB_ROOT') }}/js/lib/jquery.min.js" type="text/javascript"></script>
+		<script src="{{ constant('WEB_ROOT') }}/js/lib/jquery-ui.min.js" type="text/javascript"></script>
+		<script src="{{ constant('WEB_ROOT') }}/js/lib/tag-it.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			/* GLOBAL SETTINGS */
+			{% for k, v in js_vars %}
+			var {{ k }} = {{ v|json_encode|raw }};
+			{% endfor %}
+		</script>
+    <style type="text/css">
+    /* Override whatever the fuck is set in the stylesheet. */
+    body { background-image: url('{{ IMAGE }}'); }
+    </style>
+		{% for script in scripts %}
+		<script src="{{ constant('WEB_ROOT') }}/{{ asset(script) }}" type="text/javascript"></script>
+		{% endfor %}
+  </head>
+  <body>
+  </body>
+</html>

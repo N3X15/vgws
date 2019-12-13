@@ -16,11 +16,14 @@
 /htdocs/img
 /htdocs/js
 /htdocs/manifest.json
-/lib/js 
+/lib/js
 /nano
 /node_modules
 /style/bootstrap
 /tmp
 /vendor
 /yarn-error.log
-/buildconf.yml 
+/buildconf.yml
+lobbyscreens/*/
+data/lobby.json
+htdocs/

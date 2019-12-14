@@ -81,9 +81,18 @@ def main():
     p_collect.set_defaults(cmd=_cmd_collect)
 
     p_create = subp.add_parser('create', help='Create new lobby pool')
-    p_create.add_argument('--format', choices=['toml', 'yaml', 'json'], default='toml', help='Format of the __POOL__ file')
     p_create.add_argument('ID', type=str, help="ID of the pool.")
     p_create.set_defaults(cmd=_cmd_create)
+
+    p_set = subp.add_parser('set-anim', help='Set properties of a given animation in a given pool')
+    p_set.add_argument('poolID', type=str, help="ID of the pool.")
+    p_set.add_argument('animID', type=str, help="ID of the animation.")
+    p_set.add_argument('--set-filename', type=str, default=None, help="Change filename.")
+    p_set.add_argument('--override-playlist', type=str, default=None, help="Override playlist")
+    p_set.add_argument('--add-script', type=str, nargs='*', help="Add JS script to run in browser when playing")
+    p_set.add_argument('--rm-script', type=str, nargs='*', help="Remove JS script by filename")
+    p_set.add_argument('--clear-scripts', action='store_true', default=False, help="Remove all JS scripts")
+    p_set.set_defaults(cmd=_cmd_set)
 
     args = argp.parse_args()
 
@@ -102,18 +111,77 @@ def _cmd_create(args):
     pooldir = os.path.join('lobbyscreens', args.ID)
     os_utils.ensureDirExists(pooldir, noisy=True)
     os_utils.ensureDirExists(os.path.join(pooldir, 'files'), noisy=True)
-    if args.format == 'toml':
-        with open(os.path.join(pooldir, '__POOL__.toml'), 'w') as f:
-            toml.dump(data, f)
-            log.info('Wrote %s.', f.name)
-    if args.format == 'yaml':
-        with open(os.path.join(pooldir, '__POOL__.yml'), 'w') as f:
-            yaml.dump(data, f, default_flow_style=False)
-            log.info('Wrote %s.', f.name)
-    if args.format == 'json':
-        with open(os.path.join(pooldir, '__POOL__.json'), 'w') as f:
-            json.dump(data, f, indent=2)
-            log.info('Wrote %s.', f.name)
+    written = []
+    with open(os.path.join(pooldir, '__POOL__.yml'), 'w') as f:
+        yaml.dump(data, f, default_flow_style=False)
+        log.info('Wrote %s.', f.name)
+        written += [f.name]
+
+    with open('.gitignore', 'w') as f:
+        f.write('/parsed.toml\n')
+        written += [f.name]
+
+    with os_utils.Chdir(pooldir):
+        if not os.path.isdir('.git'):
+            os_utils.cmd(['git', 'init'], echo=True, show_output=True, critical=True)
+        os_utils.cmd(['git', 'lfs', 'install'], echo=True, show_output=True, critical=True)
+        os_utils.cmd(['git', 'lfs', 'track', '*.png', '*.gif', '*.jpg', '*.webm', '*.webp'], echo=True, show_output=True, critical=True)
+        os_utils.cmd(['git', 'add', '.gitattributes']+written, echo=True, show_output=True, critical=True)
+
+def _cmd_set(args=None):
+    pooldir = os.path.join('lobbyscreens', args.poolID)
+
+    data = {}
+    data = None
+    datafile = os.path.join(pooldir, '__POOL__.toml')
+    readfrom = ''
+    if os.path.isfile(datafile):
+        with open(datafile, 'r') as f:
+            data = toml.load(f)
+            readfrom = f.name
+    datafile = os.path.join(pooldir, '__POOL__.yml')
+    if os.path.isfile(datafile):
+        with open(datafile, 'r') as f:
+            data = yaml.load(f)
+            readfrom = f.name
+    datafile = os.path.join(pooldir, '__POOL__.json')
+    if os.path.isfile(datafile):
+        with open(datafile, 'r') as f:
+            data = json.load(f)
+            readfrom = f.name
+    if data is None:
+        log.critical('Could not find __POOL__.yml, __POOL__.toml, nor __POOL__.json')
+        sys.exit(1)
+    pool = Pool()
+    pool.ID = args.poolID
+    pool.deserialize(data)
+    poolfilesdir = os.path.join(pooldir, 'files')
+
+    if args.animID in pool.animationsByID.keys():
+        anim = pool.animationsByID[args.animID]
+        if args.set_filename is not None:
+            anim.filename = args.set_filename
+    else:
+        anim = Animation()
+        anim.ID = args.animID
+        anim.filename = args.set_filename or f'{args.animID}.gif'
+        pool.animationsByID[args.animID] = anim
+    if args.override_playlist is not None:
+        anim.overridePlaylist = args.override_playlist
+    for script in args.add_scripts:
+        anim.scripts += [script]
+    for script in args.rm_scripts:
+        anim.scripts.remove(script)
+    if args.clear_scripts:
+        anim.scripts = []
+
+    try:
+        with open('__POOL__.tmp.yaml', 'w') as f:
+            yaml.dump(pool.serialize(), f, default_flow_style=True)
+    finally:
+        os.remove(readfrom)
+        os_utils.single_copy('__POOL__.tmp.yml', '__POOL__.yml')
+        os.remove('__POOL__.tmp.yml')
 
 def _cmd_collect(args=None):
     allpools = {}

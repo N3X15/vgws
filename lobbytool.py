@@ -118,7 +118,7 @@ def _cmd_create(args):
         written += [f.name]
 
     with open('.gitignore', 'w') as f:
-        f.write('/parsed.toml\n')
+        f.write('/parsed.yml\n')
         written += [f.name]
 
     with os_utils.Chdir(pooldir):
@@ -133,24 +133,13 @@ def _cmd_set(args=None):
 
     data = {}
     data = None
-    datafile = os.path.join(pooldir, '__POOL__.toml')
-    readfrom = ''
-    if os.path.isfile(datafile):
-        with open(datafile, 'r') as f:
-            data = toml.load(f)
-            readfrom = f.name
     datafile = os.path.join(pooldir, '__POOL__.yml')
     if os.path.isfile(datafile):
         with open(datafile, 'r') as f:
-            data = yaml.load(f)
-            readfrom = f.name
-    datafile = os.path.join(pooldir, '__POOL__.json')
-    if os.path.isfile(datafile):
-        with open(datafile, 'r') as f:
-            data = json.load(f)
+            data = yaml.safe_load(f)
             readfrom = f.name
     if data is None:
-        log.critical('Could not find __POOL__.yml, __POOL__.toml, nor __POOL__.json')
+        log.critical('Could not find __POOL__.yml')
         sys.exit(1)
     pool = Pool()
     pool.ID = args.poolID
@@ -176,8 +165,8 @@ def _cmd_set(args=None):
         anim.scripts = []
 
     try:
-        with open('__POOL__.tmp.yaml', 'w') as f:
-            yaml.dump(pool.serialize(), f, default_flow_style=True)
+        with open('__POOL__.tmp.yml', 'w') as f:
+            yaml.dump(pool.serialize(), f, default_flow_style=False)
     finally:
         os.remove(readfrom)
         os_utils.single_copy('__POOL__.tmp.yml', '__POOL__.yml')
@@ -188,18 +177,10 @@ def _cmd_collect(args=None):
     for pooldirname in os.listdir('lobbyscreens'):
         pooldir = os.path.join('lobbyscreens', pooldirname)
         data = None
-        datafile = os.path.join(pooldir, '__POOL__.toml')
-        if os.path.isfile(datafile):
-            with open(datafile, 'r') as f:
-                data = toml.load(f)
         datafile = os.path.join(pooldir, '__POOL__.yml')
         if os.path.isfile(datafile):
             with open(datafile, 'r') as f:
-                data = yaml.load(f)
-        datafile = os.path.join(pooldir, '__POOL__.json')
-        if os.path.isfile(datafile):
-            with open(datafile, 'r') as f:
-                data = json.load(f)
+                data = yaml.safe_load(f)
         if data is None:
             continue
         pool = Pool()
@@ -216,7 +197,7 @@ def _cmd_collect(args=None):
             filedatapath = os.path.join(poolfilesdir, basename+'.yml')
             if os.path.isfile(filedatapath):
                 with open(filedatapath, 'r') as f:
-                    data = yaml.load(f)
+                    data = yaml.safe_load(f)
             filedatapath = os.path.join(poolfilesdir, basename+'.toml')
             if os.path.isfile(filedatapath):
                 with open(filedatapath, 'r') as f:
@@ -233,8 +214,8 @@ def _cmd_collect(args=None):
             os_utils.ensureDirExists(os.path.dirname(destfile), noisy=False)
             os_utils.single_copy(fullpath, destfile, as_file=True, noisy=False)
             pool.add(anim)
-        with open(os.path.join(pooldir, 'parsed.toml'), 'w') as f:
-            toml.dump(pool.serialize(suppress_id=True), f)
+        with open(os.path.join(pooldir, 'parsed.yml'), 'w') as f:
+            yaml.dump(pool.serialize(suppress_id=True), f, default_flow_style=False)
         log.info('Found pool %r: %d animations', pool.ID, len(pool.animations))
         allpools[pool.ID] = pool.serialize()
     os_utils.ensureDirExists('data')

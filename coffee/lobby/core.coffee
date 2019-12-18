@@ -9,6 +9,7 @@ class MediaEntry
     @Album = ''
     @URL = ''
     @MD5 = ''
+    @OrigFileName = ''
 
     @Length = 0
 
@@ -19,8 +20,12 @@ class MediaEntry
     @Length = data['length']
     @URL = data['url']
     @MD5 = data['md5']
+    @OrigFileName = if 'orig_filename' of data then data['orig_filename'] else ''
 
   play: ->
+    if !@Artist and !@Album and !@Title
+      @Title = "Untitled"
+      @Album = if !@OrigFileName then "#{@MD5}.mp3" else @OrigFileName
     $credits_artist.text @Artist
     $credits_album.text @Album
     $credits_title.text @Title
@@ -37,7 +42,11 @@ class MediaEntry
     return
 
 nextSong = ->
-  me = songs[Math.floor(Math.random()*songs.length)]
+  me = null
+  while songs.length > 1
+    me = songs[Math.floor(Math.random()*songs.length)]
+    if me.URL != @URL
+      break
   me.play()
   return
 
@@ -72,4 +81,4 @@ core.whenReady ->
       nextSong()
       return # $.ajax().done
     return # setOneShotTimer
-  return #whenReady
+  return # whenReady

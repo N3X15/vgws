@@ -18,13 +18,15 @@ $icon-font-path: '[WEB_ROOT]/fonts/' !default;
 
 body,
 html {
-    background-color: black;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100vh;
-    font-family: arial, sans-serif;
-    font-size: small;
-    height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100vh;
+  font-family: arial, sans-serif;
+  font-size: small;
+  height: 100vh;
 
   image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
   image-rendering: -moz-crisp-edges;          /* Firefox                        */

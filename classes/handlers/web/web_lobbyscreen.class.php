@@ -54,6 +54,8 @@ class LobbyScreen extends Page {
       $playlist = $animation->overridePlaylist;
     if($adminOverrides != null && array_key_exists('playlist', $adminOverrides))
       $playlist = $adminOverrides['playlist'];
+    if(isset($_GET['playlist']))
+      $playlist = filter_input(INPUT_GET, 'playlist', FILTER_VALIDATE_REGEXP, ['options'=>['default'=>'main', 'regexp'=>self::FILENAME]]);
 
     $template = $pool->template;
     if($animation->overrideTemplate != null)

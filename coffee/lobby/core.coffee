@@ -2,6 +2,54 @@ audio = null
 playing = no
 songs = []
 $credits_box = $credits_album = $credits_title = $credits_artist = null
+
+# Utility, not really useful to BYOND
+findBaseName = (url) ->
+  fileName = url.substring(url.lastIndexOf('/') + 1)
+  dot = fileName.lastIndexOf('.')
+  if dot == -1 then fileName else fileName.substring(0, dot)
+
+###
+# Set Playlist
+#
+# Sets playlist and downloads song list from media server.
+###
+setPlaylist = (playlistID)->
+  window.PLAYLIST = playlistID
+  # Grab the playlist we want.
+  $.ajax
+    type: 'GET'
+    url: "#{window.MEDIA_BASEURL}/index.php?playlist=#{window.PLAYLIST}&key=#{window.MEDIA_KEY}&type=json"
+    dataType: 'json'
+  .done (response) ->
+    console.log response
+    # Deserialize MediaEntries.
+    window.songs.length = 0
+    for medata in response
+      me = new MediaEntry()
+      me.deserialize medata
+      songs.push(me)
+    # Start playing.
+    nextSong()
+    return # $.ajax().done
+  return # setPlaylist
+
+###
+# Set Media URL
+#
+# Overrides currently-playing song, and sets the playlist to a single song.
+###
+setMediaURL = (uri) ->
+  me = new MediaEntry()
+  window.songs.length = 0
+  songs.push me
+  me.URL = uri
+  me.OrigFileName = findBaseName(me.URL)
+  me.MD5 = ''
+  me.Length = -1 # Not actually used but whatever
+  me.play()
+  return
+
 class MediaEntry
   constructor: ->
     @Title = ''
@@ -45,7 +93,7 @@ nextSong = ->
   me = null
   while songs.length > 1
     me = songs[Math.floor(Math.random()*songs.length)]
-    if me.URL != @URL
+    if me and me.URL != @URL
       break
   me.play()
   return
@@ -65,20 +113,6 @@ core.whenReady ->
   $(document.body).append $credits_box
 
   core.setOneShotTimer 1000, ->
-    # Grab the playlist we want.
-    $.ajax
-      type: 'GET'
-      url: "#{window.MEDIA_BASEURL}/index.php?playlist=#{window.PLAYLIST}&key=#{window.MEDIA_KEY}&type=json"
-      dataType: 'json'
-    .done (response) ->
-      console.log response
-      # Deserialize MediaEntries.
-      for medata in response
-        me = new MediaEntry()
-        me.deserialize medata
-        songs.push(me)
-      # Start playing.
-      nextSong()
-      return # $.ajax().done
+    setPlaylist(window.PLAYLIST)
     return # setOneShotTimer
   return # whenReady

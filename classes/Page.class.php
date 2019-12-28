@@ -196,7 +196,7 @@ class Page
 
     public function __construct()
     {
-      $this->scripts[]= Assets::Get('js/core.min.js');
+      $this->scripts []= Assets::Get('js/core.min.js');
     }
 
     public function getURL() {
@@ -433,6 +433,10 @@ class Page
                     $actHideLinks = $ah->hideLinks;
                 }
             }
+
+            $this->js_assignments['WEB_ROOT'] = WEB_ROOT;
+            $this->js_assignments['API_PHP_URL'] = WEB_ROOT."/api.php";
+            $this->js_assignments['INDEX_PHP_URL'] = WEB_ROOT."/index.php";
 
             $this->setTemplateVar('head', $this->onHeader());
             $this->setTemplateVar('subpagelinks', $this->onSubPages());

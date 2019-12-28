@@ -1,3 +1,4 @@
+# From ChanMan, another project of mine.
 JQPrompt = (config) ->
   if !config.title
     config.title='Prompt'

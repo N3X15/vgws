@@ -14,7 +14,10 @@ class Message
         'ERROR'
 
   display: (cmi) ->
-    text = "#{@Type} in #{@File}:#{@Line}: #{@Message}"
+    lineinfo = ''
+    if @File isnt '' and @Line > -1
+      lineinfo = " in #{@File}:#{@Line}"
+    text = "#{@Type}#{lineinfo}: #{@Message}"
     switch @Type
       when EMessageType.INFO
         cmi.Log.Info text
@@ -25,3 +28,4 @@ class Message
       when EMessageType.ERROR
         cmi.Log.Error text
         cmi.addErrorMessage text
+    return

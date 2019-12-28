@@ -1,4 +1,4 @@
-
+# From ChanMan, another project of mine
 class Modal
   constructor: ->
     @BackgroundElement = null

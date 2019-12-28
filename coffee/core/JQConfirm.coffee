@@ -1,3 +1,4 @@
+# From ChanMan, another project of mine.
 JQConfirm = (config) ->
   if !config.title
     config.title='Confirm'

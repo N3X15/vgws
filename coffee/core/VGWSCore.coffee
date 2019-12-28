@@ -1,4 +1,3 @@
-
 class VGWSCore
   constructor: ->
     log.info 'Starting up VGWS JS...'
@@ -59,19 +58,21 @@ class VGWSCore
     @bodyCallbacks.push cb
     return
 
-  buildWebURI : (args) ->
-    o = WEB_ROOT + '/index.php'
-    if args.length > 0
-      i = 0
-      while i < args.length
-        o += '/' + args[i]
-        i++
+  _build_path: (base, path, get_args={}, anchor='') ->
+    o = ''+base
+    if path.length > 0
+      for entry in path
+        o += '/'+entry
+    if Object.keys(get_args).length > 0
+      o += '?'
+      for k,v of get_args
+        o += k+'='+encodeURIComponent(v)
+    if anchor.length > 0
+      o += '#'+encodeURIComponent(anchor)
     return o
+
+  buildWebURI : (path, get_args={}, anchor='') ->
+    return @_build_path INDEX_PHP_URL, path, get_args, anchor
+
   buildAPIURI : (args) ->
-    o = WEB_ROOT + '/api.php'
-    if args.length > 0
-      i = 0
-      while i < args.length
-        o += '/' + args[i]
-        i++
-    return o
+    return @_build_path API_PHP_URL, path, get_args, anchor

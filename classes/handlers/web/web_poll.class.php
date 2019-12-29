@@ -1,7 +1,9 @@
 <?php
-/*class PollDeleteAction extends AdminActionHandler {
-
-}*/
+use \VGWS\Content\AdminActionHandler;
+use \VGWS\Content\Page;
+use \VGWS\Polls\PollOption;
+use \VGWS\Polls\Poll;
+use \VGWS\HTML\Elements\Form;
 
 $validPollTypes = array('OPTION', 'NUMVAL', 'TEXT', 'MULTICHOICE');
 
@@ -235,7 +237,7 @@ class EditPollPage extends Page
         global $validPollTypes;
         $this->pollID = intval($this->request->param('pollid'));
         $this->poll = Poll::GetByID($this->pollID);
-        $this->scripts[]=Assets::Get('js/editpoll.min.js');
+        $this->scripts[]=\VGWS\Content\Assets::Get('js/editpoll.min.js');
 
         $this->js_assignments['POLL_ID']=$this->pollID;
         $this->js_assignments['AJAX_URI']=fmtURL('poll',$this->pollID,'edit');
@@ -255,6 +257,6 @@ class EditPollPage extends Page
     }
 }
 
-Router::Register('/poll/?', new PollListPage());
-Router::Register('/poll/[i:pollid]/?', new PollDisplayPage());
-Router::Register('/poll/[i:pollid]/edit/?', new EditPollPage());
+\VGWS\Router::Register('/poll/?', new PollListPage());
+\VGWS\Router::Register('/poll/[i:pollid]/?', new PollDisplayPage());
+\VGWS\Router::Register('/poll/[i:pollid]/edit/?', new EditPollPage());

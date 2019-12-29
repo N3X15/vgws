@@ -1,252 +1,69 @@
 <?php
 namespace VGWS\Database;
-/**
- * All valid identifier escaping characters *that we want to fix*, as a string.
- */
-define('ALL_IDENT_DELIMITERS', '`');
 
-class DB_Compatibility
-{
-    /**
-     * HIGH_PRIORITY replacement.
-     */
-    public $HighPriority = '';
-
-    /**
-     * Identifier escaping character to transform to.
-     *
-     *  e.g. SELECT * FROM `from`
-     *
-     * Double-quotes are ANSI, so default.
-     */
-    public $IdentEscapeChar = '"';
-
-    /**
-     * Characters that indicate the beginning of a string.
-     */
-    public $StringDelimiters = '\'';
-
-    private $fixTrue = false;
-    public $BooleanTrue = 'TRUE';
-
-    private $fixFalse = false;
-    public $BooleanFalse = 'FALSE';
-
-    /*
-     * States
-     */
-    const ST_INITIAL = 0;
-    const ST_IN_STRING = 1;
-    const ST_IN_IDENTIFIER = 2;
-
-    // "Feature" flags and whatnot.
-    private $fixHighPriority = false;
-
-    /**
-     * Sanity checks and stuff.
-     */
-    public function __construct()
-    {
-        // Only fix HIGH_PRIORITY if we need to.
-        $this->fixHighPriority = 'HIGH_PRIORITY' != $this->HighPriority;
-        $this->fixTrue = 'TRUE' != $this->BooleanTrue;
-        $this->fixFalse = 'FALSE' != $this->BooleanFalse;
-    }
-
-    /**
-     * Fix escape characters, invalid keywords.
-     * @param $params array SQL statement to repair.
-     * @return Fixed SQL params.
-     */
-    public function FixParams($params)
-    {
-        return $params;
-    }
-
-    /**
-     * Build a LIMIT statement.
-     * @param $limit int The number of records to return.
-     * @param $offset int Offset from the beginning record.
-     * @return Fixed SQL params.
-     */
-    public function BuildLimit($limit, $offset = 0)
-    {
-        // Turns out, this works okay with MySQL AND postgres.
-        $o = 'LIMIT ' . $limit;
-        if ($offset != 0) {
-            $o = ' OFFSET ' . $offset;
-        }
-        return $o;
-    }
-
-    /**
-     * Fix escape characters, invalid keywords.
-     * @param $sql string SQL statement to repair.
-     * @return Fixed SQL statement.
-     */
-    public function FixQuery($sql)
-    {
-        // Shitty state machine.
-        $cstate = self::ST_INITIAL;
-
-        // honk
-        $newsql = '';
-
-        // Checking for escape characters.
-        $char_escaped = false;
-
-        // Replace HIGH_PRIORITY, if need be.
-        if ($this->fixHighPriority)
-            $sql = str_replace('HIGH_PRIORITY', $this->HighPriority, $sql);
-
-        // Iterate through each character in the query.
-        for ($i = 0; $i < strlen($sql); $i++) {
-            $c = $sql[$i];
-
-            if (!$char_escaped) {
-                // @formatter:off
-                // Are we an identifier escape character?
-                // Are we not inside of a string?
-                if(strpos(ALL_IDENT_DELIMITERS,$c)!==false && $cstate!=self::ST_IN_STRING) {
-                    // Fix character.
-                    $newsql.=$this->IdentEscapeChar;
-
-                    // Set new state.
-                    $cstate=($cstate==self::ST_INITIAL) ? self::ST_IN_IDENTIFIER : self::ST_INITIAL;
-                    continue;
-                }
-
-                // Are we a string delimiter?
-                // Are we not inside of a string?
-                elseif(strpos($this->StringDelimiters,$c)!==false) {
-                    // Set new state.
-                    $cstate=($cstate==self::ST_INITIAL) ? self::ST_IN_STRING : self::ST_INITIAL;
-                }
-
-                elseif($cstate!=self::ST_IN_STRING)
-                {
-                    // Check for {P} (prefix char)
-                    /*
-                    if(substr($sql,$i,3)=='{P}') {
-                        $i+=2;
-                        $newsql.=KU_DBPREFIX;
-                        continue;
-                    }
-                    */
-
-                    // Check for TRUE
-                    // elseif
-                    if(substr($sql,$i,3)=='TRUE') {
-                        $i+=3;
-                        $newsql.=$this->BooleanTrue;
-                        continue;
-                    }
-
-                    // Check for FALSE
-                    elseif(substr($sql,$i,3)=='FALSE') {
-                        $i+=4;
-                        $newsql.=$this->BooleanFalse;
-                        continue;
-                    }
-                }
-
-                // Escaped
-                elseif($c=='\\') {
-                    $char_escaped=true;
-                    $newsql.=$c;
-                    continue;
-                }
-                // @formatter:on
-            }
-
-            // Turn off escaping for the next character.
-            $char_escaped = false;
-
-            // Throw the new character on the buffer.
-            $newsql .= $c;
-        }
-
-        return $newsql;
-    }
-
-}
-
-/**
- * Compatibility layer for Postgres.
- */
-class DB_PostgresCompatibility extends DB_Compatibility
-{
-    // THAT'S RIGHT KIDS! POSTGRES IS TOO STUPID TO HANDLE BOOLEANS PROPERLY!
-    public function FixParams($args)
-    {
-        //http://php.net/manual/en/function.pg-query-params.php#115063
-        //https://bugs.php.net/bug.php?id=68156 (by yours truly)
-        $output = array();
-        foreach ($args as &$value) {
-            if (is_bool($value)) {
-                $value = ($value) ? $this->BooleanTrue : $this->BooleanFalse;
-            }
-        }
-        return $args;
-    }
-
-}
-
-/**
- * Compatibility layer for MySQL/MariaDB.
- */
-class DB_MySqlCompatibility extends DB_Compatibility
-{
-    public $HighPriority = 'HIGH_PRIORITY';
-    public $IdentEscapeChar = '`';
-}
 
 class DB
 {
     /**
      * ADODB connection we're wrapping up.
      */
-    private static $conn;
+    public static $conn;
     private static $compat;
 
     //@formatter:off
     private static $CompatibilityTypes = array(
-        'mysql'      => 'DB_MySqlCompatibility',
-        'mysqli'     => 'DB_MySqlCompatibility',
+        'mysql'      => '\\VGWS\\Database\\Compatibility\\MySQLCompatibility',
+        'mysqli'     => '\\VGWS\\Database\\Compatibility\\MySQLCompatibility',
 
-        'postgres64' => 'DB_PostgresCompatibility',
-        'postgres7'  => 'DB_PostgresCompatibility',
-        'postgres8'  => 'DB_PostgresCompatibility',
-        'postgres9'  => 'DB_PostgresCompatibility'
+        'postgres64' => '\\VGWS\\Database\\Compatibility\\PostgresCompatibility',
+        'postgres7'  => '\\VGWS\\Database\\Compatibility\\PostgresCompatibility',
+        'postgres8'  => '\\VGWS\\Database\\Compatibility\\PostgresCompatibility',
+        'postgres9'  => '\\VGWS\\Database\\Compatibility\\PostgresCompatibility'
     );
     //@formatter:on
+    // Not used in VGWS
+    public static $AllTables=[
+        #'phinxlog',
+    ];
 
     public static function Initialize()
     {
-        global $kx_db;
+        global $db;
 
         // Start this bitch up.
-        static::$conn = NewADOConnection(DB_DSN);
-        static::$compat = new static::$CompatibilityTypes[DB_TYPE]();
+        static::$conn = NewADOConnection(DB_DRIVER);
+        static::$compat = new static::$CompatibilityTypes[DB_DRIVER]();
 
         // Error reporting.
         #static::$conn->raiseErrorFn = 'ku_adodb_error';
 
+        $concheck=null;
+        if (DB_PERSISTENT) {
+            $concheck=static::$conn->PConnect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_SCHEMA) or die('SQL database connection error: ' . static::$conn->ErrorMsg());
+        } else {
+            $concheck=static::$conn->Connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_SCHEMA) or die('SQL database connection error: ' . static::$conn->ErrorMsg());
+        }
+        if(!$concheck) {
+            die('Database failed to connect: '.DB::ErrorMsg());
+        }
+        //  $this->conn->SetFetchMode(ADODB_FETCH_ASSOC);
+
         // SQL debug
-        if (false) {
+        if (DB_DEBUG) {
             static::$conn->debug = true;
         }
-        static::$conn->Execute("SET NAMES 'utf8'");
-        $kx_db = new DBProxy;
+        static::$conn->Execute("SET NAMES 'utf8mb4'");
+        static::$conn->Execute("SET time_zone = '+00:00'");
+        $db = new DBProxy;
     }
 
     public static function Debug($on) {
-        static::$conn->debug=$on;
+        static::$conn->debug = $on;
     }
 
     public static function InitForTesting()
     {
-        static::$compat = new DB_PostgresCompatibility();
+        static::$compat = new \VGWS\Database\Compatibility\PostgresCompatibility();
     }
 
     public static function QuoteColumn($columnName)
@@ -277,6 +94,38 @@ class DB
         return static::$conn->ErrorMsg();
     }
 
+    public static function ErrorNo()
+    {
+        return static::$conn->ErrorNo();
+    }
+
+    public static function AffectedRows()
+    {
+        return static::$conn->Affected_Rows();
+    }
+
+    public static function Insert_ID() {
+        return static::$conn->Insert_ID();
+    }
+
+    public static function GetVariable($varID)
+    {
+        return static::$conn->GetOne("SELECT @@SESSION.".$varID);
+    }
+
+    public static function SetVariable($varID,$value,$verbose=false)
+    {
+        $cval=static::GetVariable($varID);
+        if(is_float($value))
+            $cval=floatval($cval);
+        if(is_int($value))
+            $cval=intval($cval);
+        if($cval!=$value) {
+            if($verbose)
+                printf("\n [MySQL] $varID: {$cval} -> {$value}");
+            static::Execute("SET SESSION $varID=?",array($value));
+         }
+    }
     public static function Execute($sql, array $args = array())
     {
         $sql = static::FixSQL($sql);
@@ -289,6 +138,13 @@ class DB
         $sql = static::FixSQL($sql);
         $args = static::FixArgs($args);
         return static::$conn->CacheExecute($sql, $args);
+    }
+
+    public static function PageExecute($sql, $results, $pagenum, array $args = array())
+    {
+        $sql = static::FixSQL($sql);
+        $args = static::FixArgs($args);
+        return static::$conn->PageExecute($sql, $results, $pagenum, $args);
     }
 
     public static function GetAll($sql, array $args = array())
@@ -312,10 +168,13 @@ class DB
         return static::$conn->GetRow($sql, $args);
     }
 
-    public static function Insert_Id()
+    public static function SetFetchMode($arg)
     {
-        return static::$conn->Insert_Id();
+        return static::$conn->SetFetchMode($arg);
     }
+
+    public static function StartTrans(array $args = array()) { return static::$conn->StartTrans(); }
+    public static function CompleteTrans(array $args = array()) { return static::$conn->CompleteTrans(); }
 
     public static function BuildPagedLimit(int $desiredPage, int $itemsPerPage)
     {
@@ -335,11 +194,24 @@ class DB
         return '(' . implode(',', $items) . ')';
     }
 
+    public static function ExecuteRandomRows(string $table, string $pk='id', int $nrows=1) {
+        // http://www.mysqltutorial.org/select-random-records-database-table.aspx
+        $sql = <<<SQL
+SELECT *
+FROM $table AS t1
+JOIN
+    (SELECT CEIL(RAND() * (SELECT MAX($pk) FROM random)) AS $pk) AS t2
+WHERE t1.$pk >= t2.$pk
+ORDER BY t1.$pk ASC
+LIMIT $nrows
+SQL;
+        return self::Execute($sql);
+    }
 }
 
 class DBProxy
 {
-    static $SUPPORTED_FUNCTIONS = array('Execute', 'GetAll', 'GetOne', 'ErrorMsg');
+    static $SUPPORTED_FUNCTIONS = array('Execute', 'GetAll', 'GetOne', 'ErrorMsg', 'GetRow',"PageExecute");
     static $ALIASES = array('getOne' => 'GetOne');
     public function __call($name, array $args = array())
     {
@@ -350,6 +222,7 @@ class DBProxy
         if (!in_array($name, self::$SUPPORTED_FUNCTIONS)) {
             print('WARNING:  Unknown ADODB function ' . $name);
         }
+        #var_dump($args);
         return DB::$name(...$args); // This line fucks up everything that isn't ready for PHP 5.6.
                                     // Comment it out if you're using a linter or doing code analysis.
     }
@@ -362,64 +235,4 @@ class DBProxy
 function quoteColumn($columnName)
 {
     return DB::QuoteColumn($columnName);
-}
-
-class CompoundInsert
-{
-    public $Fields = array();
-    public $Records = array();
-    public $TableName = '';
-
-    public function __construct(DBTable $dbtable)
-    {
-        $this->Fields = array_map('quoteColumn', array_keys($dbtable->getTableBindings()));
-        $this->TableName = $dbtable->getTableName();
-    }
-
-    public static function Build(array $dbtables)
-    {
-        $op = new CompoundInsert($dbtables[0]);
-        foreach ($dbtables as $dbtable) {
-            $op->AddRecord($dbtable);
-        }
-        return $op;
-    }
-
-    public function AddRecord(DBTable $dbtable)
-    {
-        $values = array();
-        $converters = $dbtable->getTableConverters();
-        foreach ($dbtable->getTableBindings() as $dbname => $attrname) {
-            if ($attrname == null)
-                continue;
-            $value = $dbtable->$attrname;
-            if (isset($converters[$dbname]))
-                $value = $converters[$dbname]->toDB($value);
-            $values[] = $value;
-        }
-        $this->Records[] = $values;
-    }
-
-    public function Execute($returnSQL = false)
-    {
-        $values = array();
-        $colList = array();
-        $blocks = array();
-        foreach ($this->Records as $record) {
-            foreach ($record as $dbname => $value) {
-                $values[] = $value;
-            }
-            $blocks[] = '(' . implode(',', array_fill(0, count($record), '?')) . ')';
-        }
-        $sql = "INSERT INTO " . DB::QuoteTable($this->TableName) . " (" . implode(',', $this->Fields) . ") VALUES " . implode(',', $blocks);
-        if ($returnSQL)
-            return $sql;
-        $err = DB::Execute($sql, $values);
-        if (!$err) {
-            Page::Message('error', DB::ErrorMsg());
-            return false;
-        }
-        return true;
-    }
-
 }

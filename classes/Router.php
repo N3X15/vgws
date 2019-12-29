@@ -65,7 +65,7 @@ class Router
         return self::$router->request();
     }
 
-    public static function Register($format, Page $page)
+    public static function Register($format, \VGWS\Content\Page $page)
     {
         self::Initialize();
         self::$pages[$format]=$page;

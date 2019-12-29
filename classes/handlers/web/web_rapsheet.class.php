@@ -1,12 +1,16 @@
 <?php
 
+use \VGWS\Content\AdminActionHandler;
+use \VGWS\Content\Page;
+use \VGWS\Database\DB;
+
 class RapsheetPage extends Page
 {
     public $relurl = '/rapsheet';
     public $title = "Rapsheet";
     public $image = "/img/admins.png";
     public $adminOnly = true;
-    
+
     public function OnBody()
     {
         global $ADMIN_FLAGS;
@@ -80,7 +84,7 @@ class RapsheetPage extends Page
 
         $this->js_assignments['API_TARGET'] = fmtAPIURL('findcid');
         $this->js_assignments['AUTOCOMPLETE'] = Jobs::$KnownJobs;
-        $this->scripts[] = Assets::Get('js/rapsheet.min.js');
+        $this->scripts[] = \VGWS\Content\Assets::Get('js/rapsheet.min.js');
 
         $this->setTemplateVar('bans', $bans);
         $this->setTemplateVar('jbans', $jbans);
@@ -90,4 +94,4 @@ class RapsheetPage extends Page
     }
 }
 
-Router::Register('/rapsheet/?', new RapsheetPage);
+\VGWS\Router::Register('/rapsheet/?', new RapsheetPage);

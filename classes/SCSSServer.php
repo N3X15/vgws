@@ -2,7 +2,7 @@
 // From ChanMan Web Services (A private project, thus far)
 namespace VGWS;
 use ScssPhp\ScssPhp\Server;
-class CMW_SCSS_Server extends Server
+class SCSSServer extends Server
 {
     protected $dir='style';
     /**

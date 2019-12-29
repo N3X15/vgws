@@ -103,7 +103,7 @@ class Page
 
     public function __construct()
     {
-      $this->scripts []= \VGWS\Assets::Get('js/core.min.js');
+      $this->scripts []= \VGWS\Content\Assets::Get('js/core.min.js');
 
       $this->js_assignments['WEB_ROOT'] = WEB_ROOT;
       $this->js_assignments['API_PHP_URL'] = API_PHP_URL;
@@ -146,7 +146,7 @@ class Page
      */
     public static function DumpMessages()
     {
-        var_dump(Page::$messages);
+        var_dump(\VGWS\Content\Page::$messages);
     }
 
     public static function Initialize()
@@ -154,7 +154,7 @@ class Page
         $loader = new \Twig\Loader\FilesystemLoader(TEMPLATE_DIR);
         self::$tpl = new \Twig\Environment($loader, array('cache' => CACHE_DIR . '/cache', 'strict' => true, 'debug' => true));
         //self::$tpl->addExtension(new KuTwigExtension());
-        self::$tpl->addExtension(new VGWSExtension());
+        self::$tpl->addExtension(new \VGWS\Twig\VGWSExtension());
     }
 
     /**
@@ -165,7 +165,7 @@ class Page
      */
     public function addError($message, $fieldName = '__GLOBAL__')
     {
-        Page::Message('error', $message, $fieldName);
+        \VGWS\Content\Page::Message('error', $message, $fieldName);
     }
 
     /**
@@ -176,7 +176,7 @@ class Page
      */
     public function addWarning($message, $fieldName = '__GLOBAL__')
     {
-        Page::Message('warning', $message, $fieldName);
+        \VGWS\Content\Page::Message('warning', $message, $fieldName);
     }
 
     /**
@@ -187,7 +187,7 @@ class Page
      */
     public function addMessage($message, $fieldName = '__GLOBAL__')
     {
-        Page::Message('generic', $message, $fieldName);
+        \VGWS\Content\Page::Message('generic', $message, $fieldName);
     }
 
     /**
@@ -200,7 +200,7 @@ class Page
     {
         if (!array_key_exists($fieldName, self::$messages))
             self::$messages[$fieldName] = array();
-        self::$messages[$fieldName][] = new Message($severity, $message);
+        self::$messages[$fieldName][] = new \VGWS\Content\Message($severity, $message);
     }
 
     /**
@@ -232,7 +232,7 @@ class Page
     public function setFormValue(array $_input, $fieldName, &$fieldArray)
     {
         if (!array_key_exists($fieldName, $fieldArray))
-            error('PROGRAMMING SCREWUP: Someone didn\'t feed Page::setFormValue a $fieldArray with ' . $fieldName . ' as a key somewhere.');
+            error('PROGRAMMING SCREWUP: Someone didn\'t feed \VGWS\Content\Page::setFormValue a $fieldArray with ' . $fieldName . ' as a key somewhere.');
         $value = '';
         if (array_key_exists($fieldName, $_input))
             $value = $_input[$fieldName];
@@ -276,16 +276,16 @@ class Page
         $user = null;
 
         if (array_key_exists('s', $_REQUEST)) {
-            $this->sess = AdminSession::FetchSessionFor($_REQUEST['s']);
+            $this->sess = \VGWS\Auth\AdminSession::FetchSessionFor($_REQUEST['s']);
             if ($this->sess != false)
                 $_SESSION['s'] = $_REQUEST['s'];
         } elseif (array_key_exists('s', $_SESSION)) {
-            $this->sess = AdminSession::FetchSessionFor($_SESSION['s']);
+            $this->sess = \VGWS\Auth\AdminSession::FetchSessionFor($_SESSION['s']);
         }
 
         $this->user = null;
         if($this->sess!=null)
-            $this->user = Admin::FindCKey($this->sess->ckey);
+            $this->user = \VGWS\Auth\Admin::FindCKey($this->sess->ckey);
 
         $this->assignTemplateUserVars();
         // Cleaned.

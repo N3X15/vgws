@@ -25,7 +25,7 @@ class VGWSExtension extends AbstractExtension
 
     function twig_asset_call($ID)
     {
-        return Assets::Get($ID);
+        return \VGWS\Content\Assets::Get($ID);
     }
 
 

@@ -1,5 +1,5 @@
 <?php
-
+namespace VGWS\Lobby;
 class Animation {
   public $ID = '';
   public $image = '';

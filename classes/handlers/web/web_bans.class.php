@@ -1,4 +1,6 @@
 <?php
+//use \VGWS\Content\AdminActionHandler;
+use \VGWS\Content\Page;
 
 class BanListPage extends Page {
     public $relurl = '/bans';
@@ -7,7 +9,23 @@ class BanListPage extends Page {
 
     public function OnBody() {
         global $ADMIN_FLAGS;
-        $types = array('PERMABAN', 'TEMPBAN', 'JOB_PERMABAN', 'JOB_TEMPBAN');
+        $types = [];//array('PERMABAN', 'TEMPBAN', 'JOB_PERMABAN', 'JOB_TEMPBAN');
+        $types_jobbased = [];
+        $types_notjobbased = [];
+        $types_permanent = [];
+        $types_notpermanent = [];
+        foreach($CONFIG_BAN_TYPES as $btid => $banflags) {
+            if(($banflags & BANCONF_PUBLIC) == BANCONF_PUBLIC)
+                $types []= $btid;
+            if(($banflags & BANCONF_JOB_BASED) == BANCONF_JOB_BASED)
+                $types_jobbased []= $btid;
+            else
+                $types_notjobbased []= $btid;
+            if(($banflags & BANCONF_PERMANENT) == BANCONF_PERMANENT)
+                $types_permanent []= $btid;
+            else
+                $types_notpermanent []= $btid;
+        }
 
         if (count($_POST) > 0 && $this->sess != false) {
 
@@ -46,8 +64,8 @@ class BanListPage extends Page {
              */
             if (array_key_exists('unban', $_POST)) {
                 if($this->sess!=false)
-                foreach (explode(',',$_POST['unban']) as $id)
-                    DB::Execute('DELETE FROM erro_ban WHERE id=?', array(intval($id)));
+                    foreach (explode(',',$_POST['unban']) as $id)
+                        DB::Execute('DELETE FROM erro_ban WHERE id=?', array(intval($id)));
 
             }
             if (array_key_exists('banType', $_POST)) {
@@ -80,7 +98,7 @@ SET
 	who='LOLIDK',
 	adminwho='LOLIDK'
 SQL;
-                if ($ban['type'] == 'JOB_TEMPBAN' || $ban['type'] == 'JOB_PERMABAN') {
+                if (in_array($ban['type'] , $types_jobbased)) {
                     foreach ($ban['job'] as $job) {
                         $args = array($ban['type'], $ban['reason'], $job, $ban['duration'], $ban['duration'], $ban['ckey'], $ban['cid'], $ban['ip'], $this->sess->ckey, '', $_SERVER['REMOTE_ADDR'], );
                         DB::Execute($sql, $args);
@@ -94,13 +112,15 @@ SQL;
         }
 
         //$db->debug=true;
+        $permalist = implode("','", $types_permanent);
+        $notpermalist = implode("','", $types_notpermanent);
         $res = DB::Execute("SELECT * FROM erro_ban
 		WHERE
 			(
-				bantype IN ('PERMABAN','JOB_PERMABAN')
+				bantype IN ('$permalist')
 				OR
 				(
-					bantype IN ('TEMPBAN','JOB_TEMPBAN','APPEARANCE')
+					bantype IN ('$notpermalist')
 					AND expiration_time > Now()
 				)
 			)
@@ -136,43 +156,32 @@ SQL;
         $jbans=array();
         $bans=array();
         foreach($res as $row) {
-        	$key=md5($row['ckey'].$row['reason']);
-        	switch($row['bantype']) {
-        		case 'JOB_TEMPBAN':
-        		case 'TEMPBAN':
-        		case 'CLUWNE':
-            case 'APPEARANCE':
-        			$row['expiration_time_php']=strtotime($row['expiration_time']);
-        			break;
-        		default:
-        			$row['expiration_time'] = 'PERMANENT';
-        			break;
-        	}
-        	if($row['expiration_time']=='PERMANENT' || $row['expiration_time_php']>time())
-        	{
-        		switch($row['bantype']) {
-        			case 'JOB_PERMABAN':
-        			case 'JOB_TEMPBAN':
-        				if(!array_key_exists($key, $jbans)) {
-        					$jbans[$key]=$row;
-        					$jbans[$key]['job']=array($row['job']);
-        					$jbans[$key]['id']=array($row['id']);
-        				} else {
-        					$jbans[$key]['job'][]=$row['job'];
-        					$jbans[$key]['id'][]=$row['id'];
-        				}
-        				break;
-        			case 'PERMABAN':
-        			case 'TEMPBAN':
-        			case 'CLUWNE':
-        			case 'APPEARANCE':
-        				if(!array_key_exists($key, $bans)) {
-        					$bans[$key]=$row;
-        					$bans[$key]['job']=array($row['job']);
-        				} else {
-        					$bans[$key][]=$row['job'];
-        				}
-        				break;
+          $key=md5($row['ckey'].$row['reason']);
+          if(in_array($row['bantype'], $types_permanent))
+            $row['expiration_time_php']=strtotime($row['expiration_time']);
+          else
+            $row['expiration_time'] = 'PERMANENT';
+
+          if($row['expiration_time']=='PERMANENT' || $row['expiration_time_php']>time())
+          {
+            if(in_array($row['bantype'], $types_jobbased))
+            {
+              if(!array_key_exists($key, $jbans)) {
+                $jbans[$key]=$row;
+                $jbans[$key]['job']=array($row['job']);
+                $jbans[$key]['id']=array($row['id']);
+              } else {
+                $jbans[$key]['job'][]=$row['job'];
+                $jbans[$key]['id'][]=$row['id'];
+              }
+            } else {
+              if(!array_key_exists($key, $bans)) {
+                $bans[$key]=$row;
+                $bans[$key]['job']=array($row['job']);
+              } else {
+                $bans[$key][]=$row['job'];
+              }
+              break;
         		}
         	}
         }
@@ -185,7 +194,7 @@ SQL;
 
         $this->js_assignments['API_FIND_CID'] = fmtAPIURL('findcid');
         $this->js_assignments['AUTOCOMPLETE_JOBS'] = Jobs::$KnownJobs;
-        $this->scripts[] = Assets::Get('js/bans.min.js');
+        $this->scripts[] = \VGWS\Content\Assets::Get('js/bans.min.js');
 
         $this->setTemplateVar('bans', $bans);
         $this->setTemplateVar('jbans', $jbans);
@@ -196,13 +205,6 @@ SQL;
         return $this->displayTemplate('web/bans');
     }
 
-    public function OnHeader() {
-        return <<<EOF
-		 <script type="text/javascript">
-		</script>
-EOF;
-    }
-
 }
 
-Router::Register('/bans/?', new BanListPage());
+\VGWS\Router::Register('/bans/?', new BanListPage());

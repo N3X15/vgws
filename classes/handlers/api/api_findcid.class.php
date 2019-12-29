@@ -1,4 +1,6 @@
 <?php
+use \VGWS\Content\Page;
+use \VGWS\Database\DB;
 class findcid_handler extends Page {
 	public $parent = '';
 	public $description = "Find IP and CID of a given CKey";
@@ -6,9 +8,9 @@ class findcid_handler extends Page {
 	public function OnBody() {
 		global $tpl, $db;
 		//$db->debug=true;
-		
+
 		$ckey=$_REQUEST['ckey'];
-		
+
 		$res = DB::Execute("
 		SELECT
 			ip,
@@ -23,7 +25,7 @@ class findcid_handler extends Page {
 			header("HTTP/1.1 500 Internal Server Error");
 			die('ERROR: '.$db->ErrorMsg());
 		}
-		
+
 		foreach($res as $row) {
 			$ip = $row[0];
 			$pcid = $row[1];

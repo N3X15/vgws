@@ -20,5 +20,5 @@ $scss->setVariables([
   'base_uri' => scss_string(WEB_ROOT),
   'icon-font-path'=> scss_string(WEB_ROOT.'/fonts/'),
 ]);
-$server = new CMW_SCSS_Server(SCSS_DIR, null, $scss);
+$server = new \VGWS\SCSSServer(SCSS_DIR, null, $scss);
 $server->serve();

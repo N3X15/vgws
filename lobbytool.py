@@ -189,7 +189,9 @@ def _cmd_collect(args=None):
         poolfilesdir = os.path.join(pooldir, 'files')
         for imagebasename in os.listdir(poolfilesdir):
             basename, ext = os.path.splitext(imagebasename)
-            if ext not in ('.jpg', '.png', '.gif'):
+            #print(basename, ext)
+            if ext not in ('.jpg', '.png', '.gif', '.svg'):
+                #print('  SKIPPED')
                 continue
             anim = Animation()
             anim.ID = basename
@@ -210,7 +212,7 @@ def _cmd_collect(args=None):
                 anim.deserialize(data)
             anim.image = imagebasename
             fullpath = os.path.join(poolfilesdir, imagebasename)
-            destfile = os.path.join('htdocs', anim.image)
+            destfile = os.path.join('htdocs', 'img', 'lobby', pool.ID, anim.image)
             os_utils.ensureDirExists(os.path.dirname(destfile), noisy=False)
             os_utils.single_copy(fullpath, destfile, as_file=True, noisy=False)
             pool.add(anim)

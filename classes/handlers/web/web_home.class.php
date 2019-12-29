@@ -1,4 +1,5 @@
 <?php
+use \VGWS\Content\Page;
 
 class HomePage extends Page {
   public $relurl = '/';
@@ -11,4 +12,4 @@ class HomePage extends Page {
 
 }
 
-Router::Register('/?', new HomePage());
+\VGWS\Router::Register('/?', new HomePage());

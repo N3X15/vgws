@@ -1,4 +1,6 @@
 <?php
+use \VGWS\Content\AdminActionHandler;
+use \VGWS\Content\Page;
 //TODO: Make all this shit AJAX.
 class UpdateAdminPermission extends AdminActionHandler
 {
@@ -6,7 +8,7 @@ class UpdateAdminPermission extends AdminActionHandler
     public function onRequest()
     {
         foreach ($_POST['flags'] as $ckey => $flags) {
-            $admin = Admin::FindCKey($ckey);
+            $admin = \VGWS\Auth\Admin::FindCKey($ckey);
             if (!$admin) {
                 Page::Message('error', 'Unable to find that admin.');
                 continue;
@@ -34,7 +36,7 @@ class DeleteAdmin extends AdminActionHandler
     {
         var_dump($_POST['ckeys']);
         foreach ($_POST['ckeys'] as $ckey) {
-            $admin = Admin::FindCKey($ckey);
+            $admin = \VGWS\Auth\Admin::FindCKey($ckey);
             if (!$admin) {
                 Page::Message('error', 'Unable to find that admin.');
                 continue;
@@ -110,4 +112,4 @@ class AdminListPage extends Page
     }
 }
 
-Router::Register('/admins/?', new AdminListPage());
+\VGWS\Router::Register('/admins/?', new AdminListPage());

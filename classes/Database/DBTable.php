@@ -8,15 +8,12 @@
  *
  * @author Rob Nelson <nexis@7chan.org>
  */
-namespace VGWS\Database;
-// Handle translations between the database and the app.
-abstract class DBTranslator
-{
-    public abstract function toDB($input);
-    public abstract function fromDB($input);
-}
 
-class DBArrayTranslator extends DBTranslator
+namespace VGWS\Database;
+
+// Handle translations between the database and the app.
+
+class ArrayTranslator extends \VGWS\Database\Translator
 {
     public $delimiter = ';';
     public function __construct($delim)
@@ -33,10 +30,9 @@ class DBArrayTranslator extends DBTranslator
     {
         return explode($this->delimiter, $input);
     }
-
 }
 
-class DBJSONTranslator extends DBTranslator
+class JSONTranslator extends \VGWS\Database\Translator
 {
 
     public function toDB($input)
@@ -48,10 +44,57 @@ class DBJSONTranslator extends DBTranslator
     {
         return json_decode($input);
     }
-
 }
 
-class DBCustomTranslator extends DBTranslator
+class DateTimeTranslator extends \VGWS\Database\Translator
+{
+
+    public function toDB($input)
+    {
+        return $input;
+    }
+
+    public function fromDB($input)
+    {
+        return intval($input);
+    }
+
+    public function wrapSetSQL($input)
+    {
+        return "TIMESTAMP($input)";
+    }
+
+    public function wrapGetSQL($input)
+    {
+        return "UNIX_TIMESTAMP($input)";
+    }
+}
+
+class IPTranslator extends \VGWS\Database\Translator
+{
+
+    public function toDB($input)
+    {
+        return $input;
+    }
+
+    public function fromDB($input)
+    {
+        return $input;
+    }
+
+    public function wrapSetSQL($input)
+    {
+        return "INET6_ATON($input)";
+    }
+
+    public function wrapGetSQL($input)
+    {
+        return "INET6_NTOA($input)";
+    }
+}
+
+class CustomTranslator extends \VGWS\Database\Translator
 {
     private $to;
     private $from;
@@ -64,18 +107,13 @@ class DBCustomTranslator extends DBTranslator
 
     public function toDB($input)
     {
-        $func = $this->to;
-        if($func==null) return $input;
-        return $func($input);
+        return $to($input);
     }
 
     public function fromDB($input)
     {
-        $func=$this->from;
-        if($func==null) return $input;
-        return $func($input);
+        return $from($input);
     }
-
 }
 
 abstract class DBTable
@@ -112,7 +150,7 @@ abstract class DBTable
      */
     public static function TYPE_ARRAY($delim)
     {
-        return new DBArrayTranslator($delim);
+        return new ArrayTranslator($delim);
     }
 
     /**
@@ -121,10 +159,26 @@ abstract class DBTable
      */
     public static function TYPE_JSON()
     {
-        return new DBJSONTranslator();
+        return new JSONTranslator();
     }
 
-    public function __construct()
+    public static function TYPE_DATETIME()
+    {
+        return new DateTimeTranslator();
+    }
+    public static function TYPE_IP()
+    {
+        return new IPTranslator();
+    }
+
+    public static function FromRow(array $row, $optional = false)
+    {
+        $record = new static();
+        $record->loadFromRow($row, $optional);
+        return $record;
+    }
+
+    protected function __construct()
     {
         $this->onInitialize();
     }
@@ -197,10 +251,12 @@ abstract class DBTable
     protected function setFieldAssoc($sqlfield, $pyfield, $isKey = false, $translator = null)
     {
         $this->_translation[$sqlfield] = $pyfield;
-        if ($isKey)
+        if ($isKey) {
             $this->addKey($sqlfield);
-        if ($translator != null)
+        }
+        if ($translator != null) {
             $this->_converters[$sqlfield] = $translator;
+        }
     }
 
     /**
@@ -213,7 +269,7 @@ abstract class DBTable
      */
     protected function setFieldTranslator($sqlField, $readFunction, $writeFunction)
     {
-        $this->_converters[$sqlField] = new DBCustomTranslator($writeFunction, $readFunction);
+        $this->_converters[$sqlField] = new CustomTranslator($writeFunction, $readFunction);
     }
 
     /**
@@ -243,33 +299,31 @@ abstract class DBTable
     {
         foreach ($row as $key => $value) {
             if (!array_key_exists($key, $this->_translation) && !is_numeric($key)) {
-                Page::Message('warning', "Unknown field in table " . $this->_name . ": {$key}");
+                \VGWS\Content\Page::Message('warning', "Unknown field in table " . $this->_name . ": {$key}");
             }
         }
 
         foreach ($this->_translation as $dbname => $attrname) {
-            if ($attrname == null)
+            if ($attrname == null) {
                 continue;
+            }
             $setval = false;
-            if (!$optional)
+            if (!$optional) {
                 $setval = true;
-            else
+            } else {
                 $setval = !array_key_exists($dbname, $this->_keys) && $this->$attrname != $row[$dbname];
+            }
             if ($setval && array_key_exists($dbname, $row)) {
                 #Page::Message('info', "\$this->{$attrname} = \$row['{$dbname}']
                 # = {$row[$dbname]}");
                 $this->$attrname = $row[$dbname];
-                if (isset($this->_converters[$dbname]))
+
+                if (isset($this->_converters[$dbname])) {
                     $this->$attrname = $this->_converters[$dbname]->fromDB($this->$attrname);
+                }
             }
         }
         $this->OnPostLoad();
-    }
-
-    public static function FromRow($row) {
-        $record = new static();
-        $record->loadFromRow($row);
-        return $record;
     }
 
     /**
@@ -279,18 +333,20 @@ abstract class DBTable
     {
         $where = array();
         foreach ($this->_translation as $col => $attr) {
-            if ($attr == null)
+            if ($attr == null) {
                 continue;
+            }
             $val = $this->$attr;
-            if (isset($this->_converters[$col]))
-                $val = $this->_converters[$col]->toDB($val);
+            if (isset($this->_converters[$dbname])) {
+                $val = $this->_converters[$dbname]->toDB($val);
+            }
             if (in_array($col, $this->_keys)) {
                 $where["`{$col}`=?"] = $val;
             }
         }
         $sql = sprintf('DELETE FROM %s WHERE %s', $this->_name, join(' AND ', array_keys($where)));
         $values = array_values($where);
-        return DB::Execute($sql, $values);
+        return \VGWS\Database\DB::Execute($sql, $values);
     }
 
     /**
@@ -310,19 +366,27 @@ abstract class DBTable
             }
 
             $value = $this->$attrname;
-            if (isset($this->_converters[$dbname]))
+            $column = "`{$dbname}`";
+            if (isset($this->_converters[$dbname])) {
                 $value = $this->_converters[$dbname]->toDB($value);
+                $column = $this->_converters[$dbname]->wrapSetSQL($column);
+            }
             $values[] = $value;
-            $colList[] = "`{$dbname}`";
+            $colList[] = $column;
         }
         $sql = sprintf('INSERT INTO `%s` (%s) VALUES (%s)', $this->_name, implode(', ', $colList), implode(', ', array_fill(0, count($values), '?')));
         //var_dump(array_combine($colList,$values));
-        $err = DB::Execute($sql, $values);
+        $err = \VGWS\Database\DB::Execute($sql, $values);
         if (!$err) {
-            Page::Message('error', $db->ErrorMsg());
+            if(defined('CLI') && CLI) {
+                die($db->ErrorMsg());
+            }else{
+                \VGWS\Content\Page::Message('error', $db->ErrorMsg());
+            }
         }
-        if ($lastID)
-            return DB::Insert_ID();
+        if ($lastID) {
+            return \VGWS\Database\DB::Insert_ID();
+        }
         return false;
     }
 
@@ -337,18 +401,27 @@ abstract class DBTable
         $values = array();
         $colList = array();
         foreach ($this->_translation as $dbname => $attrname) {
-            if ($attrname == null)
+            if ($attrname == null) {
                 continue;
-            $value = $this->attrname;
-            if (isset($this->_converters[$dbname]))
+            }
+
+            $value = $this->$attrname;
+            $column = "`{$dbname}`";
+            if (isset($this->_converters[$dbname])) {
                 $value = $this->_converters[$dbname]->toDB($value);
+                $column = $this->_converters[$dbname]->wrapSetSQL($column);
+            }
             $values[] = $value;
-            $colList[] = "`{$dbname}`";
+            $colList[] = $column;
         }
         $sql = sprintf('REPLACE INTO `%s` (%s) VALUES (%s)', $this->_name, implode(', ', $colList), implode(', ', array_fill(0, count($values), '?')));
         $err = $db->Execute($sql, $values);
         if (!$err) {
-            Page::Message('error', $db->ErrorMsg());
+            if(defined('CLI') && CLI) {
+                die($db->ErrorMsg());
+            }else{
+                \VGWS\Content\Page::Message('error', $db->ErrorMsg());
+            }
         }
     }
 
@@ -361,26 +434,28 @@ abstract class DBTable
         global $db;
         $fields = array();
         $where = array();
-        foreach ($this->_translation as $col => $attr) {
-            if ($attr == null)
+        foreach ($this->_translation as $dbname => $attr) {
+            if ($attr == null) {
                 continue;
+            }
             $val = $this->$attr;
-            if (isset($this->_converters[$col]))
-                $val = $this->_converters[$col]->toDB($val);
-            if (in_array($col, $this->_keys)) {
-                $where["`{$col}`=?"] = $val;
+            $qmark = '?';
+            if (isset($this->_converters[$dbname])) {
+                $val = $this->_converters[$dbname]->toDB($val);
+                $qmark = $this->_converters[$dbname]->wrapSetSQL($qmark);
+            }
+            if (in_array($dbname, $this->_keys)) {
+                $where["`{$dbname}`=?"] = $val;
             } else {
                 $qmarks[] = '?';
-                $fields["`{$col}`=?"] = $val;
+                $fields["`{$dbname}`={$qmark}"] = $val;
             }
         }
-
         $sql = sprintf('UPDATE %s SET %s WHERE %s', $this->_name, implode(', ', array_keys($fields)), join(' AND ', array_keys($where)));
         $values = array_values($fields);
-        foreach (array_values($where) as $val)
+        foreach (array_values($where) as $val) {
             $values[] = $val;
-
-        return DB::Execute($sql, $values);
+        }
+        return $db->Execute($sql, $values);
     }
-
 }

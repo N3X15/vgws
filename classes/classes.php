@@ -74,9 +74,9 @@ require_once CORE_DIR . '/handlers/api/api_findcid.class.php';
 ////////////////////////////////
 // Setup database
 ////////////////////////////////
-if (!defined('DB_DSN'))
-    error('You forgot to set up DB_DSN in config.php.  {$driver}://{$username}:{$password}@{$hostname}/{$schema}[?persist] (use rawurlencode on the password if needed.)');
+#if (!defined('DB_DSN'))
+#    error('You forgot to set up DB_DSN in config.php.  {$driver}://{$username}:{$password}@{$hostname}/{$schema}[?persist] (use rawurlencode on the password if needed.)');
 
-Page::Initialize();
-DB::Initialize();
+\VGWS\Content\Page::Initialize();
+\VGWS\Database\DB::Initialize();
 //$db->debug=true;

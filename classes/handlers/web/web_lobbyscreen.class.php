@@ -1,4 +1,7 @@
 <?php
+use \VGWS\Content\Page;
+use \VGWS\Lobby\Animation;
+use \VGWS\Lobby\Pool;
 class LobbyScreen extends Page {
   public $relurl = '/lobby';
 	public $title = "Lobby";
@@ -97,4 +100,4 @@ class LobbyScreen extends Page {
 
 }
 
-Router::Register('/lobby?', new LobbyScreen());
+\VGWS\Router::Register('/lobby?', new LobbyScreen());

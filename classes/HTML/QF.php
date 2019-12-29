@@ -1,10 +1,10 @@
 <?php
 /**
  * QuickForm
- * 
+ *
  * @author N3X15
  */
- 
+namespace VGWS\HTML;
 class QF
 {
 	public static $buffer='';
@@ -16,7 +16,7 @@ class QF
 		<table class="quickform">
 EOF;
 	}
-	
+
 	public static function FormatAttributes($attributes)
 	{
 		if(!is_array($attributes) || count($attributes)==0)
@@ -28,7 +28,7 @@ EOF;
 		}
 		return ' '.implode(' ',$o);
 	}
-	
+
 	public static function End()
 	{
 		foreach(self::$hidden as $k=>$v){
@@ -45,22 +45,22 @@ EOF;
 EOF;
 		return self::$buffer;
 	}
-	
+
 	public static function Textbox($name, $label, $default='', $other=array())
 	{
 		 self::Input('textbox',$name,$label,$default,$other);
 	}
-	
+
 	public static function Password($name, $label, $default='', $other=array())
 	{
 		 self::Input('password',$name,$label,$default,$other);
 	}
-	
+
 	public static function Email($name, $label, $default='', $other=array())
 	{
 		 self::Input('email',$name,$label,$default,$other);
 	}
-	
+
 	public static function Button($type, $name, $label, $value=null, $other=array())
 	{
 		if($value!=null)
@@ -76,12 +76,12 @@ EOF;
 			</tr>
 EOF;
 	}
-	
+
 	public static function Reset($name, $label, $default='', $other=array())
 	{
 		 self::Input('reset',$name,$label,$default,$other);
 	}
-	
+
 	public static function Checkbox($name, $label, $value='', $other=array())
 	{
 		$otheratt=self::FormatAttributes($other);
@@ -93,12 +93,12 @@ EOF;
 			</tr>
 EOF;
 	}
-	
+
 	public static function Submit($name, $label='Submit',$value=null, $other=array())
 	{
 		self::Button('submit',$name,$label,$value,$other);
 	}
-	
+
 	public static function Input($type, $name, $label, $default='', $other=array())
 	{
 		$otheratt=self::FormatAttributes($other);
@@ -113,16 +113,16 @@ EOF;
 			</tr>
 EOF;
 	}
-	
+
 	public static function Hidden($name, $value)
 	{
 		$otheratt=self::FormatAttributes($other);
 		self::$hidden[$name]=$value;
 	}
-	
+
 	/**
 	 * Emit a selection input.
-	 * 
+	 *
 	 * @param name
 	 * @param label
 	 * @param options
@@ -149,4 +149,4 @@ $loopO
 			</tr>
 EOF;
 	}
-} 
+}

@@ -1,4 +1,5 @@
 <?php
+namespace VGWS\Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 class VGWSExtension extends AbstractExtension

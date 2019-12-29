@@ -1,5 +1,5 @@
 <?php
-
+namespace VGWS\Jobs;
 class Jobs {
 	/**
 	 * Add or remove jobs, depending on your distro of SS13.

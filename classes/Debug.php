@@ -1,5 +1,5 @@
 <?php
-
+namespace VGWS;
 class Debug {
 	public static function GetStackTrace($offset=0) {
 		$stack=xdebug_get_function_stack();
@@ -15,7 +15,7 @@ class Debug {
 		      'class' => string 'strings' (length=7)
 		      'file' => string '/var/www/xdebug_get_function_stack.php' (length=63)
 		      'line' => int 12
-		      'params' => 
+		      'params' =>
 		        array
 		          'a' => string ''Derick'' (length=8)
 			 */

@@ -8,6 +8,7 @@
  `question` varchar(255) NOT NULL,
  `adminonly` tinyint(1) DEFAULT '0',
  */
+namespace VGWS\Polls;
 class Poll {
     // erro_poll_question
     public $ID = -1;

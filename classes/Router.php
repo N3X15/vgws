@@ -4,6 +4,7 @@
  * MIT License
  * Also by me and I don't give a fuck - N3X
  */
+namespace VGWS;
 class Router
 {
     public static $router = null;

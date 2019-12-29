@@ -8,100 +8,7 @@
  * @subpackage Pages
  * @author Rob Nelson <nexisentertainment@gmail.com>
  */
-
-/**
- * Validation/error message passed to a field or the entire page.
- * @package vgstation-13
- * @subpackage Pages
- * @author Rob Nelson <nexisentertainment@gmail.com>
- */
-class Message
-{
-    /**
-     * Message itself.
-     */
-    public $message = '';
-
-    /**
-     * Severity of the message.
-     * error, warning, or generic
-     */
-    public $severity = '';
-
-    public function __construct($severity, $message)
-    {
-        $this->message = $message;
-        $this->severity = $severity;
-    }
-
-}
-
-/**
- * Used to add external links to the navigation bar.
- */
-class ExternalLinkHandler extends Page
-{
-    public $url = '';
-    public $parent = '/';
-    public function __construct($label, $img, $uri)
-    {
-        $this->description = $label;
-        $this->image = $img;
-        $this->url = $uri;
-    }
-
-}
-
-// Handles messages sent from AJAX (ajax=1)
-class ActionHandler
-{
-    public $page;
-    public $handleAjaxRequests;
-    public $path = array();
-    /**
-     *  Clone of the request ($_REQUEST)
-     */
-    public $request = array();
-    public $response = '';
-    public $error = '';
-    public $tpl;
-
-    /**
-     * Hide all links on the page?
-     */
-    public $hideLinks = false;
-
-    public function __construct($page, $ajax = false)
-    {
-        //$this->tpl = Page::GetSavant();
-        //var_dump($handler);
-        $this->page = $page;
-        $this->handleAjaxRequests = $ajax;
-    }
-
-    public function OnRequest()
-    {
-        // Override
-    }
-
-    public function CanAccess() {
-        return true;
-    }
-
-}
-
-class AdminActionHandler extends ActionHandler {
-    protected $requiredFlags = R_ADMIN;
-    protected function RequireFlags($flags) {
-        if($this->page->sess!=false)
-            return false;
-        return ($this->page->sess->flags & $flags) == $flags;
-    }
-
-    public function CanAccess() {
-        return $this->RequireFlags($this->requiredFlags);
-    }
-}
+namespace VGWS\Content;
 
 /**
  * Base Page class.
@@ -196,7 +103,11 @@ class Page
 
     public function __construct()
     {
-      $this->scripts []= Assets::Get('js/core.min.js');
+      $this->scripts []= \VGWS\Assets::Get('js/core.min.js');
+
+      $this->js_assignments['WEB_ROOT'] = WEB_ROOT;
+      $this->js_assignments['API_PHP_URL'] = API_PHP_URL;
+      $this->js_assignments['INDEX_PHP_URL'] = INDEX_PHP_URL;
     }
 
     public function getURL() {
@@ -433,10 +344,6 @@ class Page
                     $actHideLinks = $ah->hideLinks;
                 }
             }
-
-            $this->js_assignments['WEB_ROOT'] = WEB_ROOT;
-            $this->js_assignments['API_PHP_URL'] = WEB_ROOT."/api.php";
-            $this->js_assignments['INDEX_PHP_URL'] = WEB_ROOT."/index.php";
 
             $this->setTemplateVar('head', $this->onHeader());
             $this->setTemplateVar('subpagelinks', $this->onSubPages());

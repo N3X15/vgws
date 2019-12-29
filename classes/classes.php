@@ -20,6 +20,10 @@ define('SCSS_DIR',     PATH_ROOT . '/style');
 // Publically-viewable crap.
 define('PUBLIC_DIR', PATH_ROOT . '/htdocs');
 
+// Overridable in config
+if(!defined('API_PHP_URL')) define('API_PHP_URL', WEB_ROOT."/api.php");
+if(!defined('INDEX_PHP_URL')) define('INDEX_PHP_URL', WEB_ROOT."/index.php");
+
 // Libs
 #require_once ("adodb/adodb-exceptions.inc.php");
 #require_once ('adodb/adodb.inc.php');
@@ -32,6 +36,7 @@ require_once PATH_ROOT . '/vendor/scssphp/scssphp/example/Server.php';
 // Just loads all of the classes without screwing around with 50 includes.
 
 require_once CORE_DIR . '/funcs.php';
+/*
 require_once CORE_DIR . '/Assets.class.php';
 require_once CORE_DIR . '/Debug.class.php';
 require_once CORE_DIR . '/SCSS.class.php';
@@ -49,6 +54,7 @@ require_once CORE_DIR . '/Jobs.class.php';
 require_once CORE_DIR . '/Poll.class.php';
 require_once CORE_DIR . '/Lobby/Animation.php';
 require_once CORE_DIR . '/Lobby/Pool.php';
+*/
 
 $ACT_HANDLERS = array();
 

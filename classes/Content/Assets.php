@@ -1,6 +1,6 @@
 <?php
-
-class Assets{
+namespace VGWS\Content;
+class Assets {
     public static $Assets = null;
     public static function Get($ID) {
         if(self::$Assets == null) {

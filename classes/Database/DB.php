@@ -1,5 +1,5 @@
 <?php
-
+namespace VGWS\Database;
 /**
  * All valid identifier escaping characters *that we want to fix*, as a string.
  */
@@ -110,19 +110,19 @@ class DB_Compatibility
                 if(strpos(ALL_IDENT_DELIMITERS,$c)!==false && $cstate!=self::ST_IN_STRING) {
                     // Fix character.
                     $newsql.=$this->IdentEscapeChar;
-                    
+
                     // Set new state.
                     $cstate=($cstate==self::ST_INITIAL) ? self::ST_IN_IDENTIFIER : self::ST_INITIAL;
                     continue;
                 }
-                
+
                 // Are we a string delimiter?
                 // Are we not inside of a string?
                 elseif(strpos($this->StringDelimiters,$c)!==false) {
                     // Set new state.
                     $cstate=($cstate==self::ST_INITIAL) ? self::ST_IN_STRING : self::ST_INITIAL;
                 }
-                
+
                 elseif($cstate!=self::ST_IN_STRING)
                 {
                     // Check for {P} (prefix char)
@@ -133,7 +133,7 @@ class DB_Compatibility
                         continue;
                     }
                     */
-                    
+
                     // Check for TRUE
                     // elseif
                     if(substr($sql,$i,3)=='TRUE') {
@@ -141,7 +141,7 @@ class DB_Compatibility
                         $newsql.=$this->BooleanTrue;
                         continue;
                     }
-                    
+
                     // Check for FALSE
                     elseif(substr($sql,$i,3)=='FALSE') {
                         $i+=4;
@@ -149,7 +149,7 @@ class DB_Compatibility
                         continue;
                     }
                 }
-                
+
                 // Escaped
                 elseif($c=='\\') {
                     $char_escaped=true;
@@ -211,12 +211,12 @@ class DB
 
     //@formatter:off
     private static $CompatibilityTypes = array(
-        'mysql'      => 'DB_MySqlCompatibility', 
+        'mysql'      => 'DB_MySqlCompatibility',
         'mysqli'     => 'DB_MySqlCompatibility',
-         
-        'postgres64' => 'DB_PostgresCompatibility', 
-        'postgres7'  => 'DB_PostgresCompatibility', 
-        'postgres8'  => 'DB_PostgresCompatibility', 
+
+        'postgres64' => 'DB_PostgresCompatibility',
+        'postgres7'  => 'DB_PostgresCompatibility',
+        'postgres8'  => 'DB_PostgresCompatibility',
         'postgres9'  => 'DB_PostgresCompatibility'
     );
     //@formatter:on
@@ -239,7 +239,7 @@ class DB
         static::$conn->Execute("SET NAMES 'utf8'");
         $kx_db = new DBProxy;
     }
-    
+
     public static function Debug($on) {
         static::$conn->debug=$on;
     }

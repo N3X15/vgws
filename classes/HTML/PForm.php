@@ -7,7 +7,7 @@
  * @package QuickHTML
  * @author Rob Nelson <nexisentertainment@gmail.com>
  */
-
+namespace VGWS\HTML;
 class PForm
 {
     public static $buffer = '';

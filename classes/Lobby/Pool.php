@@ -1,4 +1,5 @@
 <?php
+namespace VGWS\Lobby;
 class Pool {
   public $ID = '';
   public $animations = [];

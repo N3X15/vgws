@@ -8,7 +8,7 @@
  *
  * @author Rob Nelson <nexis@7chan.org>
  */
-
+namespace VGWS\Database;
 // Handle translations between the database and the app.
 abstract class DBTranslator
 {

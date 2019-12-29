@@ -106,9 +106,9 @@ COFFEE = os.path.join(YARNLIB, '.bin', 'coffee.cmd' if os.name == 'nt' else 'cof
 UGLIFY = os.path.join(YARNLIB, '.bin', 'uglifyjs.cmd' if os.name == 'nt' else 'uglifyjs')
 MANIFEST_OUT = os.path.join('htdocs', 'manifest.json')
 
-if os.path.isfile(MANIFEST_OUT):
-    with open(MANIFEST_OUT, 'w') as f:
-        f.write('{}')
+#if os.path.isfile(MANIFEST_OUT):
+#    with open(MANIFEST_OUT, 'w') as f:
+#        f.write('{}')
 js_targets = []
 
 submodules = bm.add(GitSubmoduleCheckTarget())

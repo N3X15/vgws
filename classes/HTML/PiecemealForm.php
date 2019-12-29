@@ -1,10 +1,10 @@
 <?php
 /**
  * Significantly older code, used to add inputs in arbitrary locations with proper formatting.
- * 
+ *
  * @author N3X15
  */
- 
+namespace VGWS\HTML;
 class PForm
 {
 	public static $buffer='';
@@ -15,7 +15,7 @@ class PForm
 	 <form action="{$action}" method="{$method}"{$otheratt}>
 EOF;
 	}
-	
+
 	public static function FormatAttributes($attributes)
 	{
 		if(!is_array($attributes) || count($attributes)==0)
@@ -27,29 +27,29 @@ EOF;
 		}
 		return ' '.implode(' ',$o);
 	}
-	
+
 	public static function End()
 	{
 		return <<<EOF
 	</form>
 EOF;
 	}
-	
+
 	public static function Textbox($name, $default='', $other=array())
 	{
 		 return self::Input('textbox',$name,$default,$other);
 	}
-	
+
 	public static function Password($name, $default='', $other=array())
 	{
 		 return self::Input('password',$name,$default,$other);
 	}
-	
+
 	public static function Email($name, $default='', $other=array())
 	{
 		 return self::Input('email',$name,$default,$other);
 	}
-	
+
 	public static function Button($type, $name, $label, $value=null, $other=array())
 	{
 		if($value!=null)
@@ -61,12 +61,12 @@ EOF;
 			</button>
 EOF;
 	}
-	
+
 	public static function Reset($name, $label='Reset', $value=null, $other=array())
 	{
 		return self::Button('reset',$name,$label,$value,$other);
 	}
-	
+
 	public static function Checkbox($name, $value='1', $other=array())
 	{
 		$otheratt=self::FormatAttributes($other);
@@ -74,12 +74,12 @@ EOF;
 			<input type="checkbox" name="$name" value="$default"{$otheratt}/>
 EOF;
 	}
-	
+
 	public static function Submit($name, $label='Submit', $value=null, $other=array())
 	{
 		return self::Button('submit',$name,$label,$value,$other);
 	}
-	
+
 	public static function Input($type, $name, $default='', $other=array())
 	{
 		$otheratt=self::FormatAttributes($other);
@@ -87,15 +87,15 @@ EOF;
 			<input type="$type" name="$name" value="$default"$otheratt/>
 EOF;
 	}
-	
+
 	public static function Hidden($name, $value)
 	{
 		return self::Input('hidden', $name,'',$value);
 	}
-	
+
 	/**
 	 * Emit a selection input.
-	 * 
+	 *
 	 * @param name
 	 * @param label
 	 * @param options
@@ -115,4 +115,4 @@ $loopO
 			</select>
 EOF;
 	}
-} 
+}

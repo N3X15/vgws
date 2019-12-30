@@ -9,8 +9,8 @@
  `adminonly` tinyint(1) DEFAULT '0',
  */
 namespace VGWS\Polls;
-use VGWS\Database\DB;
-use VGWS\Database\DBTable;
+use Atera\DB;
+use Atera\DBTable;
 class Poll {
     // erro_poll_question
     public $ID = -1;

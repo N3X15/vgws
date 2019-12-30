@@ -1,6 +1,6 @@
 <?php
 namespace \VGWS\Auth;
-use \VGWS\Database\DB;
+use \Atera\DB;
 class AdminSession
 {
     public $ckey = '';

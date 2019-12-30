@@ -4,6 +4,10 @@
   "repositories": [{
     "type": "vcs",
     "url": "https://github.com/N3X15/phinx.git"
+  },
+  {
+    "type": "git",
+    "url": "https://gitlab.com/N3X15/atera-orm.git"
   }],
   "autoload": {
     "psr-4": {
@@ -11,12 +15,12 @@
     }
   },
   "require": {
+    "n3x15/atera-orm": "dev-master",
     "n3x15/phinx": "master",
     "klein/klein": "dev-master",
     "twbs/bootstrap": "dev-master",
     "twbs/bootstrap-sass": "^3.4@dev",
     "twig/twig": "3.x-dev",
-    "adodb/adodb-php": "dev-master",
     "scssphp/scssphp": "dev-master"
   }
 }

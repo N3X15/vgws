@@ -16,6 +16,7 @@ define('LIB_DIR',      PATH_ROOT . '/lib');
 define('CACHE_DIR',    PATH_ROOT . "/cache");
 define('TEMPLATE_DIR', PATH_ROOT . "/templates");
 define('SCSS_DIR',     PATH_ROOT . '/style');
+define('DATA_DIR',     PATH_ROOT . '/data');
 
 // Publically-viewable crap.
 define('PUBLIC_DIR', PATH_ROOT . '/htdocs');
@@ -36,25 +37,6 @@ require_once PATH_ROOT . '/vendor/scssphp/scssphp/example/Server.php';
 // Just loads all of the classes without screwing around with 50 includes.
 
 require_once CORE_DIR . '/funcs.php';
-/*
-require_once CORE_DIR . '/Assets.class.php';
-require_once CORE_DIR . '/Debug.class.php';
-require_once CORE_DIR . '/SCSS.class.php';
-require_once CORE_DIR . '/DB.class.php';
-require_once CORE_DIR . '/HTML/Element.class.php';
-require_once CORE_DIR . '/HTML/PForm.class.php';
-#require_once CORE_DIR . '/HTML/KuForm.class.php';
-require_once CORE_DIR . '/DBTable.class.php';
-require_once CORE_DIR . '/Router.class.php';
-require_once CORE_DIR . '/TwigExtensions.class.php';
-require_once CORE_DIR . '/Page.class.php';
-require_once CORE_DIR . '/Admin.class.php';
-require_once CORE_DIR . '/QF.class.php';
-require_once CORE_DIR . '/Jobs.class.php';
-require_once CORE_DIR . '/Poll.class.php';
-require_once CORE_DIR . '/Lobby/Animation.php';
-require_once CORE_DIR . '/Lobby/Pool.php';
-*/
 
 $ACT_HANDLERS = array();
 
@@ -78,5 +60,5 @@ require_once CORE_DIR . '/handlers/api/api_findcid.class.php';
 #    error('You forgot to set up DB_DSN in config.php.  {$driver}://{$username}:{$password}@{$hostname}/{$schema}[?persist] (use rawurlencode on the password if needed.)');
 
 \VGWS\Content\Page::Initialize();
-\VGWS\Database\DB::Initialize();
+\Atera\DB::Initialize();
 //$db->debug=true;

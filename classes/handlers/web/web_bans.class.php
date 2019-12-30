@@ -1,6 +1,7 @@
 <?php
 //use \VGWS\Content\AdminActionHandler;
 use \VGWS\Content\Page;
+use \Atera\DB;
 
 class BanListPage extends Page {
     public $relurl = '/bans';
@@ -8,7 +9,7 @@ class BanListPage extends Page {
     public $image = "/img/bans.png";
 
     public function OnBody() {
-        global $ADMIN_FLAGS;
+        global $ADMIN_FLAGS, $CONFIG_BAN_TYPES;
         $types = [];//array('PERMABAN', 'TEMPBAN', 'JOB_PERMABAN', 'JOB_TEMPBAN');
         $types_jobbased = [];
         $types_notjobbased = [];
@@ -69,6 +70,9 @@ class BanListPage extends Page {
 
             }
             if (array_key_exists('banType', $_POST)) {
+                if(!\VGWS\Auth\Admin::HasRight(R_BAN)) {
+                  error("You do not have +BAN.");
+                }
                 $ban = array();
                 $ban['type'] = $types[intval($_POST['banType'])];
                 $ban['ckey'] = $_POST['banCKey'];
@@ -114,6 +118,7 @@ SQL;
         //$db->debug=true;
         $permalist = implode("','", $types_permanent);
         $notpermalist = implode("','", $types_notpermanent);
+        //DB::Debug(true);
         $res = DB::Execute("SELECT * FROM erro_ban
 		WHERE
 			(
@@ -193,9 +198,14 @@ SQL;
 
 
         $this->js_assignments['API_FIND_CID'] = fmtAPIURL('findcid');
-        $this->js_assignments['AUTOCOMPLETE_JOBS'] = Jobs::$KnownJobs;
+        $this->js_assignments['AUTOCOMPLETE_JOBS'] = \VGWS\Jobs\Jobs::GetAllKnownJobs();
         $this->scripts[] = \VGWS\Content\Assets::Get('js/bans.min.js');
 
+        /*
+        echo '<pre>';
+        var_dump($bans);
+        echo '</pre>';
+        */
         $this->setTemplateVar('bans', $bans);
         $this->setTemplateVar('jbans', $jbans);
         $this->setTemplateVar('ip', $ip);

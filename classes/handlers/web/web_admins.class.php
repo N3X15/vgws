@@ -1,6 +1,7 @@
 <?php
 use \VGWS\Content\AdminActionHandler;
 use \VGWS\Content\Page;
+use \Atera\DB;
 //TODO: Make all this shit AJAX.
 class UpdateAdminPermission extends AdminActionHandler
 {
@@ -66,7 +67,7 @@ class SetAdminRank extends AdminActionHandler
         }
         $newflags=$ADMIN_RANKS[$rank];
         foreach ($ckeys as $ckey) {
-            $admin = Admin::FindCKey($ckey);
+            $admin = \VGWS\Auth\Admin::FindCKey($ckey);
             if (!$admin) {
                 Page::Message('error', 'Unable to find that admin.');
                 continue;
@@ -102,7 +103,7 @@ class AdminListPage extends Page
         $res = DB::Execute("SELECT * FROM erro_admin ORDER BY rank, ckey");
         $admins=[];
         foreach($res as $arow){
-          $admins[]=Admin::FromRow($arow);
+          $admins[]=\VGWS\Auth\Admin::FromRow($arow);
         }
         $this->setTemplateVar('admins', $admins);
         $this->setTemplateVar('ADMIN_FLAGS', $ADMIN_FLAGS);

@@ -1,0 +1,67 @@
+{
+  "Command": [
+    "Captain",
+    "Head of Personnel",
+    "Head of Security",
+    "Chief Engineer",
+    "Research Director",
+    "Chief Medical Officer"
+  ],
+  "Security": [
+    "Head of Security",
+    "Warden",
+    "Detective",
+    "Security Officer"
+  ],
+  "Engineering": [
+    "Chief Engineer",
+    "Station Engineer",
+    "Atmospheric Technician",
+    "Roboticist"
+  ],
+  "Medical": [
+    "Chief Medical Officer",
+    "Medical Doctor",
+    "Geneticist",
+    "Virologist",
+    "Chemist",
+    "Paramedic"
+  ],
+  "Science": [
+    "Research Director",
+    "Scientist",
+    "Geneticist",
+    "Roboticist"
+  ],
+  "Civilian": [
+    "Head of Personnel",
+    "Bartender",
+    "Botanist",
+    "Chef",
+    "Janitor",
+    "Librarian",
+    "Quartermaster",
+    "Cargo Technician",
+    "Shaft Miner",
+    "Lawyer",
+    "Reporter",
+    "Chaplain",
+    "Clown",
+    "Mime",
+    "Assistant"
+  ],
+  "Silicon": [
+    "AI",
+    "Cyborg",
+    "Mobile MMI",
+    "pAI"
+  ],
+  "Antagonist": [
+    "Traitor",
+    "Changeling",
+    "Nuke Operative",
+    "Revolutionary",
+    "Cultist",
+    "Wizard"
+  ]
+}

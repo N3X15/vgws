@@ -1,7 +1,7 @@
 <?php
 namespace VGWS\Polls;
-use VGWS\Database\DB;
-use VGWS\Database\DBTable;
+use Atera\DB;
+use Atera\DBTable;
 /*
  `id` int(11) NOT NULL AUTO_INCREMENT,
  `pollid` int(11) NOT NULL,

@@ -3,6 +3,7 @@ use \VGWS\Content\AdminActionHandler;
 use \VGWS\Content\Page;
 use \VGWS\Polls\PollOption;
 use \VGWS\Polls\Poll;
+use \Atera\DB;
 use \VGWS\HTML\Elements\Form;
 
 $validPollTypes = array('OPTION', 'NUMVAL', 'TEXT', 'MULTICHOICE');

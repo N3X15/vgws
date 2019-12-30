@@ -1,6 +1,6 @@
 <?php
 use \VGWS\Content\Page;
-use \VGWS\Database\DB;
+use \Atera\DB;
 
 class chkban_handler extends Page {
 	public $parent = '';

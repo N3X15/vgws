@@ -1,7 +1,7 @@
 <?php
 namespace VGWS\Auth;
 
-class Admin extends DBTable
+class Admin extends \Atera\DBTable
 {
     public $ID = 0;
     public $CKey = '';
@@ -26,7 +26,7 @@ class Admin extends DBTable
 
     public static function FindCKey($ckey)
     {
-        $res = DB::GetRow('SELECT * FROM erro_admin WHERE ckey=?', array($ckey));
+        $res = \Atera\DB::GetRow('SELECT * FROM erro_admin WHERE ckey=?', array($ckey));
         if ($res == null)
             return null;
         return self::FromRow($res);
@@ -42,12 +42,12 @@ class Admin extends DBTable
 
 		public function getRenderedFlags(int $flag, string $name, bool $showControls){
 			$hasFlag=($this->Flags & $flag) == $flag;
-			$span = new Element('span',array('class'=>'clm'.$name));
+			$span = new \VGWS\HTML\Elements\Element('span',array('class'=>'clm'.$name));
 			$span->addClass('flags');
 			$span->addClass($hasFlag?'flagset':'flagunset');
 			if($showControls)
 			{
-					$child = new Input('checkbox',"flags[{$this->CKey}][]",$flag,array('title'=>$name));
+					$child = new \VGWS\HTML\Elements\Input('checkbox',"flags[{$this->CKey}][]",$flag,array('title'=>$name));
 					if($hasFlag)
 							$child.setAttribute('checked','checked');
 					$span->addChild($child);

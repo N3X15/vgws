@@ -1,6 +1,6 @@
 <?php
 use \VGWS\Content\Page;
-use \VGWS\Database\DB;
+use \Atera\DB;
 class findcid_handler extends Page {
 	public $parent = '';
 	public $description = "Find IP and CID of a given CKey";

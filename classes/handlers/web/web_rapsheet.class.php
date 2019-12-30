@@ -2,7 +2,7 @@
 
 use \VGWS\Content\AdminActionHandler;
 use \VGWS\Content\Page;
-use \VGWS\Database\DB;
+use \Atera\DB;
 
 class RapsheetPage extends Page
 {
@@ -83,7 +83,7 @@ class RapsheetPage extends Page
         }
 
         $this->js_assignments['API_TARGET'] = fmtAPIURL('findcid');
-        $this->js_assignments['AUTOCOMPLETE'] = Jobs::$KnownJobs;
+        $this->js_assignments['AUTOCOMPLETE'] = \VGWS\Jobs\Jobs::GetAllKnownJobs();
         $this->scripts[] = \VGWS\Content\Assets::Get('js/rapsheet.min.js');
 
         $this->setTemplateVar('bans', $bans);

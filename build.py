@@ -10,7 +10,7 @@ from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget, ExtractAr
 from buildtools.maestro.git import GitSubmoduleCheckTarget
 from buildtools.maestro.package_managers import YarnBuildTarget, ComposerBuildTarget
 from buildtools.maestro.shell import CommandBuildTarget
-from buildtools.maestro.web import CacheBashifyFiles, DartSCSSBuildTarget, EBashLayoutFlags, UglifyJSTarget, DownloadFileTarget
+from buildtools.maestro.web import CacheBashifyFiles, DartSCSSBuildTarget, EBashLayoutFlags, UglifyJSTarget, DownloadFileTarget, WebifyTarget
 
 class RSyncRemoteTarget(SingleBuildTarget):
     BT_LABEL = 'RSYNC'
@@ -97,6 +97,7 @@ argp.add_argument('--deploy', action='store_true', help='Also run rsync/SSH depl
 args = bm.parse_args(argp)
 
 YARNLIB = os.path.join('node_modules')
+HTDOCS_FONTLIB = os.path.join('htdocs','fonts','lib')
 HTDOCS_JSLIB = os.path.join('htdocs','js','lib')
 HTDOCS_CSSLIB = os.path.join('htdocs','css', 'lib')
 BOOTSTRAP_ROOT = os.path.join('vendor', 'twbs', 'bootstrap-sass', 'assets', 'fonts', 'bootstrap')
@@ -123,6 +124,7 @@ for font_id in FONTS:
     for ext in FONT_EXT:
         basefilename = font_id + '.' + ext
         bm.add(CopyFileTarget(os.path.join('htdocs', 'fonts', basefilename), os.path.join(BOOTSTRAP_ROOT,basefilename), verbose=False))
+#bm.add(CopyFileTarget(os.path.join('htdocs', 'fonts', 'BebasNeue.otf'), os.path.join('lib','bebas neue', 'BebasNeue.otf'), verbose=False))
 
 JQUERY_ROOT = os.path.join(YARNLIB, 'jquery')
 js_targets += [
@@ -243,6 +245,19 @@ bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, 'imgs-to-htdocs.tgt'),
 
 
 lobbytool = bm.add(CommandBuildTarget([os.path.join('htdocs', 'data', 'lobby.json')], files=['lobbyscreens', 'main', '__POOL__.toml'], cmd=[sys.executable, 'lobbytool.py', 'collect']))
+#bm.add(CopyFileTarget(target=os.path.join('dist', 'data', 'jobs.json'),
+#                      filename=os.path.join('data', 'jobs.json')))
+fonts = [
+    bm.add(WebifyTarget(destination=os.path.join(HTDOCS_FONTLIB, 'bebas-neue', 'bebas-neue-regular.woff'),
+                        source=os.path.join('lib', 'bebas neue', 'BebasNeue Regular.otf'),
+                        webify_base_path='lib/bin/')),
+    bm.add(WebifyTarget(destination=os.path.join(HTDOCS_FONTLIB, 'bebas-neue', 'bebas-neue-bold.woff'),
+                        source=os.path.join('lib', 'bebas neue', 'BebasNeue Bold.otf'),
+                        webify_base_path='lib/bin/')),
+    bm.add(WebifyTarget(destination=os.path.join(HTDOCS_FONTLIB, 'bebas-neue', 'bebas-neue-thin.woff'),
+                        source=os.path.join('lib', 'bebas neue', 'BebasNeue Thin.otf'),
+                        webify_base_path='lib/bin/')),
+]
 # This requires having ssh access and rsync.
 if args.deploy:
     def deploy_dir(bm, dirname, is_private=False, deps=[]):
@@ -324,6 +339,8 @@ if args.deploy:
             deps = [x.target for x in js_targets]
         if dirname == 'css':
             deps = [style_bashed.target]
+        if dirname == 'fonts':
+            deps = [fonts[0].target]
         BT_MAIN += [deploy_dir(bm, dirname, is_private=False, deps=public_dir_ops+deps)]
 
     for dirname in PRIVATE_DIRS:

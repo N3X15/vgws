@@ -15,6 +15,11 @@ $icon-font-path: '[WEB_ROOT]/fonts/' !default;
 @import "bootstrap/_mixins";
 @import "bootstrap/_glyphicons";
 @import "_funcs";
+@import "mixins/_font_decl";
+
+//@include font-face(BebasNeueRegular, '/fonts/lib/bebas-neue/bebas-neue-regular', null, null, eot woff otf);
+@include font-face(BebasNeueBold,    '/fonts/lib/bebas-neue/bebas-neue-bold', null, null, eot woff otf);
+//@include font-face(BebasNeueThin,    '/fonts/lib/bebas-neue/bebas-neue-thin', null, null, eot woff otf);
 
 body,
 html {
@@ -32,22 +37,33 @@ html {
   image-rendering: -moz-crisp-edges;          /* Firefox                        */
   image-rendering: -o-crisp-edges;            /* Opera                          */
   image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
-  image-rendering: pixelated; /* Chrome */
-  image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
+  image-rendering: pixelated;                 /* Chrome */
+  //image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
   -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
 }
 
 #credits-box {
-  color: #fff;
-  font-weight: bold;
-  text-shadow: 1px 0px 0px #000, -1px 0px 0px #000, 0px 1px 0px #000, 0px -1px 0px #000;
+  color: #aaa;
+  //font-weight: bold;
+  text-shadow:  1px  0px 0px #000,
+               -1px  0px 0px #000,
+                0px  1px 0px #000,
+                0px -1px 0px #000;
   display: flex;
   flex-direction: column;
-  justify-items: right;
+  justify-items: left;
   position: absolute;
   bottom: .25em;
-  right: .25em;
+  left: .25em;
+  //font-family: 'BebasNeueRegular';
+  font-family: sans-serif;
+  font-size: 1em;
   > span {
     display: block;
+  }
+  > span#credits-title {
+    font-size: 2em;
+    color: #fff;
+    font-family: 'BebasNeueBold';
   }
 }

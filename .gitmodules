@@ -1,3 +1,6 @@
 [submodule "lib/tag-it.js"]
 	path = lib/tag-it.js
 	url = https://github.com/fagianijunior/tag-it.git
+[submodule "lib/polyfill"]
+	path = lib/polyfill
+	url = https://github.com/uxitten/polyfill.git

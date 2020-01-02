@@ -8,12 +8,17 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-transform-arrow-functions": "^7.7.4",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.7",
     "coffeescript": "^2.4.1",
     "dart-sass": "^1.23.7",
     "jquery": "^3.4.1",
     "jquery-ui": "^1.12.1",
     "jquery-ui-themes": "^1.12.0",
-    "uglify-es": "^3.3.9"
+    "uglify-es": "^3.3.9",
+    "url-search-params-polyfill": "^7.0.1"
   },
   "directories": {
     "lib": "lib"
@@ -23,6 +28,8 @@
   },
   "flat": true,
   "resolutions": {
-    "chokidar": "3.3.0"
+    "semver": "7.0.0",
+    "source-map": "0.6.1",
+    "jsesc": "2.5.2"
   }
 }

@@ -10,7 +10,7 @@ from buildtools import log, os_utils
 class Animation(object):
     def __init__(self):
         self.ID = ''
-        self.image = ''
+        self.url = ''
         self.scripts = []
         self.data = None
         self.overridePlaylist = None
@@ -20,7 +20,7 @@ class Animation(object):
         o = {}
         if not suppress_id:
             o['id'] = self.ID
-        o['image'] = self.image
+        o['url'] = self.url
         if self.scripts is not None and len(self.scripts) > 0:
             o['scripts'] = self.scripts
         if self.data is not None:
@@ -33,7 +33,7 @@ class Animation(object):
 
     def deserialize(self, data: dict) -> None:
         self.ID = data.get('id', self.ID)
-        self.image = data.get('image', self.image)
+        self.url = data.get('url', self.url)
         self.script = data.get('script', self.script)
         self.data = data.get('data', self.data)
         self.overridePlaylist = data.get('playlist', self.overridePlaylist)
@@ -190,7 +190,7 @@ def _cmd_collect(args=None):
         for imagebasename in os.listdir(poolfilesdir):
             basename, ext = os.path.splitext(imagebasename)
             #print(basename, ext)
-            if ext not in ('.jpg', '.png', '.gif', '.svg'):
+            if ext not in ('.jpg', '.png', '.gif', '.svg', '.webm', '.webp', '.mp4', '.ogv'):
                 #print('  SKIPPED')
                 continue
             anim = Animation()
@@ -210,9 +210,9 @@ def _cmd_collect(args=None):
                     data = json.load(f)
             if data is not None:
                 anim.deserialize(data)
-            anim.image = imagebasename
+            anim.url = imagebasename
             fullpath = os.path.join(poolfilesdir, imagebasename)
-            destfile = os.path.join('htdocs', 'img', 'lobby', pool.ID, anim.image)
+            destfile = os.path.join('htdocs', 'img', 'lobby', pool.ID, anim.url)
             os_utils.ensureDirExists(os.path.dirname(destfile), noisy=False)
             os_utils.single_copy(fullpath, destfile, as_file=True, noisy=False)
             pool.add(anim)

@@ -151,7 +151,7 @@ def bashCache(filename, basedir='htdocs', destdir='htdocs', outdirname=None):
                                     dependencies=[filename],
                                     flags=BC_LAYOUT))
 
-def mkCoffee(basename, dependencies=[], files=None):
+def mkCoffee(basename, dependencies=[], files=None, babel=False, minify=True):
     global js_targets
     if files is None:
         files=[os.path.join('coffee', f'{basename}.coffee')]
@@ -160,7 +160,11 @@ def mkCoffee(basename, dependencies=[], files=None):
                                         coffee_executable=COFFEE,
                                         make_map=False,
                                         dependencies=[yarn_install.target]+dependencies))
-    if not args.no_minify:
+    if babel:
+        built_js.coffee_opts += ['--transpile'] # Babel
+    bashed = bashCache(built_js.target, basedir='tmp', outdirname='js')
+    js_targets += [bashed]
+    if not args.no_minify and minify:
         built_js = bm.add(UglifyJSTarget(target=os.path.join('tmp', 'js', f'{basename}.min.js'),
                                          inputfile=built_js.target,
                                          dependencies=[yarn_install.target, built_js.target],
@@ -168,8 +172,8 @@ def mkCoffee(basename, dependencies=[], files=None):
                                          compress_opts=['keep_fnames,unsafe'],
                                          uglify_executable=UGLIFY))
 
-    bashed = bashCache(built_js.target, basedir='tmp', outdirname='js')
-    js_targets += [bashed]
+        bashed = bashCache(built_js.target, basedir='tmp', outdirname='js')
+        js_targets += [bashed]
     return bashed
 
 # JQuery UI
@@ -194,14 +198,36 @@ jqui_dl=bm.add(DownloadFileTarget(target=os.path.join('tmp', 'jquery-ui-1.12.1.z
 jqui_extract = bm.add(ExtractArchiveTarget(target_dir=os.path.join('tmp', 'jquery-ui'),
                                            archive=jqui_dl.target,
                                            provides=[os.path.join('tmp', 'jquery-ui', 'jquery-ui-1.12.1', 'jquery-ui.js')]))
-js_targets += [bm.add(UglifyJSTarget(
-    inputfile=os.path.join('tmp', 'jquery-ui', 'jquery-ui-1.12.1', 'jquery-ui.js'),
+js_targets += [bm.add(CopyFileTarget(
     target=os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'),
-    mangle=False,
-    compress_opts=['keep_fnames,unsafe'],
-    uglify_executable=UGLIFY,
+    filename=os.path.join('tmp', 'jquery-ui', 'jquery-ui-1.12.1', 'jquery-ui.min.js'),
     dependencies=[jqui_extract.target]
 ))]
+js_targets += [bm.add(CopyFileTarget(
+    target=os.path.join(HTDOCS_JSLIB, 'URLSearchParams.polyfill.js'),
+    filename=os.path.join(YARNLIB, 'url-search-params-polyfill', 'index.js'),
+    dependencies=[jqui_extract.target]
+))]
+
+
+js_targets += [bm.add(CopyFileTarget(
+    target=os.path.join(HTDOCS_JSLIB, 'String.polyfill.js'),
+    filename=os.path.join('lib', 'polyfill', 'string.polyfill.js'),
+    dependencies=[jqui_extract.target]
+))]
+js_targets += [bm.add(CopyFileTarget(
+    target=os.path.join(HTDOCS_JSLIB, 'Array.polyfill.js'),
+    filename=os.path.join('lib', 'polyfill', 'array.polyfill.js'),
+    dependencies=[jqui_extract.target]
+))]
+#js_targets += [bm.add(UglifyJSTarget(
+#    inputfile=os.path.join('tmp', 'jquery-ui', 'jquery-ui-1.12.1', 'jquery-ui.js'),
+#    target=os.path.join(HTDOCS_JSLIB, 'jquery-ui.min.js'),
+#    mangle=False,
+#    compress_opts=['keep_fnames,unsafe'],
+#    uglify_executable=UGLIFY,
+#    dependencies=[jqui_extract.target]
+#))]
 JQUI_THEME_ROOT = os.path.join(YARNLIB,'jquery-ui-themes', 'themes', 'smoothness')
 bm.add(CopyFileTarget(os.path.join(HTDOCS_CSSLIB, 'jquery-ui.min.css'), os.path.join(JQUI_THEME_ROOT, 'jquery-ui.min.css'), dependencies=[yarn_install.target]))
 bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.jqui_theme.target'), os.path.join(JQUI_THEME_ROOT, 'images'), os.path.join(HTDOCS_CSSLIB, 'images'), dependencies=[yarn_install.target]))
@@ -214,8 +240,14 @@ bootstrap_files = bm.add(CopyFilesTarget(os.path.join(bm.builddir, '.bootstrap-s
 mkCoffee('bans')
 mkCoffee('editpoll')
 mkCoffee('rapsheet')
-mkCoffee('lobby-core', files=[os.path.join('coffee', 'lobby', 'core.coffee')])
-mkCoffee('core', files=[
+mkCoffee('byond', babel=True, minify=False)
+mkCoffee('lobby-core', babel=True, files=[
+    os.path.join('coffee', 'lobby', 'players', 'Player.coffee'),
+    os.path.join('coffee', 'lobby', 'players', 'Image.coffee'),
+    os.path.join('coffee', 'lobby', 'players', 'Video.coffee'),
+    os.path.join('coffee', 'lobby', 'core.coffee'),
+])
+mkCoffee('core', babel=True, files=[
     os.path.join('coffee', 'core', '_functions.coffee'),
     os.path.join('coffee', 'core', 'JQConfirm.coffee'),
     os.path.join('coffee', 'core', 'JQPrompt.coffee'),

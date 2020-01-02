@@ -1,5 +1,6 @@
 audio = null
 playing = no
+me_playing = null
 songs = []
 $credits_box = $credits_album = $credits_title = $credits_artist = null
 
@@ -10,11 +11,11 @@ findBaseName = (url) ->
   if dot == -1 then fileName else fileName.substring(0, dot)
 
 ###
-# Set Playlist
+# Set Playlist ID
 #
 # Sets playlist and downloads song list from media server.
 ###
-setPlaylist = (playlistID)->
+setPlaylistID = (playlistID, cb=null)->
   window.PLAYLIST = playlistID
   # Grab the playlist we want.
   $.ajax
@@ -29,6 +30,7 @@ setPlaylist = (playlistID)->
       me = new MediaEntry()
       me.deserialize medata
       songs.push(me)
+      cb and cb()
     # Start playing.
     nextSong()
     return # $.ajax().done
@@ -37,7 +39,17 @@ setPlaylist = (playlistID)->
 ###
 # Set Media URL
 #
-# Overrides currently-playing song, and sets the playlist to a single song.
+# Overrides currently-playing song, and sets the playlist to a single song. (Loops)
+###
+setAnimationURL = (url) ->
+  _displayBackground
+    'url': url
+  return
+
+###
+# Set Media URL
+#
+# Overrides currently-playing song, and sets the playlist to a single song. (Loops)
 ###
 setMediaURL = (uri) ->
   me = new MediaEntry()
@@ -48,6 +60,23 @@ setMediaURL = (uri) ->
   me.MD5 = ''
   me.Length = -1 # Not actually used but whatever
   me.play()
+  return
+
+###
+# Set Song MD5
+# Play song from playlist based on MD5. (Loops)
+###
+setSongMD5 = (md5) ->
+  setPlaylistID window.PLAYLIST, ->
+    desired = null
+    for me in window.songs
+      if me and me.MD5 == md5
+        desired = me
+        break
+    if desired
+      window.songs = [desired]
+      desired.play()
+    return
   return
 
 class MediaEntry
@@ -83,9 +112,12 @@ class MediaEntry
       .fadeOut 3000 # 3s
     if audio
       audio.pause()
+      $(audio).off 'ended' # Or we get double-plays
       audio = null
     audio = new Audio @URL
     audio.play()
+    window.PLAYING_URL = @URL
+    me_playing = @
     $(audio).on 'ended', nextSong
     return
 
@@ -93,12 +125,71 @@ nextSong = ->
   me = null
   while songs.length > 1
     me = songs[Math.floor(Math.random()*songs.length)]
-    if me and me.URL != @URL
+    if me and me.URL != window.PLAYING_URL
       break
-  me.play()
+  if me
+    me.play()
   return
 
+_displayBackground = (cfg) ->
+  if window.PLAYER
+    window.PLAYER.destroy()
+  url = cfg['url']
+  window.PLAYER = player = new window.PLAYERS[getExt(url)] cfg
+  player.display()
+  return
+
+ntests = 0
+goodtests = 0
+test = (id, callback) ->
+  ntests++
+  success = callback()
+  $ '<li>'
+  .text "#{id}: #{if success then 'OK' else 'FAIL'}"
+  .css 'color', if success then '#0f0' else '#f00'
+  .appendTo window.$tests
+  if success
+    goodtests++
+  return
+
+assertExists = (id) ->
+  test id, ->
+    !!window[id]
+  return
+
+if !window.log
+  window.log = new VGWSLogProxy()
+if !window.core
+  window.core = new VGWSCore()
+
 core.whenReady ->
+  #window.onload = ->
+  body = $(document.body).html('')
+  window.$tests = $ '<ol>'
+  .attr 'id', 'tests'
+  .css 'position', 'fixed'
+  .css 'top', '0'
+  .css 'left', '0'
+  .appendTo body
+
+  assertExists 'Audio'
+  assertExists 'URLSearchParams'
+
+  if goodtests == ntests
+    window.$tests.remove()
+  else
+    return
+
+
+  # Before we do any more, let's check for overrides from the server.
+  window.query = query = new URLSearchParams window.location.search
+
+  anim = window.ANIMATION
+  if query.has 'bg'
+    anim =
+      'url': query.get 'bg'
+  _displayBackground anim
+
   $credits_box = $ '<span>'
   .attr 'id', 'credits-box'
   $credits_title = $ '<span>'
@@ -113,6 +204,13 @@ core.whenReady ->
   $(document.body).append $credits_box
 
   core.setOneShotTimer 1000, ->
-    setPlaylist(window.PLAYLIST)
+    if query.has 'song_url'
+      setMediaURL(query.get('song_url'))
+    else if query.has 'song_id'
+      setPlaylistID window.PLAYLIST, ->
+        setSongMD5(query.get('song_id'))
+        return # setPlaylistID
+    else
+      setPlaylistID window.PLAYLIST
     return # setOneShotTimer
   return # whenReady

@@ -2,7 +2,7 @@
 namespace VGWS\Lobby;
 class Animation {
   public $ID = '';
-  public $image = '';
+  public $url = '';
   public $scripts = null;
   public $data = null;
   public $overridePlaylist = null;
@@ -10,7 +10,7 @@ class Animation {
 
   public function serialize() {
     $o = [];
-    $o['image'] = $this->image;
+    $o['url'] = $this->url;
     if($this->scripts != null)
       $o['scripts'] = $this->scripts;
     if($this->data != null)
@@ -23,7 +23,7 @@ class Animation {
   }
 
   public function deserialize($data, $id = null) {
-    $this->image = $data['image'];
+    $this->url = $data['url'];
     if($id != null)
       $this->ID = $id;
     if(array_key_exists('id', $data))

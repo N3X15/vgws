@@ -66,9 +66,11 @@ class LobbyScreen extends Page {
     if($adminOverrides != null && array_key_exists('template', $adminOverrides))
       $template = $adminOverrides['template'];
 
-    $image = WEB_ROOT."/img/lobby/{$poolID}/{$animation->image}";
-    if($adminOverrides != null && array_key_exists('image', $adminOverrides))
-      $image = $adminOverrides['image'];
+    $url = $animation->url;
+    if(strpos($url, ':') === FALSE)
+      $url = WEB_ROOT."/img/lobby/{$poolID}/{$animation->url}";
+    if($adminOverrides != null && array_key_exists('url', $adminOverrides))
+      $url = $adminOverrides['url'];
 
     if($animation->scripts != null) {
       foreach($animation->scripts as $scr) {
@@ -76,17 +78,24 @@ class LobbyScreen extends Page {
       }
     }
 
-    $this->scripts[]='js/lobby-core.min.js';
+    $this->scripts = [
+      'js/byond.js',
+      'js/core.js',
+      'js/lobby-core.js',
+    ];
+
+    $animation->url = $url;
 
     $this->js_assignments['MEDIA_BASEURL'] = MEDIA_BASEURL;
     $this->js_assignments['MEDIA_KEY'] = MEDIA_KEY;
     $this->js_assignments['PLAYLIST'] = $playlist;
-    $this->js_assignments['IMAGE'] = $image;
+    $this->js_assignments['BG_URL'] = $url;
+    $this->js_assignments['ANIMATION'] = $animation;
     $this->js_assignments['POOL_ID'] = $poolID;
     $this->js_assignments['ANIM_ID'] = $animID;
     $this->js_assignments['ANIM_DATA'] = $animation->data;
 
-    $this->setTemplateVar('IMAGE', $image);
+    $this->setTemplateVar('IMAGE', $url);
     $this->setTemplateVar('POOL_ID', $poolID);
     $this->setTemplateVar('ANIM_ID', $animID);
     $this->setTemplateVar('ANIM_DATA', $animation->data);
@@ -95,6 +104,7 @@ class LobbyScreen extends Page {
     $this->setTemplateVar('ckey', $ckey);
     #$this->setTemplateVar('scripts', $this->scripts);
 		#die($this->displayTemplate("ingame/lobby/{$template}"));
+    $this->setTemplateVar('UA', $_SERVER['HTTP_USER_AGENT']);
 		$this->wrapper = "ingame/lobby/{$template}";
 	}
 

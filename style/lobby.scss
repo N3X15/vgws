@@ -23,23 +23,23 @@ $icon-font-path: '[WEB_ROOT]/fonts/' !default;
 
 body,
 html {
-  margin: 0;
-  padding: 0;
   background-color: black;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100vh;
+  color: #f00;
   font-family: arial, sans-serif;
   font-size: small;
   height: 100vh;
-
-  image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
+  //image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
   image-rendering: -moz-crisp-edges;          /* Firefox                        */
   image-rendering: -o-crisp-edges;            /* Opera                          */
   image-rendering: -webkit-optimize-contrast; /* Chrome (and eventually Safari) */
+  image-rendering: optimizeSpeed;             /* STOP SMOOTHING, GIVE ME SPEED  */
   image-rendering: pixelated;                 /* Chrome */
-  //image-rendering: optimize-contrast;         /* CSS3 Proposed                  */
   -ms-interpolation-mode: nearest-neighbor;   /* IE8+                           */
+  margin: 0;
+  padding: 0;
 }
 
 #credits-box {
@@ -62,8 +62,24 @@ html {
     display: block;
   }
   > span#credits-title {
-    font-size: 2em;
     color: #fff;
     font-family: 'BebasNeueBold';
+    font-size: 2em;
+  }
+}
+
+#background {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  margin: 0;
+  position: fixed;
+  width: 100%;
+
+  >img,
+  >video {
+    display: inline-block;
+    height: 100%;
+    //z-index: -1000;
   }
 }

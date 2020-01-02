@@ -12,7 +12,8 @@ file has been included.  **The default pool is named "main", so you should start
 by creating the main pool.**
 
 * **NOTE:** You should create each pool as an LFS-enabled gitlab repo and clone
-it here to avoid unnecessarily inflating this repo's size.
+it here to avoid unnecessarily inflating this repo's size. Do not use
+submodules, otherwise they'll be added to the repo index.
 
 ### Example
 

@@ -121,12 +121,30 @@ class MediaEntry
     $(audio).on 'ended', nextSong
     return
 
+###
+# Roll for next song.
+###
 nextSong = ->
   me = null
-  while songs.length > 1
-    me = songs[Math.floor(Math.random()*songs.length)]
-    if me and me.URL != window.PLAYING_URL
-      break
+  #while songs.length > 1
+  if songs.length > 1
+    for tryn in [0...10]
+      me = songs[Math.floor(Math.random()*songs.length)]
+      # If the MediaEntry is valid AND the URL is not what we're currently playing...
+      if me and me.URL != window.PLAYING_URL
+        # We've selected the song we want
+        break
+  else if songs.length == 1
+    me = songs[0]
+  else
+    JQConfirm
+      title: 'Error'
+      text: """nextSong(): There are no songs in this playlist.<br>
+      <b>Playlist ID:</b> #{window.PLAYLIST}<br>
+      Please yell at the server owner."""
+      yes_text: 'OK'
+      no_text: null
+    return
   if me
     me.play()
   return
@@ -153,7 +171,7 @@ test = (id, callback) ->
   return
 
 assertExists = (id) ->
-  test id, ->
+  test "window.#{id} exists", ->
     !!window[id]
   return
 
@@ -163,7 +181,6 @@ if !window.core
   window.core = new VGWSCore()
 
 core.whenReady ->
-  #window.onload = ->
   body = $(document.body).html('')
   window.$tests = $ '<ol>'
   .attr 'id', 'tests'
@@ -172,12 +189,19 @@ core.whenReady ->
   .css 'left', '0'
   .appendTo body
 
+  # Ensure Audio API is present
   assertExists 'Audio'
+  # Ensure polyfills worked
+  assertExists 'Object'
   assertExists 'URLSearchParams'
 
   if goodtests == ntests
     window.$tests.remove()
   else
+    $ '<li>'
+    .text "Diagnostic tests failed: #{goodtests}✓ #{ntests-goodtests}✗"
+    .css 'color', '#f00'
+    .appendTo window.$tests
     return
 
 

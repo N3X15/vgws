@@ -1,8 +1,25 @@
+EAnimOverride =
+  NONE: 0
+  ID:   1
+  URL:  2
+window.ANIM_OVERRIDE = EAnimOverride.NONE
+EPlaylistOverride =
+  NONE:    0
+  ID:      1
+  BLOCKED: 2
+window.PLAYLIST_OVERRIDE = EPlaylistOverride.NONE
+ESongOverride =
+  NONE: 0
+  ID:   1
+  URL:  2
+window.SONG_OVERRIDE = ESongOverride.NONE
+window.CLIENT = window.HOLDER = window.CKEY = window.PLAYING_URL = window.PLAYING_MEDIA = null
 audio = null
 playing = no
 me_playing = null
 songs = []
-$credits_box = $credits_album = $credits_title = $credits_artist = null
+tinker_menu = null
+$credits_box = $credits_album = $credits_title = $credits_artist = $tinker_button = null
 
 # Utility, not really useful to BYOND
 findBaseName = (url) ->
@@ -16,6 +33,8 @@ findBaseName = (url) ->
 # Sets playlist and downloads song list from media server.
 ###
 setPlaylistID = (playlistID, cb=null)->
+  if playlistID == null
+    playlistID = window.ORIG_PLAYLIST
   window.PLAYLIST = playlistID
   # Grab the playlist we want.
   $.ajax
@@ -37,7 +56,7 @@ setPlaylistID = (playlistID, cb=null)->
   return # setPlaylist
 
 ###
-# Set Media URL
+# Set Animation URL
 #
 # Overrides currently-playing song, and sets the playlist to a single song. (Loops)
 ###
@@ -47,11 +66,11 @@ setAnimationURL = (url) ->
   return
 
 ###
-# Set Media URL
+# Set Song URL
 #
 # Overrides currently-playing song, and sets the playlist to a single song. (Loops)
 ###
-setMediaURL = (uri) ->
+setSongURL = (uri) ->
   me = new MediaEntry()
   window.songs.length = 0
   songs.push me
@@ -68,6 +87,8 @@ setMediaURL = (uri) ->
 ###
 setSongMD5 = (md5) ->
   setPlaylistID window.PLAYLIST, ->
+    if md5 == null
+      return
     desired = null
     for me in window.songs
       if me and me.MD5 == md5
@@ -117,7 +138,7 @@ class MediaEntry
     audio = new Audio @URL
     audio.play()
     window.PLAYING_URL = @URL
-    me_playing = @
+    window.PLAYING_MEDIA = @
     $(audio).on 'ended', nextSong
     return
 
@@ -152,7 +173,7 @@ nextSong = ->
 _displayBackground = (cfg) ->
   if window.PLAYER
     window.PLAYER.destroy()
-  url = cfg['url']
+  window.CURRENT_ANIM_URL = url = cfg['url']
   window.PLAYER = player = new window.PLAYERS[getExt(url)] cfg
   player.display()
   return
@@ -179,62 +200,3 @@ if !window.log
   window.log = new VGWSLogProxy()
 if !window.core
   window.core = new VGWSCore()
-
-core.whenReady ->
-  body = $(document.body).html('')
-  window.$tests = $ '<ol>'
-  .attr 'id', 'tests'
-  .css 'position', 'fixed'
-  .css 'top', '0'
-  .css 'left', '0'
-  .appendTo body
-
-  # Ensure Audio API is present
-  assertExists 'Audio'
-  # Ensure polyfills worked
-  assertExists 'Object'
-  assertExists 'URLSearchParams'
-
-  if goodtests == ntests
-    window.$tests.remove()
-  else
-    $ '<li>'
-    .text "Diagnostic tests failed: #{goodtests}✓ #{ntests-goodtests}✗"
-    .css 'color', '#f00'
-    .appendTo window.$tests
-    return
-
-
-  # Before we do any more, let's check for overrides from the server.
-  window.query = query = new URLSearchParams window.location.search
-
-  anim = window.ANIMATION
-  if query.has 'bg'
-    anim =
-      'url': query.get 'bg'
-  _displayBackground anim
-
-  $credits_box = $ '<span>'
-  .attr 'id', 'credits-box'
-  $credits_title = $ '<span>'
-  .attr 'id', 'credits-title'
-  $credits_artist = $ '<span>'
-  .attr 'id', 'credits-author'
-  $credits_album = $ '<span>'
-  .attr 'id', 'credits-album'
-  $credits_box.append $credits_title
-  $credits_box.append $credits_artist
-  $credits_box.append $credits_album
-  $(document.body).append $credits_box
-
-  core.setOneShotTimer 1000, ->
-    if query.has 'song_url'
-      setMediaURL(query.get('song_url'))
-    else if query.has 'song_id'
-      setPlaylistID window.PLAYLIST, ->
-        setSongMD5(query.get('song_id'))
-        return # setPlaylistID
-    else
-      setPlaylistID window.PLAYLIST
-    return # setOneShotTimer
-  return # whenReady

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32px"
+   height="32px"
+   viewBox="0 0 32 32"
+   version="1.1"
+   id="SVGRoot"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="gear.svg">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="8"
+     inkscape:cx="20.170611"
+     inkscape:cy="10.100153"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:grid-bbox="true"
+     inkscape:pagecheckerboard="true" />
+  <defs
+     id="defs815" />
+  <metadata
+     id="metadata818">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 15.335938 1.0234375 L 14.322266 3.2597656 L 14.246094 4.0546875 L 14.443359 5.40625 L 12.050781 6.046875 L 11.546875 4.7773438 L 11.082031 4.1289062 L 9.0878906 2.6972656 L 7.9355469 3.3632812 L 8.1777344 5.8066406 L 8.5078125 6.53125 L 9.3554688 7.6035156 L 7.6035156 9.3554688 L 6.53125 8.5078125 L 5.8066406 8.1777344 L 3.3632812 7.9355469 L 2.6972656 9.0878906 L 4.1289062 11.082031 L 4.7773438 11.546875 L 6.046875 12.050781 L 5.40625 14.443359 L 4.0546875 14.246094 L 3.2597656 14.322266 L 1.0234375 15.335938 L 1.0234375 16.664062 L 3.2597656 17.677734 L 4.0546875 17.753906 L 5.40625 17.556641 L 6.046875 19.949219 L 4.7773438 20.453125 L 4.1289062 20.917969 L 2.6972656 22.912109 L 3.3632812 24.064453 L 5.8066406 23.822266 L 6.53125 23.492188 L 7.6035156 22.644531 L 9.3554688 24.396484 L 8.5078125 25.46875 L 8.1777344 26.193359 L 7.9355469 28.636719 L 9.0878906 29.302734 L 11.082031 27.871094 L 11.546875 27.222656 L 12.050781 25.953125 L 14.443359 26.59375 L 14.246094 27.945312 L 14.322266 28.740234 L 15.335938 30.976562 L 16.664062 30.976562 L 17.677734 28.740234 L 17.753906 27.945312 L 17.556641 26.59375 L 19.949219 25.953125 L 20.453125 27.222656 L 20.917969 27.871094 L 22.912109 29.302734 L 24.064453 28.636719 L 23.822266 26.193359 L 23.492188 25.46875 L 22.644531 24.396484 L 24.396484 22.644531 L 25.46875 23.492188 L 26.193359 23.822266 L 28.636719 24.064453 L 29.302734 22.912109 L 27.871094 20.917969 L 27.222656 20.453125 L 25.953125 19.949219 L 26.59375 17.556641 L 27.945312 17.753906 L 28.740234 17.677734 L 30.976562 16.664062 L 30.976562 15.335938 L 28.740234 14.322266 L 27.945312 14.246094 L 26.59375 14.443359 L 25.953125 12.050781 L 27.222656 11.546875 L 27.871094 11.082031 L 29.302734 9.0878906 L 28.636719 7.9355469 L 26.193359 8.1777344 L 25.46875 8.5078125 L 24.396484 9.3554688 L 22.644531 7.6035156 L 23.492188 6.53125 L 23.822266 5.8066406 L 24.064453 3.3632812 L 22.912109 2.6972656 L 20.917969 4.1289062 L 20.453125 4.7773438 L 19.949219 6.046875 L 17.556641 5.40625 L 17.753906 4.0546875 L 17.677734 3.2597656 L 16.664062 1.0234375 L 15.335938 1.0234375 z M 16 12.636719 A 3.3639388 3.3639388 0 0 1 19.363281 16 A 3.3639388 3.3639388 0 0 1 16 19.363281 A 3.3639388 3.3639388 0 0 1 12.636719 16 A 3.3639388 3.3639388 0 0 1 16 12.636719 z "
+       id="path1377" />
+  </g>
+</svg>

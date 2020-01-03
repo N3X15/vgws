@@ -8,10 +8,11 @@ window.onerror = (message, source, lineno, colno, error) ->
       lineno:     lineno
       colno:      colno
       user_agent: navigator.userAgent
-  else
-    alert """#{err.msg}
-    Source: #{err.source}
-    Line: #{err.lineno}:#{err.colno}"""
+      platform:   navigator.platform
+
+  alert """#{err.msg}
+  Source: #{err.source}
+  Line: #{err.lineno}:#{err.colno}"""
   return
 
 fmtBYONDQuery = (query) ->

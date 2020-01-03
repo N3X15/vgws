@@ -246,6 +246,8 @@ mkCoffee('lobby-core', babel=True, files=[
     os.path.join('coffee', 'lobby', 'players', 'Image.coffee'),
     os.path.join('coffee', 'lobby', 'players', 'Video.coffee'),
     os.path.join('coffee', 'lobby', 'core.coffee'),
+    os.path.join('coffee', 'lobby', 'tinkermenu.coffee'),
+    os.path.join('coffee', 'lobby', 'zzStartup.coffee'),
 ])
 mkCoffee('core', babel=True, files=[
     os.path.join('coffee', 'core', '_functions.coffee'),

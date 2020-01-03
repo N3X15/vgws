@@ -1,0 +1,68 @@
+<p>This panel allows you to tinker with the lobby screen.</p>
+<fieldset>
+  <legend>Animation</legend>
+  <p>The <em>animation</em> refers to the background image or video.</p>
+  <div class="line">
+    <label for="radAnimOverride">
+      <input type="radio" name="radAnimOverride" id="radAnimOverrideAuto" class="radAnimOverride" value="auto" checked />
+      <span>Automatic (default)</span>
+    </label>
+  </div>
+  <div class="line">
+    <label>
+      <input type="radio" name="radAnimOverride" id="radAnimOverrideID" class="radAnimOverride" value="id" />
+      <span title="Force which animation ID is playing">ID</span>
+    </label>
+    <input type="text" id="txtAnimID" value="" disabled />
+  </div>
+  <div class="line">
+    <label>
+      <input type="radio" name="radAnimOverride" id="radAnimOverrideID" class="radAnimOverride" value="url" />
+      <span title="Use an external URL for the animation">URL</span>
+    </label>
+    <input type="text" id="txtAnimURL" value="" disabled />
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Playlist</legend>
+  <p>This section allows you to override which playlist is playing.</p>
+  <p><strong>Setting a song override will temporarily create a 1-song playlist.</strong> You can reset it here.</p>
+  <div class="line">
+    <label>
+      <input type="radio" name="radPlaylistOverride" id="radPlaylistOverrideID" class="radPlaylistOverride" value="id" checked />
+      <span>Use ID (default)</span>
+    </label>
+    <input type="text" id="txtPlaylistID" value="" disabled />
+  </div>
+  <div class="line">
+    <label>
+      <input type="radio" name="radPlaylistOverride" id="radPlaylistOverrideOverridden" class="radPlaylistOverride" value="overridden" disabled readonly/>
+      <span title="Force which animation ID is playing">[Overridden by Song]</span>
+    </label>
+  </div>
+</fieldset>
+<fieldset>
+  <legend>Song</legend>
+  <p>This section allows you to override which song is playing.</p>
+  <p><strong>Setting a song override will temporarily create a 1-song playlist.</strong> You can reset it by selecting &quot;Use ID&quot; above.</p>
+  <div class="line">
+    <label>
+      <input type="radio" name="radSongOverride" id="radSongOverrideAuto" class="radSongOverride" value="auto" />
+      <span>Automatic (default)</span>
+    </label>
+  </div>
+  <div class="line">
+    <label>
+      <input type="radio" name="radSongOverride" id="radSongOverrideMD5" class="radSongOverride" value="id" />
+      <span title="Force which song MD5 is playing">ID</span>
+    </label>
+    <input type="text" id="txtSongMD5" value="" disabled />
+  </div>
+  <div class="line">
+    <label>
+      <input type="radio" name="radSongOverride" id="radSongOverrideURL" class="radSongOverride" value="url" />
+      <span title="Use an external URL for the song">URL</span>
+    </label>
+    <input type="text" id="txtSongURL" value="" disabled />
+  </div>
+</fieldset>

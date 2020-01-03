@@ -83,3 +83,17 @@ html {
     //z-index: -1000;
   }
 }
+#tinker-button {
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  font-family:sans-serif;
+  font-size:1em;
+  height: 32px;
+  justify-items:right;
+  position:absolute;
+  right:0.25em;
+  text-shadow:1px 0px 0px #000, -1px 0px 0px #000, 0px 1px 0px #000, 0px -1px 0px #000;
+  top:0.25em;
+  width: 32px;
+}

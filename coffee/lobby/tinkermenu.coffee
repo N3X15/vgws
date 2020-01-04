@@ -11,48 +11,72 @@ class TinkerMenu
       width: "auto"
       buttons:
         'OK': (ui, e) ->
-          $(@).close()
+          $(@).dialog 'close'
           return
 
+    $ '#dlgTinkerMenu input[type=text]'
+    .on 'keyup', (e) =>
+      # Force change event when enter key pressed
+      if not $(e.target).prop 'disabled'
+        switch e.which
+          when 13
+            $(e.target).trigger 'commit'
+          else
+            $(e.target).addClass('modified')
+      return
     @$radAnimOverrides = $ '.radAnimOverride'
-    @$radAnimOverrideAuto = $ '#radAnimOverrideAuto'
-    .on 'click', =>
+    .on 'change', =>
       @updateAnimControls()
-      toBYOND
+      return
+    @$radAnimOverrideAuto = $ '#radAnimOverrideAuto'
+    .on 'change', =>
+      if not @$radAnimOverrideAuto.prop 'checked'
+        return
+      @$txtAnimID.removeClass('modified').val()
+      @$txtAnimURL.removeClass('modified').val()
+      toByond
         src: window.HOLDER
         lobby: 1
-        setAnimation: null
+        setAnimationID: null
       return
     @$radAnimOverrideID = $ '#radAnimOverrideID'
-    .on 'click', =>
-      @updateAnimControls()
-      return
     @$txtAnimID = $ '#txtAnimID'
-    .on 'changed', =>
+    .on 'commit', (e) =>
       if not @$txtAnimID.prop 'disabled'
-        toBYOND
+        $(e.target).removeClass('modified')
+        toByond
           src: window.HOLDER
           lobby: 1
           setAnimationID: @$txtAnimID.val()
       return
     @$radAnimOverrideURL = $ '#radAnimOverrideURL'
-    .on 'click', =>
-      @updateAnimControls()
+    .on 'change', (e) =>
+      if not @$txtAnimURL.prop 'disabled'
+        $(e.target).removeClass('modified')
+        toByond
+          src: window.HOLDER
+          lobby: 1
+          setAnimationURL: @$txtAnimURL.val()
       return
     @$txtAnimURL = $ '#txtAnimURL'
-    .on 'changed', =>
+    .on 'commit', (e) =>
       if not @$txtAnimURL.prop 'disabled'
-        toBYOND
+        $(e.target).removeClass('modified')
+        if query.has 'TEST'
+          setAnimationURL @$txtAnimURL.val()
+        toByond
           src: window.HOLDER
           lobby: 1
           setAnimationURL: @$txtAnimURL.val()
       return
     @$radPlaylistOverrides = $ '.radPlaylistOverride'
-    .on 'click', =>
+    .on 'change', =>
       @updatePlaylistControls()
       return
     @$radPlaylistOverrideID = $ '#radPlaylistOverrideID'
-    .on 'click', =>
+    .on 'change', =>
+      if not @$radPlaylistOverrideID.prop 'checked'
+        return
       @$radSongOverrideMD5
       .prop 'checked', no
       @$radSongOverrideAuto
@@ -62,18 +86,26 @@ class TinkerMenu
       @updateSongControls()
       return
     @$txtPlaylistID = $ '#txtPlaylistID'
-    .on 'changed', =>
+    .on 'commit', (e) =>
       if not @$txtPlaylistID.prop 'disabled'
-        toBYOND
+        $(e.target).removeClass('modified')
+        if query.has 'TEST'
+          setPlaylistID @$txtPlaylistID.val()
+        toByond
           src: window.HOLDER
           lobby: 1
           setPlaylistID: @$txtPlaylistID.val()
       return
     @$radPlaylistOverrideOverridden = $ '#radPlaylistOverrideOverridden'
     @$radSongOverrides = $ '.radSongOverride'
+    .on 'change', =>
+      @updateSongControls()
+      return
     @$radSongOverrideAuto = $ '#radSongOverrideAuto'
     @$radSongOverrideMD5 = $ '#radSongOverrideMD5'
-    .on 'click', =>
+    .on 'change', =>
+      if not @$radSongOverrideMD5.prop 'checked'
+        return
       @$radPlaylistOverrideID
       .prop 'checked', no
       @$radPlaylistOverrideOverridden
@@ -81,18 +113,33 @@ class TinkerMenu
       @updatePlaylistControls()
       return
     @$txtSongMD5 = $ '#txtSongMD5'
-    .on 'changed', =>
+    .on 'commit', (e) =>
       if not @$txtSongMD5.prop 'disabled'
-        toBYOND
+        $(e.target).removeClass('modified')
+        if query.has 'TEST'
+          setSongMD5 @$txtSongMD5.val()
+        toByond
           src: window.HOLDER
           lobby: 1
           setSongMD5: @$txtSongMD5.val()
       return
     @$radSongOverrideURL = $ '#radSongOverrideURL'
+    .on 'change', =>
+      if not @$radSongOverrideURL.prop 'checked'
+        return
+      @$radPlaylistOverrideID
+      .prop 'checked', no
+      @$radPlaylistOverrideOverridden
+      .prop 'checked', yes
+      @updatePlaylistControls()
+      return
     @$txtSongURL = $ '#txtSongURL'
-    .on 'changed', =>
+    .on 'commit', (e) =>
       if not @$txtSongURL.prop 'disabled'
-        toBYOND
+        $(e.target).removeClass('modified')
+        if query.has 'TEST'
+          setSongURL @$txtSongURL.val()
+        toByond
           src: window.HOLDER
           lobby: 1
           setSongURL: @$txtSongURL.val()

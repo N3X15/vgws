@@ -97,3 +97,21 @@ html {
   top:0.25em;
   width: 32px;
 }
+input[type=text] {
+  border: 1px solid #93cee9;
+  background: #eff;
+  border-radius: 3px;
+  padding: .25em;
+  transition: .2s;
+  &:disabled {
+    background-color: #eee;
+    color: #999;
+    border-color: #ccc;
+  }
+  &.modified {
+    background-color: #fec;
+    box-shadow: 0 0 3px #ffa500;
+    border-color: #ffa500;
+    transition: .2s;
+  }
+}

@@ -1,8 +1,8 @@
 # A shitload of crutches for BYOND
 window.onerror = (message, source, lineno, colno, error) ->
   if window.CLIENT
-    toBYOND
-      src: window.CLIENT
+    toByond
+      src:        window.CLIENT
       error:      message
       source:     source
       lineno:     lineno
@@ -10,9 +10,9 @@ window.onerror = (message, source, lineno, colno, error) ->
       user_agent: navigator.userAgent
       platform:   navigator.platform
 
-  alert """#{err.msg}
-  Source: #{err.source}
-  Line: #{err.lineno}:#{err.colno}"""
+  alert """#{message}
+  Source: #{source}
+  Line: #{lineno}:#{colno}"""
   return
 
 fmtBYONDQuery = (query) ->
@@ -25,5 +25,9 @@ fmtBYONDQuery = (query) ->
   return o
 
 toByond = (query) ->
-  window.CLIENT and window.location = "byond://"+query
+  uri = "byond://"+fmtBYONDQuery(query)
+  if window.query and not window.query.has 'TEST'
+    window.location = uri
+  else
+    console and console.log and console.log "toByond: Would have sent #{uri}", query
   return

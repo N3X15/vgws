@@ -1,6 +1,8 @@
 
 core.whenReady ->
   body = $(document.body)
+
+  ## Set up testing environment.
   window.$tests = $ '<ol>'
   .attr 'id', 'tests'
   .css 'position', 'fixed'
@@ -8,21 +10,28 @@ core.whenReady ->
   .css 'left', '0'
   .appendTo body
 
+  ## Test player's browser for functionality.
   # Ensure Audio API is present
   assertExists 'Audio'
   # Ensure polyfills worked
   assertExists 'Object'
   assertExists 'URLSearchParams'
 
+  result = if (ntests-goodtests) > 0 then 'FAILED' else 'PASSED'
+  $ '<li>'
+  .text "Diagnostic tests #{result}: #{goodtests}✓ #{ntests-goodtests}✗"
+  .css 'color', '#f00'
+  .appendTo window.$tests
+
   if goodtests == ntests
-    window.$tests.remove()
+    # Hide test report
+    window.$tests.hide()
   else
-    $ '<li>'
-    .text "Diagnostic tests failed: #{goodtests}✓ #{ntests-goodtests}✗"
-    .css 'color', '#f00'
-    .appendTo window.$tests
+    # Stop execution, leave test results up, remove dlgTinkerMenu prototype.
+    $('#dlgTinkerMenu').hide()
     return
 
+  # Setup admin menu
   tinker_menu = new TinkerMenu()
 
   # Before we do any more, let's check for overrides from the server.

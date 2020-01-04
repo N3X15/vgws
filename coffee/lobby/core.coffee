@@ -49,9 +49,9 @@ setPlaylistID = (playlistID, cb=null)->
       me = new MediaEntry()
       me.deserialize medata
       songs.push(me)
-      cb and cb()
-    # Start playing.
-    nextSong()
+    if not (cb and cb())
+      # Start playing.
+      nextSong()
     return # $.ajax().done
   return # setPlaylist
 

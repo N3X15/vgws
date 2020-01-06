@@ -1,10 +1,7 @@
-{#
-<\?=\$([^\?]+)\?>
-{{ $1 }}
-#}
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
 	<head>
+		<meta charset="utf-8">
 		<title>{{ constant('SITE_TITLE') }} - {{ title }}</title>
 		<link rel="stylesheet" href="{{ constant('WEB_ROOT') }}/style.php/style.scss" />
 		<link rel="stylesheet" href="{{ constant('WEB_ROOT') }}/jquery.tagit.css" />
@@ -12,13 +9,17 @@
 		<script src="{{ constant('WEB_ROOT') }}/js/lib/jquery.min.js" type="text/javascript"></script>
 		<script src="{{ constant('WEB_ROOT') }}/js/lib/jquery-ui.min.js" type="text/javascript"></script>
 		<script src="{{ constant('WEB_ROOT') }}/js/lib/tag-it.min.js" type="text/javascript"></script>
+		{% if js_vars|length > 0 %}
 		<script type="text/javascript">
 			/* GLOBAL SETTINGS */
-
-			{% for k, v in js_vars %}
-			var {{ k }} = {{ v|json_encode|raw }};
-			{% endfor %}
+			var {% for k, v in js_vars -%}
+			{{ k }}={{ v|json_encode|raw }}
+			{%-   if not loop.last -%}
+			,
+			{%-   endif -%}
+			{%- endfor -%};
 		</script>
+		{% endif %}
 		{% for script in scripts %}
 		<script src="{{ constant('WEB_ROOT') }}/{{ asset(script) }}" type="text/javascript"></script>
 		{% endfor %}

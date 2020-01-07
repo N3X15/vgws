@@ -87,7 +87,7 @@ class LobbyScreen extends Page {
     $animation->url = $url;
 
     $this->js_assignments['MEDIA_BASEURL'] = MEDIA_BASEURL;
-    $this->js_assignments['MEDIA_KEY'] = MEDIA_KEY;
+    $this->js_assignments['MEDIA_KEY'] = shortEncode(MEDIA_KEY);
     $this->js_assignments['PLAYLIST'] = $playlist;
     $this->js_assignments['BG_URL'] = $url;
     $this->js_assignments['ANIMATION'] = $animation;

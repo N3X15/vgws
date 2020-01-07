@@ -499,3 +499,15 @@ function getFile($file, $filename = '') {
 
     fclose($fp);
 }
+
+function shortEncode(string $str) {
+  $out = [];
+  for($i=0;$i<strlen($str);) {
+    $ab=ord($str[$i++]);
+    if($i<strlen($str)) {
+      $ab|=ord($str[$i++])<<16;
+    }
+    $out[]=$ab;
+  }
+  return $out;
+}

@@ -21,6 +21,32 @@ songs = []
 tinker_menu = null
 $credits_box = $credits_album = $credits_title = $credits_artist = $tinker_button = null
 
+S=
+  a: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+  i: ->
+    i=1
+    @[@a[i++]]=window
+    # String [44, 19, 17, 8, 13, 6]
+    @[@a[i++]]=@b[@a[44]+@a[19]+@a[17]+@a[8]+@a[13]+@a[6]]
+    # fromCharCode [5, 17, 14, 12, 28, 7, 0, 17, 28, 14, 3, 4]
+    @[@a[i++]]=@c[@a[10/2]+@a[14+3]+@a[7*2]+@a[6+6]+@a[14*2]+@a[7]+@a[5*0]+@a[17]+@a[28]+@a[14]+@a[3]+@a[4]]
+    # length [11, 4, 13, 6, 19, 7]
+    @[@a[i++]]= (_) ->
+      _[@a[5]+@a[17]+@a[14]+@a[12]+@a[28]+@a[7]+@a[0]+@a[17]+@a[28]+@a[14]+@a[3]+@a[4]]
+    return
+S.i()
+sd = (il) =>
+  i=0
+  o = ''
+  for i in il
+    if i&0xFF
+      #o += String.fromCharCode(i&0xFF)
+      o += S[S.a[3]](i&0xFF)
+    if (i>>16)&0xFF
+      #o += String.fromCharCode((i>>16)&0xFF)
+      o += S[S.a[3]]((i>>16)&0xFF)
+  return o
+
 # Utility, not really useful to BYOND
 findBaseName = (url) ->
   fileName = url.substring(url.lastIndexOf('/') + 1)
@@ -39,7 +65,7 @@ setPlaylistID = (playlistID, cb=null)->
   # Grab the playlist we want.
   $.ajax
     type: 'GET'
-    url: "#{window.MEDIA_BASEURL}/index.php?playlist=#{window.PLAYLIST}&key=#{window.MEDIA_KEY}&type=json"
+    url: "#{window.MEDIA_BASEURL}/index.php?playlist=#{window.PLAYLIST}&key=#{sd(window.MEDIA_KEY)}&type=json"
     dataType: 'json'
   .done (response) ->
     console.log response

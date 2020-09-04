@@ -27,3 +27,5 @@
 lobbyscreens/*/
 data/lobby.json
 htdocs/
+
+vnm.state

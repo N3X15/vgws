@@ -281,7 +281,10 @@ bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, 'imgs-to-htdocs.tgt'),
 lobbytool = bm.add(CommandBuildTarget([os.path.join('htdocs', 'data', 'lobby.json')], files=['lobbyscreens', 'main', '__POOL__.toml'], cmd=[sys.executable, 'lobbytool.py', 'collect']))
 #bm.add(CopyFileTarget(target=os.path.join('dist', 'data', 'jobs.json'),
 #                      filename=os.path.join('data', 'jobs.json')))
-fonts = [
+
+fonts = []
+''' Webify is currently dead.
+
     bm.add(WebifyTarget(destination=os.path.join(HTDOCS_FONTLIB, 'bebas-neue', 'bebas-neue-regular.woff'),
                         source=os.path.join('lib', 'bebas neue', 'BebasNeue Regular.otf'),
                         webify_base_path='lib/bin/')),
@@ -291,7 +294,8 @@ fonts = [
     bm.add(WebifyTarget(destination=os.path.join(HTDOCS_FONTLIB, 'bebas-neue', 'bebas-neue-thin.woff'),
                         source=os.path.join('lib', 'bebas neue', 'BebasNeue Thin.otf'),
                         webify_base_path='lib/bin/')),
-]
+'''
+#]
 # This requires having ssh access and rsync.
 if args.deploy:
     def deploy_dir(bm, dirname, is_private=False, deps=[]):
@@ -373,8 +377,8 @@ if args.deploy:
             deps = [x.target for x in js_targets]
         if dirname == 'css':
             deps = [style_bashed.target]
-        if dirname == 'fonts':
-            deps = [fonts[0].target]
+        #if dirname == 'fonts':
+        #    deps = [fonts[0].target]
         BT_MAIN += [deploy_dir(bm, dirname, is_private=False, deps=public_dir_ops+deps)]
 
     for dirname in PRIVATE_DIRS:

@@ -13,11 +13,11 @@
     "@babel/polyfill": "^7.11.5",
     "@babel/preset-env": "^7.11.5",
     "coffeescript": "^2.5.1",
-    "dart-sass": "^1.25.0",
     "jquery": "^3.5.1",
     "jquery-ui": "^1.12.1",
     "jquery-ui-themes": "^1.12.0",
-    "uglify-es": "^3.3.9",
+    "sass": "^1.42.1",
+    "uglify-js": "^3.14.2",
     "url-search-params-polyfill": "^7.0.1"
   },
   "directories": {

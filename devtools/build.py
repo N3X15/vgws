@@ -269,7 +269,7 @@ style = bm.add(DartSCSSBuildTarget(
     ],
     import_paths=['style'],
     imported=['style/_funcs.scss'],
-    sass_path=os.path.join(YARNLIB, '.bin', 'dart-sass' + ('.cmd' if os_utils.is_windows() else ''))))
+    sass_path=os.path.join(YARNLIB, '.bin', 'sass' + ('.cmd' if os_utils.is_windows() else ''))))
 
 style_bashed = bashCache(style.target, outdirname='css')
 
@@ -278,7 +278,7 @@ bm.add(CopyFilesTarget(target=os.path.join(bm.builddir, 'imgs-to-htdocs.tgt'),
                        destination=os.path.join('htdocs', 'img')))
 
 
-lobbytool = bm.add(CommandBuildTarget([os.path.join('htdocs', 'data', 'lobby.json')], files=['lobbyscreens', 'main', '__POOL__.toml'], cmd=[sys.executable, 'lobbytool.py', 'collect']))
+lobbytool = bm.add(CommandBuildTarget([os.path.join('htdocs', 'data', 'lobby.json')], files=['lobbyscreens', 'main', '__POOL__.toml'], cmd=[sys.executable, 'devtools/lobbytool.py', 'collect']))
 #bm.add(CopyFileTarget(target=os.path.join('dist', 'data', 'jobs.json'),
 #                      filename=os.path.join('data', 'jobs.json')))
 

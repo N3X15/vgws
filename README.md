@@ -42,10 +42,10 @@ $EDITOR buildconf.yml
 # Install N3X15's buildtools
 pip install git+https://gitlab.com/N3X15/python-build-tools.git#egg=pybuildtools
 # Run build
-python3.6 build.py
+python3 devtools/build.py
 # If build succeeded, you can run this shit to deploy to the server.
 #RSYNC WILL DELETE FILES THAT IT DOESN'T RECOGNIZE IN
 # classes/, templates/, style/, $PUBLIC_DIR/css, $PUBLIC_DIR/fonts, $PUBLIC_DIR/img, $PUBLIC_DIR/js.
 #BACK UP YOUR SHIT.
-python3.6 build.py --deploy
+python3 devtools/build.py --deploy
 ```

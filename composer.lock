@@ -73,20 +73,23 @@
         },
         {
             "name": "adodb/adodb-php",
-            "version": "v5.20.15",
+            "version": "v5.21.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ADOdb/ADOdb.git",
-                "reference": "7bb34029f4d6995b6bf1dd3cb58de69a16cfce87"
+                "reference": "c3e6a3661c60beebb7b2cd819bcf76446d69e41a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/7bb34029f4d6995b6bf1dd3cb58de69a16cfce87",
-                "reference": "7bb34029f4d6995b6bf1dd3cb58de69a16cfce87",
+                "url": "https://api.github.com/repos/ADOdb/ADOdb/zipball/c3e6a3661c60beebb7b2cd819bcf76446d69e41a",
+                "reference": "c3e6a3661c60beebb7b2cd819bcf76446d69e41a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.2"
+                "php": "^5.5.9 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5"
             },
             "type": "library",
             "autoload": {
@@ -115,7 +118,7 @@
                 }
             ],
             "description": "ADOdb is a PHP database abstraction layer library",
-            "homepage": "http://adodb.org/",
+            "homepage": "https://adodb.org/",
             "keywords": [
                 "abstraction",
                 "database",
@@ -123,7 +126,11 @@
                 "library",
                 "php"
             ],
-            "time": "2019-11-24T10:59:54+00:00"
+            "support": {
+                "issues": "https://github.com/ADOdb/ADOdb/issues",
+                "source": "https://github.com/ADOdb/ADOdb"
+            },
+            "time": "2022-01-22T22:56:43+00:00"
         },
         {
             "name": "klein/klein",
@@ -994,5 +1001,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
 }

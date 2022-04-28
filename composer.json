@@ -18,9 +18,8 @@
     "n3x15/atera-orm": "dev-master",
     "n3x15/phinx": "master",
     "klein/klein": "dev-master",
-    "twbs/bootstrap": "dev-master",
-    "twbs/bootstrap-sass": "^3.4@dev",
-    "twig/twig": "3.x-dev",
-    "scssphp/scssphp": "dev-master"
+    "twbs/bootstrap": "dev-main",
+    "twbs/bootstrap-sass": "3.4.x-dev",
+    "twig/twig": "3.x-dev"
   }
 }

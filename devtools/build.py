@@ -1,16 +1,19 @@
+import hashlib
 import os
 import sys
+from pathlib import Path
 
 from buildtools import log, os_utils
 from buildtools.config import YAMLConfig
 from buildtools.maestro import BuildMaestro
 from buildtools.maestro.base_target import SingleBuildTarget
 from buildtools.maestro.coffeescript import CoffeeBuildTarget
-from buildtools.maestro.fileio import CopyFileTarget, CopyFilesTarget, ExtractArchiveTarget
+from buildtools.maestro.fileio import CopyFilesTarget, CopyFileTarget, ExtractArchiveTarget
 from buildtools.maestro.git import GitSubmoduleCheckTarget
-from buildtools.maestro.package_managers import YarnBuildTarget, ComposerBuildTarget
+from buildtools.maestro.package_managers import ComposerBuildTarget, YarnBuildTarget
 from buildtools.maestro.shell import CommandBuildTarget
-from buildtools.maestro.web import CacheBashifyFiles, DartSCSSBuildTarget, EBashLayoutFlags, UglifyJSTarget, DownloadFileTarget, WebifyTarget
+from buildtools.maestro.web import CacheBashifyFiles, DartSCSSBuildTarget, DownloadFileTarget, EBashLayoutFlags, UglifyJSTarget, WebifyTarget
+
 
 class RSyncRemoteTarget(SingleBuildTarget):
     BT_LABEL = 'RSYNC'
@@ -35,7 +38,7 @@ class RSyncRemoteTarget(SingleBuildTarget):
                     files += os_utils.get_file_list(source)
                 if os.path.isfile(source):
                     files += [source]
-        super().__init__(target=self.genVirtualTarget(name.replace('\\', '_').replace('/', '_')), files=files, dependencies=dependencies, provides=provides, name=name)
+        super().__init__(target=str(Path('.build', hashlib.sha256(self.name).hexdigest()+'.target')), files=files, dependencies=dependencies, provides=provides, name=name)
 
     def is_stale(self):
         return True
@@ -96,16 +99,20 @@ argp.add_argument('--deploy', action='store_true', help='Also run rsync/SSH depl
 # Parse args
 args = bm.parse_args(argp)
 
-YARNLIB = os.path.join('node_modules')
-HTDOCS_FONTLIB = os.path.join('htdocs','fonts','lib')
-HTDOCS_JSLIB = os.path.join('htdocs','js','lib')
-HTDOCS_CSSLIB = os.path.join('htdocs','css', 'lib')
-BOOTSTRAP_ROOT = os.path.join('vendor', 'twbs', 'bootstrap-sass', 'assets', 'fonts', 'bootstrap')
+CMD_EXT = '.cmd' if os.name == 'nt' else ''
+
+YARNLIB = Path('node_modules')
+HTDOCS = Path('htdocs')
+VENDOR = Path('vendor')
+HTDOCS_FONTLIB = HTDOCS / 'fonts' / 'lib'
+HTDOCS_JSLIB = HTDOCS / 'js' / 'lib'
+HTDOCS_CSSLIB = HTDOCS / 'css' / 'lib'
+BOOTSTRAP_ROOT = VENDOR / 'twbs' / 'bootstrap-sass' / 'assets' / 'fonts' / 'bootstrap'
 FONTS = ['glyphicons-halflings-regular']
 FONT_EXT = ['eot', 'svg', 'ttf', 'woff', 'woff2']
-COFFEE = os.path.join(YARNLIB, '.bin', 'coffee.cmd' if os.name == 'nt' else 'coffee')
-UGLIFY = os.path.join(YARNLIB, '.bin', 'uglifyjs.cmd' if os.name == 'nt' else 'uglifyjs')
-MANIFEST_OUT = os.path.join('htdocs', 'manifest.json')
+COFFEE = YARNLIB / '.bin' / ('coffee'+CMD_EXT)
+UGLIFY = YARNLIB / '.bin' / ('uglifyjs'+CMD_EXT)
+MANIFEST_OUT = HTDOCS / 'manifest.json'
 
 #if os.path.isfile(MANIFEST_OUT):
 #    with open(MANIFEST_OUT, 'w') as f:

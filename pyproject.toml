@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "vgws"
+version = "0.1.0"
+description = "SS13 Webpanel"
+authors = ["VGWS Contributors"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+
+[tool.poetry.dev-dependencies]
+poetryup = "^0.6.1"
+pybuildtools = "^0.4.12"
+mypy = "^0.950"
+isort = "^5.10.1"
+autopep8 = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.autopep8]
+max_line_length = 200
+ignore = ["E501", "W6"]
+
+[tool.isort]
+line_length = 200

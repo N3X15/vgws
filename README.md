@@ -3,7 +3,9 @@
 and with a minimum of QC.  This code is old, and has bugs, undiscovered
 vulnerabilities, and unfinished features up the wazoo.
 
-**This code is currently completely broken due to abandoned library. I am fixing it.**
+**This code is currently completely broken due to abandoned libraries. I am fixing it.**
+
+We're moving to webpack, too.
 
 # /vg/station Web Services
 *Oh god why did I ever code this*

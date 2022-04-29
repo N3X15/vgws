@@ -3,7 +3,7 @@
 and with a minimum of QC.  This code is old, and has bugs, undiscovered
 vulnerabilities, and unfinished features up the wazoo.
 
-I am slowly cleaning it up, but until I do, **you use VGWS at your own risk**.
+**This code is currently completely broken due to abandoned library. I am fixing it.**
 
 # /vg/station Web Services
 *Oh god why did I ever code this*

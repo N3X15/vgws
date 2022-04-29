@@ -1,4 +1,7 @@
 
+
+import {core, log} from '../core/zzStartup.coffee'
+
 $Options=null
 nOpts=0
 

@@ -1,5 +1,5 @@
 # From ChanMan, another project of mine.
-JQPrompt = (config) ->
+export JQPrompt = (config) ->
   if !config.title
     config.title='Prompt'
   config.value = if 'value' of config then config.value else ''

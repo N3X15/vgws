@@ -1,9 +1,9 @@
 # await sleep ...
-sleep = (ms) ->
+export sleep = (ms) ->
   return new Promise(resolve => setTimeout(resolve, ms))
 
 # Generate a new UUID v4
-uuidv4 = ->
+export uuidv4 = ->
   ([ 1e7 ] + -1e3 + -4e3 + -8e3 + -1e11).replace /[018]/g, (c) ->
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString 16
 
@@ -42,10 +42,10 @@ Array::removeItem = (item) ->
 
 # Doesn't seem to work anymore.
 VS_NO_EMOJI = "\uFE0E"
-disable_emoji_rendering = (char)->
+export disable_emoji_rendering = (char)->
   return VS_NO_EMOJI+char
 
-numberWithCommas = (x) ->
+export numberWithCommas = (x) ->
   parts = x.toString().split('.')
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   parts.join '.'

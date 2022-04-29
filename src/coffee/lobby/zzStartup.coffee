@@ -1,4 +1,7 @@
 
+
+import {core, log} from '../core/zzStartup.coffee'
+
 core.whenReady ->
   body = $(document.body)
 

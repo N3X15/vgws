@@ -1,5 +1,5 @@
 # From ChanMan, another project of mine
-class Modal
+export class Modal
   constructor: ->
     @BackgroundElement = null
     @DialogElement = null

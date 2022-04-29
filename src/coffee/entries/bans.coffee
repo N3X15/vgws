@@ -1,11 +1,16 @@
-# Rapsheet stuff.
-$ ->
+###
+# Bans controls.
+###
+
+import {core, log} from '../core/zzStartup.coffee'
+
+core.whenReady ->
   $('.jobs').tagit
     fieldName: 'jobs[]'
-    availableTags: window.AUTOCOMPLETE
+    availableTags: window.AUTOCOMPLETE_JOBS
 
   $('button#getlast').click ->
-    core.api_post ['findcid'], null, { ckey: $('#banCKey').val() }, (data, status) ->
+    $.post window.API_FIND_CID, { ckey: $('#banCKey').val() }, (data, status) ->
       #alert("Returned: "+status);
       if status == 'success'
         rows = data.split('\\n')

@@ -15,7 +15,7 @@ window.onerror = (message, source, lineno, colno, error) ->
   Line: #{lineno}:#{colno}"""
   return
 
-fmtBYONDQuery = (query) ->
+export fmtBYONDQuery = (query) ->
   o = ''
   if Object.keys(query).length
     i = 0
@@ -24,7 +24,7 @@ fmtBYONDQuery = (query) ->
       o += encodeURIComponent(k) + '=' + encodeURIComponent(v)
   return o
 
-toByond = (query) ->
+export toByond = (query) ->
   uri = "byond://"+fmtBYONDQuery(query)
   if window.query and not window.query.has 'TEST'
     window.location = uri

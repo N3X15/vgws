@@ -1,5 +1,5 @@
 # From ChanMan, another project of mine.
-JQConfirm = (config) ->
+export JQConfirm = (config) ->
   if !config.title
     config.title='Confirm'
   config.yes_text = if 'yes_text' of config then config.yes_text else 'OK'

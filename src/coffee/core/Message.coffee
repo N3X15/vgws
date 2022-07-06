@@ -1,9 +1,9 @@
 
-EMessageType =
+export EMessageType =
   ERROR: 1
   WARNING: 2
   INFO: 0
-class Message
+export class Message
   constructor: (@Type, @Message, @File='', @Line=0) ->
     @TypeName = switch @Type
       when EMessageType.INFO

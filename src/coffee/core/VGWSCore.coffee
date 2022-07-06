@@ -1,4 +1,4 @@
-class VGWSCore
+export class VGWSCore
   constructor: ->
     log.info 'Starting up VGWS JS...'
     @bodyCallbacks = []

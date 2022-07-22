@@ -5,12 +5,13 @@ vulnerabilities, and unfinished features up the wazoo.
 
 **This code is currently completely broken due to abandoned libraries. I am fixing it.**
 
-We're moving to webpack, too.
+We're (eventually) moving to webpack and Symfony, too.
 
 # /vg/station Web Services
-*Oh god why did I ever code this*
 
-THis runs the public /vg/station website.  It is ancient shitcode.
+*Oh god why did I ever code this:trade:*
+
+This runs the public /vg/station website.  It is ancient shitcode.
 
 ## Installing
 
@@ -20,8 +21,8 @@ You will need
 * A soul to donate to Satan
 * A development PC
 * A server to deploy to
-* Python >= 3.6 (On your desktop)
-* PHP >= 7.3 (On BOTH machines)
+* Python >= 3.8 (On your desktop)
+* PHP >= 8.0 (On BOTH machines)
 * `composer` (on BOTH machines)
 * Node.js and `yarn` (On your desktop)
 * `rsync` (desktop)
@@ -34,17 +35,27 @@ You will need
 
 ```shell
 # ===> ON YOUR PERSONAL PC <===
+
+# Python dependencies
+pip install -U poetry
+
+# Clone to ./VGWS
 git clone https://github.com/N3X15/vgws.git VGWS
-# PHP configuration
+
+# PHP configuration (replace $EDITOR with code, notepad++, vim, nano, etc)
 cp config.php.dist config.php
 $EDITOR config.php
+
 # Build/deployment configuration
 cp buildconf.example.yml buildconf.yml
 $EDITOR buildconf.yml
-# Install N3X15's buildtools
-pip install git+https://gitlab.com/N3X15/python-build-tools.git#egg=pybuildtools
+
+# Install build dependencies
+poetry install --no-root
+
 # Run build
 python3 devtools/build.py
+
 # If build succeeded, you can run this shit to deploy to the server.
 #RSYNC WILL DELETE FILES THAT IT DOESN'T RECOGNIZE IN
 # classes/, templates/, style/, $PUBLIC_DIR/css, $PUBLIC_DIR/fonts, $PUBLIC_DIR/img, $PUBLIC_DIR/js.
